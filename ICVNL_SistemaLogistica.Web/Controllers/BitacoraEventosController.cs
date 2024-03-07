@@ -95,7 +95,6 @@ namespace ICVNL_SistemaLogistica.Web.Controllers
                 }
             }
 
-
             TempData["ListadoInstruccionesBitacoraDDL"] = new Data_ControlesDDL().getInstruccionesRealizadasDDL();
             TempData["ListadoLugarEventoDDL"] = new Controles_DDL().GetBitacoraEventos_DDL(usuarioLogin.Entidad, "Seleccione").Data;
 

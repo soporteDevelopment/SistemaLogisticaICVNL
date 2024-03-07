@@ -1,3 +1,4 @@
+
 function ValidaCamposDetails() {
     if (!ValidaTipoPlacaDetails()) {
         return false;
