@@ -1,0 +1,517 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="~/Content/css/cubeportfolio.min.css" />
+<link rel="stylesheet" type="text/css" href="~/Content/css/portfolio.min.css" />
+<link rel="stylesheet" type="text/css" href="~/Content/css/custom.css" />
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+        <h1 class="page-title">
+            Inicio
+        </h1>
+
+        <div class="portfolio-content portfolio-1" style="margin-bottom: 60px;">
+            <div id="js-filters-juicy-projects" class="cbp-l-filters-button">      
+                <div data-filter="*" class="cbp-filter-item-active cbp-filter-item btn dark btn-outline uppercase">
+                    Todos
+                    <div class="cbp-filter-counter"></div>
+                </div>
+                <div data-filter=".admin" class="cbp-filter-item btn dark btn-outline uppercase">
+                    Configuración
+                    <div class="cbp-filter-counter"></div>
+                </div>
+                
+                <div data-filter=".operation" class="cbp-filter-item btn dark btn-outline uppercase">
+                    Operación
+                    <div class="cbp-filter-counter"></div>
+                </div>                
+            </div>
+
+            <div id="js-grid-juicy-projects" class="cbp">
+                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_Parametrizacion.Acceso)
+                {
+                    <div class="cbp-item config styleCenterMenu">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <div class="panelapp gradiente2">
+                                    <div class="panelappic">
+                                        <center>
+                                            @*<img src="~/Content/images/parametrizacion.png" style="height:55px;width:55px;">*@
+                                        </center>
+                                    </div>
+                                    <div class="panelapptitulo">
+                                        Parametrización
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cbp-caption-activeWrap" style="width: 80%; border-radius: 0px 0px 15px 15px;">
+                                <div class="cbp-l-caption-alignCenter" style="width: 100%;">
+                                    <div class="cbp-l-caption-body" style="width: 100%;">
+                                        <a href="@Url.Action("Index", "Parametrizacion")"
+                                           class="cbp-l-caption-buttonLeft btn gray uppercase btn gray uppercase" rel="nofollow">Entrar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_DelegacionesBancos.Acceso)
+                {
+                    <div class="cbp-item admin styleCenterMenu">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <div class="panelapp gradiente2">
+                                    <div class="panelappic">
+                                        <center>
+                                            @*<img src="~/Content/images/parametrizacion.png" style="height:55px;width:55px;">*@
+                                        </center>
+                                    </div>
+                                    <div class="panelapptitulo">
+                                        Administrador de Delegaciones y Bancos
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cbp-caption-activeWrap" style="width: 80%; border-radius: 0px 0px 15px 15px;">
+                                <div class="cbp-l-caption-alignCenter" style="width: 100%;">
+                                    <div class="cbp-l-caption-body" style="width: 100%;">
+                                        <a href="@Url.Action("Index", "DelegacionesBancos")"
+                                           class="cbp-l-caption-buttonLeft btn gray uppercase btn gray uppercase" rel="nofollow">Entrar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_TiposPlacas.Acceso)
+                {
+                    <div class="cbp-item admin styleCenterMenu">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <div class="panelapp gradiente2">
+                                    <div class="panelappic">
+                                        <center>
+                                            @*<img src="~/Content/images/parametrizacion.png" style="height:55px;width:55px;">*@
+                                        </center>
+                                    </div>
+                                    <div class="panelapptitulo">
+                                        Administrador de Tipo de Placa
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cbp-caption-activeWrap" style="width: 80%; border-radius: 0px 0px 15px 15px;">
+                                <div class="cbp-l-caption-alignCenter" style="width: 100%;">
+                                    <div class="cbp-l-caption-body" style="width: 100%;">
+                                        <a href="@Url.Action("Index", "TiposPlacas")"
+                                           class="cbp-l-caption-buttonLeft btn gray uppercase btn gray uppercase" rel="nofollow">Entrar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_TiposIDS.Acceso)
+                {
+                    <div class="cbp-item admin styleCenterMenu">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <div class="panelapp gradiente2">
+                                    <div class="panelappic">
+                                        <center>
+                                            @*<img src="~/Content/images/parametrizacion.png" style="height:55px;width:55px;">*@
+                                        </center>
+                                    </div>
+                                    <div class="panelapptitulo">
+                                        Administrador de Tipos de IDs
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cbp-caption-activeWrap" style="width: 80%; border-radius: 0px 0px 15px 15px;">
+                                <div class="cbp-l-caption-alignCenter" style="width: 100%;">
+                                    <div class="cbp-l-caption-body" style="width: 100%;">
+                                        <a href="@Url.Action("Index", "TiposIDS")"
+                                           class="cbp-l-caption-buttonLeft btn gray uppercase btn gray uppercase" rel="nofollow">Entrar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_Estados.Acceso)
+                {
+                    <div class="cbp-item admin styleCenterMenu">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <div class="panelapp gradiente2">
+                                    <div class="panelappic">
+                                        <center>
+                                            @*<img src="~/Content/images/parametrizacion.png" style="height:55px;width:55px;">*@
+                                        </center>
+                                    </div>
+                                    <div class="panelapptitulo">
+                                        Administrador de Estados
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cbp-caption-activeWrap" style="width: 80%; border-radius: 0px 0px 15px 15px;">
+                                <div class="cbp-l-caption-alignCenter" style="width: 100%;">
+                                    <div class="cbp-l-caption-body" style="width: 100%;">
+                                        <a href="@Url.Action("Index", "Estados")"
+                                           class="cbp-l-caption-buttonLeft btn gray uppercase btn gray uppercase" rel="nofollow">Entrar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_Proveedores.Acceso)
+                {
+                    <div class="cbp-item admin styleCenterMenu">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <div class="panelapp gradiente2">
+                                    <div class="panelappic">
+                                        <center>
+                                            @*<img src="~/Content/images/parametrizacion.png" style="height:55px;width:55px;">*@
+                                        </center>
+                                    </div>
+                                    <div class="panelapptitulo">
+                                        Administrador de Proveedores
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cbp-caption-activeWrap" style="width: 80%; border-radius: 0px 0px 15px 15px;">
+                                <div class="cbp-l-caption-alignCenter" style="width: 100%;">
+                                    <div class="cbp-l-caption-body" style="width: 100%;">
+                                        <a href="@Url.Action("Index", "Proveedores")"
+                                           class="cbp-l-caption-buttonLeft btn gray uppercase btn gray uppercase" rel="nofollow">Entrar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_Contratos.Acceso)
+                {
+                    <div class="cbp-item operation styleCenterMenu">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <div class="panelapp gradiente2">
+                                    <div class="panelappic">
+                                        <center>
+                                            @*<img src="~/Content/images/parametrizacion.png" style="height:55px;width:55px;">*@
+                                        </center>
+                                    </div>
+                                    <div class="panelapptitulo">
+                                        Contratos
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cbp-caption-activeWrap" style="width: 80%; border-radius: 0px 0px 15px 15px;">
+                                <div class="cbp-l-caption-alignCenter" style="width: 100%;">
+                                    <div class="cbp-l-caption-body" style="width: 100%;">
+                                        <a href="@Url.Action("Index", "Contratos")"
+                                           class="cbp-l-caption-buttonLeft btn gray uppercase btn gray uppercase" rel="nofollow">Entrar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_SolicitudesPlacasProveedor.Acceso)
+                {
+                    <div class="cbp-item operation styleCenterMenu">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <div class="panelapp gradiente2">
+                                    <div class="panelappic">
+                                        <center>
+                                            @*<img src="~/Content/images/parametrizacion.png" style="height:55px;width:55px;">*@
+                                        </center>
+                                    </div>
+                                    <div class="panelapptitulo">
+                                        Solicitudes de Placas de Proveedores
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cbp-caption-activeWrap" style="width: 80%; border-radius: 0px 0px 15px 15px;">
+                                <div class="cbp-l-caption-alignCenter" style="width: 100%;">
+                                    <div class="cbp-l-caption-body" style="width: 100%;">
+                                        <a href="@Url.Action("Index", "SolicitudesPlacas")"
+                                           class="cbp-l-caption-buttonLeft btn gray uppercase btn gray uppercase" rel="nofollow">Entrar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_RecepcionSolicitudesPlacasProveedor.Acceso)
+                {
+                    <div class="cbp-item operation styleCenterMenu">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <div class="panelapp gradiente2">
+                                    <div class="panelappic">
+                                        <center>
+                                            @*<img src="~/Content/images/parametrizacion.png" style="height:55px;width:55px;">*@
+                                        </center>
+                                    </div>
+                                    <div class="panelapptitulo">
+                                        Recepción de las Solicitudes de Placas de Proveedores
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cbp-caption-activeWrap" style="width: 80%; border-radius: 0px 0px 15px 15px;">
+                                <div class="cbp-l-caption-alignCenter" style="width: 100%;">
+                                    <div class="cbp-l-caption-body" style="width: 100%;">
+                                        <a href="@Url.Action("Index", "SolicitudesPlacasRecepcion")"
+                                           class="cbp-l-caption-buttonLeft btn gray uppercase btn gray uppercase" rel="nofollow">Entrar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_Parametrizacion.Acceso)
+                {
+                    <div class="cbp-item operation styleCenterMenu">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <div class="panelapp gradiente2">
+                                    <div class="panelappic">
+                                        <center>
+                                            @*<img src="~/Content/images/parametrizacion.png" style="height:55px;width:55px;">*@
+                                        </center>
+                                    </div>
+                                    <div class="panelapptitulo">
+                                        Notas de Entrada de Placas
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cbp-caption-activeWrap" style="width: 80%; border-radius: 0px 0px 15px 15px;">
+                                <div class="cbp-l-caption-alignCenter" style="width: 100%;">
+                                    <div class="cbp-l-caption-body" style="width: 100%;">
+                                        <a href="@Url.Action("Index", "NotasEntradasPlacas")"
+                                           class="cbp-l-caption-buttonLeft btn gray uppercase btn gray uppercase" rel="nofollow">Entrar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_RecepcionSolicitudesPlacasProveedor.Acceso)
+                {
+                    <div class="cbp-item operation styleCenterMenu">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <div class="panelapp gradiente2">
+                                    <div class="panelappic">
+                                        <center>
+                                            @*<img src="~/Content/images/parametrizacion.png" style="height:55px;width:55px;">*@
+                                        </center>
+                                    </div>
+                                    <div class="panelapptitulo">
+                                        Obtener Tipos de Placas de manera Puntual
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cbp-caption-activeWrap" style="width: 80%; border-radius: 0px 0px 15px 15px;">
+                                <div class="cbp-l-caption-alignCenter" style="width: 100%;">
+                                    <div class="cbp-l-caption-body" style="width: 100%;">
+                                        <a href="@Url.Action("ObtenerTipoPlacasManual", "Procesos")"
+                                           class="cbp-l-caption-buttonLeft btn gray uppercase btn gray uppercase" rel="nofollow">Entrar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_SolicitudesPlacasProveedor.Acceso)
+                {
+                    <div class="cbp-item operation styleCenterMenu">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <div class="panelapp gradiente2">
+                                    <div class="panelappic">
+                                        <center>
+                                            @*<img src="~/Content/images/parametrizacion.png" style="height:55px;width:55px;">*@
+                                        </center>
+                                    </div>
+                                    <div class="panelapptitulo">
+                                        Consulta de Eventos Registrados en la Recepción de Placas
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cbp-caption-activeWrap" style="width: 80%; border-radius: 0px 0px 15px 15px;">
+                                <div class="cbp-l-caption-alignCenter" style="width: 100%;">
+                                    <div class="cbp-l-caption-body" style="width: 100%;">
+                                        <a href="@Url.Action("Index", "SolicitudesPlacasRecepcionEventos")"
+                                           class="cbp-l-caption-buttonLeft btn gray uppercase btn gray uppercase" rel="nofollow">Entrar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_TransferenciasPlacasEntreDelegacionesBancos.Acceso)
+                {
+                    <div class="cbp-item operation styleCenterMenu">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <div class="panelapp gradiente2">
+                                    <div class="panelappic">
+                                        <center>
+                                            @*<img src="~/Content/images/parametrizacion.png" style="height:55px;width:55px;">*@
+                                        </center>
+                                    </div>
+                                    <div class="panelapptitulo">
+                                        Transferencia de Placas entre Delegaciones/Bancos
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cbp-caption-activeWrap" style="width: 80%; border-radius: 0px 0px 15px 15px;">
+                                <div class="cbp-l-caption-alignCenter" style="width: 100%;">
+                                    <div class="cbp-l-caption-body" style="width: 100%;">
+                                        <a href="@Url.Action("Index", "TransferenciaPlacas")"
+                                           class="cbp-l-caption-buttonLeft btn gray uppercase btn gray uppercase" rel="nofollow">Entrar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_RecepcionSolicitudesPlacasProveedor.Acceso)
+                {
+                    <div class="cbp-item operation styleCenterMenu">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <div class="panelapp gradiente2">
+                                    <div class="panelappic">
+                                        <center>
+                                            @*<img src="~/Content/images/parametrizacion.png" style="height:55px;width:55px;">*@
+                                        </center>
+                                    </div>
+                                    <div class="panelapptitulo">
+                                        Recepción de Placas entre Delegaciones/Bancos
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cbp-caption-activeWrap" style="width: 80%; border-radius: 0px 0px 15px 15px;">
+                                <div class="cbp-l-caption-alignCenter" style="width: 100%;">
+                                    <div class="cbp-l-caption-body" style="width: 100%;">
+                                        <a href="@Url.Action("Index", "RecepcionPlacas")"
+                                           class="cbp-l-caption-buttonLeft btn gray uppercase btn gray uppercase" rel="nofollow">Entrar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_ConsultaInformacionPlacas.Acceso)
+                {
+                    <div class="cbp-item operation styleCenterMenu">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <div class="panelapp gradiente2">
+                                    <div class="panelappic">
+                                        <center>
+                                            @*<img src="~/Content/images/parametrizacion.png" style="height:55px;width:55px;">*@
+                                        </center>
+                                    </div>
+                                    <div class="panelapptitulo">
+                                        Consulta de Información de Placas
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cbp-caption-activeWrap" style="width: 80%; border-radius: 0px 0px 15px 15px;">
+                                <div class="cbp-l-caption-alignCenter" style="width: 100%;">
+                                    <div class="cbp-l-caption-body" style="width: 100%;">
+                                        <a href="@Url.Action("Index", "ConsultaPlacas")"
+                                           class="cbp-l-caption-buttonLeft btn gray uppercase btn gray uppercase" rel="nofollow">Entrar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_InventarioPlacas.Acceso)
+                {
+                    <div class="cbp-item operation styleCenterMenu">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <div class="panelapp gradiente2">
+                                    <div class="panelappic">
+                                        <center>
+                                            @*<img src="~/Content/images/parametrizacion.png" style="height:55px;width:55px;">*@
+                                        </center>
+                                    </div>
+                                    <div class="panelapptitulo">
+                                        Inventario Placas
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cbp-caption-activeWrap" style="width: 80%; border-radius: 0px 0px 15px 15px;">
+                                <div class="cbp-l-caption-alignCenter" style="width: 100%;">
+                                    <div class="cbp-l-caption-body" style="width: 100%;">
+                                        <a href="@Url.Action("Index", "InventarioPlacas")"
+                                           class="cbp-l-caption-buttonLeft btn gray uppercase btn gray uppercase" rel="nofollow">Entrar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_ConsultaBitacora.Acceso)
+                {
+                    <div class="cbp-item operation styleCenterMenu">
+                        <div class="cbp-caption">
+                            <div class="cbp-caption-defaultWrap">
+                                <div class="panelapp gradiente2">
+                                    <div class="panelappic">
+                                        <center>
+                                            @*<img src="~/Content/images/parametrizacion.png" style="height:55px;width:55px;">*@
+                                        </center>
+                                    </div>
+                                    <div class="panelapptitulo">
+                                        Consulta de Bitacora
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cbp-caption-activeWrap" style="width: 80%; border-radius: 0px 0px 15px 15px;">
+                                <div class="cbp-l-caption-alignCenter" style="width: 100%;">
+                                    <div class="cbp-l-caption-body" style="width: 100%;">
+                                        <a href="@Url.Action("Index", "BitacoraEventos")"
+                                           class="cbp-l-caption-buttonLeft btn gray uppercase btn gray uppercase" rel="nofollow">Entrar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script type="text/javascript" src="~/Content/js/jquery.cubeportfolio.min.js" defer></script>
+    <script type="text/javascript" src="~/Content/js/portfolio-1.js" defer></script>
+}

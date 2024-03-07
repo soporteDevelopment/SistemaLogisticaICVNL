@@ -1,0 +1,107 @@
+create or replace PACKAGE BODY spcpl_tipos_ids
+IS
+
+   c_version CONSTANT   NUMBER := 24.0501;
+   c_modulo  CONSTANT   NUMBER := 0;
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.3011 DEVTI   Elaboración del paquete.
+   -- 24.0501 DEVTI   Se agrega filtro de estatus en el consulta_listado
+   --------------------------------------------------------------------------
+   ----
+   -- Tipos globales
+   ----
+   ----
+   -- Variables Globales
+   ----
+   -- Variables para manejo de errores.
+   g_mensaje_error      VARCHAR2(4000);
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+      RETURN c_version;
+   END version;
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+
+   PROCEDURE consulta_listado(p_tin_entidad NUMBER,
+							  p_TIN_ACTIVO NUMBER,
+						      p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT TIN_BORRADO
+			,TIN_ID
+			,TIC_TIPOID
+			,TIN_ACTIVO
+			,TIN_ENTIDAD
+      FROM CPL_TIPOS_IDS
+	  where TIN_ENTIDAD = p_tin_entidad
+	  and (p_TIN_ACTIVO IS NULL OR TIN_ACTIVO = p_TIN_ACTIVO);
+
+   END consulta_listado;      
+
+   PROCEDURE consulta_tipoid(p_tin_id NUMBER,
+								  p_tin_entidad NUMBER,
+								  p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT TIN_BORRADO
+			,TIN_ID
+			,TIC_TIPOID
+			,TIN_ACTIVO
+			,TIN_ENTIDAD
+      FROM CPL_TIPOS_IDS
+	  where TIN_ENTIDAD = p_tin_entidad
+	  and TIN_ID = p_tin_id;
+
+   END consulta_tipoid;   
+
+
+ PROCEDURE consulta_tiposids_combo(p_tin_entidad NUMBER,
+									      p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT TIN_ID as Valor
+			 ,TIC_TIPOID as Texto			  
+      FROM CPL_TIPOS_IDS
+	  where TIN_ENTIDAD = p_tin_entidad 
+	  and TIN_ACTIVO = 1
+	  and TIN_BORRADO = 0;
+
+   END consulta_tiposids_combo;    
+
+   PROCEDURE existe_tipoid(p_TIC_TIPOID VARCHAR2,
+                                    p_tin_entidad NUMBER,
+                                    p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT TIN_ID 
+			 ,TIC_TIPOID		  
+      FROM CPL_TIPOS_IDS
+	  where TIN_ENTIDAD = p_tin_entidad  
+	  and TIC_TIPOID = p_TIC_TIPOID;
+
+   END existe_tipoid; 
+
+END spcpl_tipos_ids;

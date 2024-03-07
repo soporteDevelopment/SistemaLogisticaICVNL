@@ -1,0 +1,26 @@
+create or replace PACKAGE spcpl_delegaciones_bancos
+IS
+   FUNCTION version
+   RETURN NUMBER;
+
+   PROCEDURE consulta_listado(p_dbn_entidad NUMBER,
+                              p_DBN_ACTIVO in number,
+						      p_cursor_out OUT SYS_REFCURSOR);
+
+
+   PROCEDURE consulta_delegacionbanco(p_dbn_id NUMBER,
+									  p_dbn_entidad NUMBER,
+									  p_cursor_out OUT SYS_REFCURSOR);
+
+	PROCEDURE consulta_delegacionbanco_combo(p_dbn_entidad NUMBER,
+									      p_cursor_out OUT SYS_REFCURSOR);
+
+   PROCEDURE existe_delegacionbanco(p_DBC_NOMBRE_DEL VARCHAR2,
+                                    p_dbn_entidad NUMBER,
+                                    p_cursor_out OUT SYS_REFCURSOR); 
+
+   PROCEDURE existe_delegacionbco_infofin(p_DBC_CC_INFOFIN VARCHAR2,
+                                    p_dbn_entidad NUMBER,
+                                    p_cursor_out OUT SYS_REFCURSOR);									
+
+END spcpl_delegaciones_bancos;

@@ -1,0 +1,7 @@
+﻿.table-bordered > tbody > tr > td,
+.table-bordered > tbody > tr > th,
+.table-striped > tbody > tr > td,
+.table-striped > tbody > tr > th {
+    font-size:13px;
+}
+

@@ -1,0 +1,90 @@
+create or replace PACKAGE BODY spcpl_archivos_op
+IS
+   c_version CONSTANT   NUMBER := 23.0612;
+   c_modulo  CONSTANT   NUMBER := 0;
+
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.0612 DEVTI   Elaboración del paquete.
+   -- 
+   --------------------------------------------------------------------------
+
+   ----
+   -- Variables Globales
+   next_val 	number;
+   ----
+   -- Variables para manejo de errores. 
+   ----
+   -- Excepciones globales
+   ----
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+   RETURN c_version;
+   END VERSION;
+
+
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+	PROCEDURE agregar_archivo(p_ARN_IDORIGEN in NUMERIC
+							 ,p_ARC_TABLAORIGEN in VARCHAR2
+							 ,p_ARN_BORRADO in NUMERIC
+							 ,p_ARC_ARCHIVO in VARCHAR2
+							 ,p_ARN_ENTIDAD in NUMERIC
+							 ,p_ARN_ID in NUMERIC
+							 ,p_ARB_ARCHIVO in BLOB)
+	IS
+	BEGIN   
+
+		select  nvl(max(ARN_ID),0) + 1  into next_val from CPL_ARCHIVOS;
+
+		insert into CPL_ARCHIVOS(ARN_IDORIGEN
+								,ARC_TABLAORIGEN
+								,ARN_BORRADO
+								,ARC_ARCHIVO
+								,ARN_ENTIDAD
+								,ARN_ID
+								,ARB_ARCHIVO) 
+				values (p_ARN_IDORIGEN
+				,p_ARC_TABLAORIGEN
+				,p_ARN_BORRADO
+				,p_ARC_ARCHIVO
+				,p_ARN_ENTIDAD
+				,next_val
+				,p_ARB_ARCHIVO);
+
+	END agregar_archivo;
+
+
+
+	PROCEDURE eliminar_archivos(p_ARN_IDORIGEN in NUMBER, p_ARC_TABLAORIGEN varchar2)
+	IS
+	BEGIN
+
+		DELETE FROM CPL_ARCHIVOS WHERE ARN_IDORIGEN = p_ARN_IDORIGEN and ARC_TABLAORIGEN = p_ARC_TABLAORIGEN;
+
+	END eliminar_archivos;
+    
+    PROCEDURE eliminar_archivos_i(p_ARN_ID in NUMBER)
+	IS
+	BEGIN
+
+		DELETE FROM CPL_ARCHIVOS WHERE ARN_ID = p_ARN_ID;
+
+	END eliminar_archivos_i;
+
+
+END spcpl_archivos_op;

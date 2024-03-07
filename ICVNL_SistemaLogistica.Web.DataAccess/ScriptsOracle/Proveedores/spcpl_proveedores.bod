@@ -1,0 +1,115 @@
+create or replace PACKAGE BODY spcpl_proveedores
+IS
+
+   c_version CONSTANT   NUMBER := 23.3011;
+   c_modulo  CONSTANT   NUMBER := 0;
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.2911 DEVTI   Elaboración del paquete.
+   -- 
+   --------------------------------------------------------------------------
+   ----
+   -- Tipos globales
+   ----
+   ----
+   -- Variables Globales
+   ----
+   -- Variables para manejo de errores.
+   g_mensaje_error      VARCHAR2(4000);
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+      RETURN c_version;
+   END version;
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+
+   PROCEDURE consulta_listado(p_PROVC_NUMERO IN VARCHAR2,
+							  p_PROVC_NOMBRE IN VARCHAR2,
+							  p_PROVN_ACTIVO IN NUMBER,							  
+							  p_PROVN_ENTIDAD IN NUMBER,
+						      p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT PROVN_BORRADO
+			,PROVN_ACTIVO
+			,PROVN_ENTIDAD
+			,PROVC_NUMERO
+			,PROVC_EMAIL
+			,PROVN_ID
+			,PROVC_NOMBRE
+      FROM CPL_PROVEEDORES
+	  where PROVN_ENTIDAD = p_PROVN_ENTIDAD
+	  AND (p_PROVC_NUMERO IS NULL OR  UPPER(PROVC_NUMERO) like '%'|| UPPER(p_PROVC_NUMERO)||'%')  
+	  AND (p_PROVC_NOMBRE IS NULL OR  UPPER(PROVC_NOMBRE) like '%'|| UPPER(p_PROVC_NOMBRE)||'%')
+	  AND (p_PROVN_ACTIVO IS NULL OR PROVN_ACTIVO = p_PROVN_ACTIVO);
+
+   END consulta_listado;      
+
+   PROCEDURE consulta_proveedor(p_PROVN_ID IN NUMBER,
+							 p_PROVN_ENTIDAD IN NUMBER,
+							 p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT PROVN_BORRADO
+			,PROVN_ACTIVO
+			,PROVN_ENTIDAD
+			,PROVC_NUMERO
+			,PROVC_EMAIL
+			,PROVN_ID
+			,PROVC_NOMBRE
+      FROM CPL_PROVEEDORES
+	  where PROVN_ENTIDAD = p_PROVN_ENTIDAD
+	  and PROVN_ID = p_PROVN_ID;
+
+   END consulta_proveedor;   
+
+
+ PROCEDURE consulta_proveedor_combo(p_PROVN_ENTIDAD IN NUMBER,
+								 p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT PROVN_ID as Valor
+			 ,PROVC_NOMBRE as Texto			  
+      FROM CPL_PROVEEDORES
+	  where PROVN_ENTIDAD = p_PROVN_ENTIDAD 
+	  and PROVN_ACTIVO = 1
+	  and PROVN_BORRADO = 0;
+
+   END consulta_proveedor_combo;    
+
+   PROCEDURE existe_proveedor(p_PROVC_NUMERO IN VARCHAR2,
+                                    p_PROVN_ENTIDAD IN NUMBER,
+                                    p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT PROVN_ID 
+			,PROVC_NOMBRE		  
+      FROM CPL_PROVEEDORES
+	  where PROVN_ENTIDAD = p_PROVN_ENTIDAD  
+	  and PROVC_NUMERO = p_PROVC_NUMERO;
+
+   END existe_proveedor; 
+
+END spcpl_proveedores;

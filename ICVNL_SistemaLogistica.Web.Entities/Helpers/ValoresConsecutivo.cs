@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ICVNL_SistemaLogistica.Web.Entities.Helpers
+{
+    public class ValoresConsecutivo
+    {
+        public int Posicion { get; set; }
+        public Boolean EsNueve { get; set; }
+    }
+}

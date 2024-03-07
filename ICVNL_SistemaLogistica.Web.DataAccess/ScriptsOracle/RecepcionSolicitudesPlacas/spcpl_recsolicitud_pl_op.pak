@@ -1,0 +1,87 @@
+create or replace PACKAGE spcpl_recsolicitud_pl_op
+IS
+   FUNCTION version
+   RETURN NUMBER;
+
+	PROCEDURE agregar_recepcionsol(p_RECC_NE_AUTORIZADA in VARCHAR2
+								  ,p_RECC_FOLIO in VARCHAR2
+								  ,p_RECF_FECHA_ENT in DATE
+								  ,p_DBN_ID in NUMERIC
+								  ,p_SOLN_ID in NUMERIC
+								  ,p_RECN_RECIBIDO in NUMERIC
+								  ,p_RECC_USR_REG in VARCHAR2
+								  ,p_RECN_ESTATUS in NUMERIC
+								  ,p_RECN_ID OUT NUMERIC
+								  ,p_RECN_ENTIDAD in NUMERIC
+								  ,p_RECN_BORRADO in NUMERIC);
+
+	PROCEDURE agregar_recepcionsol_det(p_RECDN_CANT_REC in NUMERIC
+										,p_RECDN_ID OUT NUMERIC
+										,p_RECDN_CANT_NE_AUT in NUMERIC
+										,p_RECDN_BORRADO in NUMERIC
+										,p_TPN_ID in NUMERIC
+										,p_RECDN_CANT_SOL_OC in NUMERIC
+										,p_RECDN_ENTIDAD in NUMERIC
+										,p_RECN_ID in NUMERIC);
+
+	PROCEDURE modificar_recepcionsol(p_RECC_NE_AUTORIZADA in VARCHAR2
+								  ,p_RECC_FOLIO in VARCHAR2
+								  ,p_RECF_FECHA_ENT in DATE
+								  ,p_DBN_ID in NUMERIC
+								  ,p_SOLN_ID in NUMERIC
+								  ,p_RECN_RECIBIDO in NUMERIC
+								  ,p_RECC_USR_REG in VARCHAR2
+								  ,p_RECN_ESTATUS in NUMERIC
+								  ,p_RECN_ID IN NUMERIC
+								  ,p_RECN_ENTIDAD in NUMERIC
+								  ,p_RECN_BORRADO in NUMERIC);
+								  
+	PROCEDURE agregar_recepcionsol_obsv( p_OBSN_ID OUT NUMERIC
+										,p_OBSC_OBSERVACION in VARCHAR2
+										,p_OBSN_BORRADO in NUMERIC
+										,p_RVALN_ID in NUMERIC
+										,p_OBSN_ENTIDAD in NUMERIC);
+										
+	PROCEDURE eliminar_recsolicitud_obs(p_OBSN_ID in NUMBER);		
+
+	PROCEDURE agregar_recepcionsol_ev(p_RPEVN_ID OUT NUMERIC
+										,p_RPEVN_BORRADO in NUMERIC
+										,p_RPEVN_ENTIDAD in NUMERIC
+										,p_PROVN_ID in NUMERIC
+										,p_RPEVC_NUM_CAJA in VARCHAR2
+										,p_DBN_ID in NUMERIC
+										,p_TPN_ID in NUMERIC
+										,p_RPEVC_RANGOS in VARCHAR2
+										,p_TRPN_ID in NUMERIC
+										,p_RPEVF_FECHA_QR in DATE
+										,p_RECN_ID in NUMERIC
+										,p_RPEVN_CANTIDADLAMINAS in NUMERIC);
+
+	PROCEDURE eliminar_recepcionsol_ev(p_RPEVN_ID in NUMBER); 
+	
+	
+	PROCEDURE agregar_recepcionsol_ev_val(p_RVALN_ID OUT NUMERIC
+										,p_CONTN_ID in NUMERIC
+										,p_RVALC_PUESTOUSUARIO in VARCHAR2
+										,p_NEN_ID in NUMERIC
+										,p_RPEVN_ID in NUMERIC
+										,p_RVALC_NOMBREUSUARIO in VARCHAR2
+										,p_TPN_ID in NUMERIC
+										,p_RVALC_NOTAENTRADA in VARCHAR2
+										,p_RVALC_CAJANDEM in VARCHAR2
+										,p_RVALF_FECHA_VAL in date
+										,p_TERPN_ID in NUMERIC
+										,p_PROVN_ID in NUMERIC
+										,p_DBN_ID in NUMERIC
+										,p_RVALN_PARTIDA_CON in NUMERIC
+										,p_RVALC_NUMEMPLEADO in VARCHAR2
+										,p_RVALN_ENTIDAD in NUMERIC);
+
+	PROCEDURE eliminar_recepcionsol_ev_val(p_RVALN_ID in NUMBER);	
+	
+	PROCEDURE eliminar_recsolicitud_det(p_RECN_ID in NUMBER);
+
+	PROCEDURE inactiva_recepcionsol(p_RECN_ID in number); 
+
+
+END spcpl_recsolicitud_pl_op;

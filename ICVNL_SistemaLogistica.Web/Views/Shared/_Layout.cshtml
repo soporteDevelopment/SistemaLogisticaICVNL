@@ -1,0 +1,388 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Sistema de Logística de Control de Placas</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta content="ICVNL" name="description" />
+    <meta content="ICVNL" name="author" />
+
+    <link href="~/Content/css/components-md.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/css/plugins-md.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/css/simple-line-icons.min.css" rel="stylesheet" />
+    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/css/bootstrap-switch.min.css" rel="stylesheet" />
+    <link href="~/Content/css/daterangepicker.min.css" rel="stylesheet" />
+
+
+    <link href="~/Content/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/css/themes/grey.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/css/toastr.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/css/layout.css" rel="stylesheet" />
+    <style>
+
+        table.dataTable.no-footer {
+            border-bottom: 0px solid #111 !important
+        }
+
+        table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child, table.dataTable.dtr-inline.collapsed > tbody > tr > th:first-child {
+            padding-left: 30px !important;
+        }
+
+            table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child:before, table.dataTable.dtr-inline.collapsed > tbody > tr > th:first-child:before {
+                top: 4px !important;
+            }
+
+        .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+            padding: 5px !important;
+        }
+
+        table.dataTable.no-footer {
+            border-bottom: 0px solid #111 !important
+        }
+
+        table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child, table.dataTable.dtr-inline.collapsed > tbody > tr > th:first-child {
+            padding-left: 30px !important;
+        }
+
+            table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child:before, table.dataTable.dtr-inline.collapsed > tbody > tr > th:first-child:before {
+                top: 4px !important;
+            }
+
+        .form-horizontal .control-label {
+            padding-top: 4px !important;
+        }
+
+        @@media (min-width: 992px) {
+            .modal-lg {
+                width: 1280px !important;
+            }
+        }
+        @@media (min-width: 992px) {
+            .HiddeLogo {
+                display: block !important
+            }
+
+            .HiddeLabel {
+                display: none !important
+            }
+
+            .HiddenIClass {
+                display: block !important
+            }
+        }
+
+        @@media (max-width: 767px) {
+            /* 767px */
+            .page-header.navbar {
+                height: 1px;
+                /* Top menu */
+            }
+
+            .HiddeLogo {
+                display: none !important
+            }
+
+            .HiddeLabel {
+                display: block !important
+            }
+
+            .HiddenIClass {
+                display: none !important
+            }
+
+            .panelMenuInicio {
+                left: 50px !important;
+            }
+        }
+
+        .btn:not(.md-skip):not(.bs-select-all):not(.bs-deselect-all) {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            -ms-border-radius: 2px;
+            -o-border-radius: 2px;
+            /* border-radius: 2px; */
+            overflow: hidden;
+            position: inherit !important;
+            /* user-select: none; */
+            padding: 8px 14px 7px 14px;
+        }
+
+        .daterangepicker {
+            z-index: 13001 !important;
+        }
+    </style>
+
+</head>
+<body id="bodyLayout" class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid page-md page-sidebar-closed" onkeydown="return (event.keyCode!=13)">
+    <div class="page-wrapper">
+        <div class="page-header navbar navbar-fixed-top">
+            <div class="page-header-inner">
+                <div class="page-logo">
+                    <div class="logo">
+                        <img src="~/Content/images/LogoICVNL.png" alt="LOGO" style="height:auto; width:155px;" />
+                    </div>
+                </div>
+
+                <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"></a>
+                <div class="top-menu">
+                    <ul class="nav navbar-nav pull-right">
+                        <li class="dropdown dropdown-user">
+                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                <img alt="" class="img-circle" src="~/Content/images/avatar.png" />
+                                <span class="username username-hide-on-mobile">
+                                    @if (HttpContext.Current.Session["UserSC"] != null)
+                                        {
+                                            @Html.Label(((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).Nombre)
+                                        }
+                                        else
+                                        {
+                                            Response.Redirect("~/Login");
+                                        }
+                                </span>
+                                <i class="fa fa-angle-down"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-default">
+                                <li>
+                                    <a href="@Url.Action("Index", "Login")"><i class="icon-key"></i>Cerrar Sesión</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="page-container">
+            <div class="page-sidebar-wrapper">
+                <div class="page-sidebar navbar-collapse collapse">
+                    <ul class="page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenu " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+                        <li class="nav-item start ">
+                            <a href="@Url.Action("Index", "Home")" class="nav-link nav-toggle">
+                                <i class="icon-home"></i>
+                                <span class="title">Inicio</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="javascript:;" class="nav-link nav-toggle">
+                                <i class="icon-settings"></i>
+                                <span class="title">Configuración</span>
+                                <span class="arrow"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_Parametrizacion.Acceso)
+                                {
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("Index", "Parametrizacion")" class="nav-link">
+                                            <span class="title">Parametrización</span>
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_DelegacionesBancos.Acceso)
+                                {
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("Index", "DelegacionesBancos")" class="nav-link">
+                                            <span class="title">Administrador de Delegaciones y Bancos</span>
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_TiposPlacas.Acceso)
+                                {
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("Index", "TiposPlacas")" class="nav-link">
+                                            <span class="title"> Administrador de Tipo de Placa</span>
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_TiposIDS.Acceso)
+                                {
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("Index", "TiposIDS")" class="nav-link">
+                                            <span class="title">Administrador de Tipos de IDs</span>
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_Proveedores.Acceso)
+                                {
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("Index", "Proveedores")" class="nav-link">
+                                            <span class="title">Administrador de Proveedores</span>
+                                        </a>
+                                    </li>
+                                }
+
+                            </ul>
+                        </li>
+
+
+                        <li class="nav-item">
+                            <a href="javascript:;" class="nav-link nav-toggle">
+                                <i class="icon-settings"></i>
+                                <span class="title">Operación</span>
+                                <span class="arrow"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_Parametrizacion.Acceso)
+                                {
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("Index", "Contratos")" class="nav-link">
+                                            <span class="title">Contratos</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_SolicitudesPlacasProveedor.Acceso)
+                                {
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("Index", "SolicitudesPlacas")" class="nav-link">
+                                            <span class="title">Solicitudes de Placas de Proveedores</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_RecepcionSolicitudesPlacasProveedor.Acceso)
+                                {
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("Index", "SolicitudesPlacasRecepcion")" class="nav-link">
+                                            <span class="title">Recepción de las Solicitudes de Placas de Proveedores</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_Parametrizacion.Acceso)
+                                {
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("Index", "NotasEntradasPlacas")" class="nav-link">
+                                            <span class="title">Notas de Entrada de Placas</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_SolicitudesPlacasProveedor.Acceso)
+                                {
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("ObtenerTipoPlacasManual", "Procesos")" class="nav-link">
+                                            <span class="title"> Obtener Tipos de Placas de manera Puntual</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_RecepcionSolicitudesPlacasProveedor.RecibirPlacaConsultaEvento)
+                                {
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("Index", "SolicitudesPlacasRecepcionEventos")" class="nav-link">
+                                            <span class="title">Consulta de Eventos Registrados en la Recepción de Placas</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_TransferenciasPlacasEntreDelegacionesBancos.Acceso)
+                                {
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("Index", "TransferenciaPlacas")" class="nav-link">
+                                            <span class="title">Transferencia de Placas entre Delegaciones/Bancos</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_RecepcionPlacasEntreDelegacionesBancos.Acceso)
+                                {
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("Index", "RecepcionPlacas")" class="nav-link">
+                                            <span class="title">Recepción de Placas entre Delegaciones/Bancos</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_ConsultaInformacionPlacas.Acceso)
+                                {
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("Index", "ConsultaPlacas")" class="nav-link">
+                                            <span class="title">Consulta de Información de Placas</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_InventarioPlacas.Acceso)
+                                {
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("Index", "InventarioPlacas")" class="nav-link">
+                                            <span class="title">Inventario Placas</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (HttpContext.Current.Session["UserSC"] != null && ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_ConsultaBitacora.Acceso)
+                                {
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("Index", "BitacoraEventos")" class="nav-link">
+                                            <span class="title">Consulta de Bitacora</span>
+                                        </a>
+                                    </li>
+                                }
+
+                            </ul> 
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/Content/js/jquery.min.js" type="text/javascript"></script>
+    <script src="~/Content/js/app.min.js"></script>
+    <script src="~/Content/js/popper.min.js"></script>
+    <script src="~/Content/js/jquery-ui.min.js"></script>
+    <script src="~/Content/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="~/Content/js/js.cookie.min.js"></script>
+    <script src="~/Content/js/bootstrap-switch.min.js"></script>
+    <script src="~/Content/js/toastr.min.js" type="text/javascript"></script>
+    <script src="~/Content/js/ui-toastr.min.js" type="text/javascript"></script>
+    <script src="~/Content/js/layout.min.js" type="text/javascript"></script>
+    <script src="~/Content/js/quick-sidebar.min.js"></script>
+    <script src="~/Content/js/quick-nav.min.js"></script>
+    <script src="~/Content/js/Notifications.js" type="text/javascript"></script>
+    <script src="~/Content/js/bootbox.js"></script>
+    <script src="~/Content/js/formatting-numbers.js"></script>
+    <script src="~/Content/js/datatables.js"></script>
+    <script src="~/Content/js/datatables.min.js"></script>
+    <script src="~/Content/js/datatables.bootstrap.js"></script>
+
+    <script type="text/javascript">
+        function readCookie(name) {
+            return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + name.replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+        }
+
+        $(document).ready(function () {
+            $('.menu-toggler.sidebar-toggler').on('click', function (event) {
+                if (readCookie("Closed") != null && readCookie("Closed") == "0") {
+                    document.cookie = "Closed=1";
+                    $('#bodyLayout').attr('class', 'page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid page-md page-sidebar-closed');
+                }
+                else {
+                    document.cookie = "Closed=0";
+                    $('#bodyLayout').attr('class', 'page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid page-md');
+                }
+            });
+
+            //alert(readCookie("Closed"));
+            if (readCookie("Closed") != null && readCookie("Closed") == "0") {
+                $('#bodyLayout').attr('class', 'page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid page-md page-sidebar-closed');
+                $('.page-sidebar-menu.page-header-fixed.page-sidebar-menu-hover-submenu').attr('class', 'page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenu page-sidebar-menu-closed');
+            }
+            else {
+                $('#bodyLayout').attr('class', 'page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid page-md');
+                $('.page-sidebar-menu.page-header-fixed.page-sidebar-menu-hover-submenu.page-sidebar-menu-closed').attr('class', 'page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenu');
+            }
+        });
+    </script>
+    <!-- Añadirlo después de la librería toastr -->
+    @Html.Partial("_Messages", (Dictionary<string, string[]>)TempData["messages"])
+    @RenderSection("scripts", required: false)
+</body>
+</html>

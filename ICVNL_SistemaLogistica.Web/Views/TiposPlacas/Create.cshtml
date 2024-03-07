@@ -1,0 +1,143 @@
+﻿@model ICVNL_SistemaLogistica.Web.ViewModels.Detalle_TiposPlacasVM
+
+@{
+    ViewBag.Title = "Administración de Tipos de Placas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-10">
+                <h1 class="page-title">
+                    Administración de Tipos de Placas
+                    <small>Sistema de Logística de Control de Placas&nbsp;</small>
+                </h1>
+            </div>
+        </div>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+            <div class="row widget-row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Registro
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-actions ">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        @if (HttpContext.Current.Session["UserSC"] != null &&
+                                        ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_TiposPlacas.Registrar)
+                                        {
+                                            <button type="submit" onclick="return ValidaCamposCreate();" class="btn dark margin-right-10">
+                                                Guardar
+                                                <i class="fa fa-save"></i>
+                                            </button>
+                                        }
+                                        
+                                        <button type="button" class="btn default grey" onclick="location.href='@Url.Action("Index", "TiposPlacas")';">
+                                            Regresar
+                                            <i class="fa fa-chevron-circle-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col" id="divId" style="display:none">
+                                        <label class="control-label">Id</label>
+                                        <div class="input-group">
+                                            <p class="form-control-static">
+                                                @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label" })
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.TipoPlaca, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.TipoPlaca, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
+                                            @Html.ValidationMessageFor(model => model.TipoPlaca, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.CodigoInfofin, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.CodigoInfofin, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @id = "txtCodigoInfofin", @onchange = "ValidaTipoPlacaCreate()" } })
+                                            @Html.ValidationMessageFor(model => model.CodigoInfofin, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.DescripcionInfofin, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.DescripcionInfofin, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @readonly = "readonly", @id = "txtDescripcionInfofin" } })
+                                            @Html.ValidationMessageFor(model => model.DescripcionInfofin, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.CantidadPlacas, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.CantidadPlacas, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
+                                            @Html.ValidationMessageFor(model => model.CantidadPlacas, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.CantidadPlacasCaja, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.CantidadPlacasCaja, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
+                                            @Html.ValidationMessageFor(model => model.CantidadPlacasCaja, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.MascaraPlaca, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.MascaraPlaca, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
+                                            @Html.ValidationMessageFor(model => model.MascaraPlaca, "", new { @class = "text-danger" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            @Html.LabelFor(model => model.OrdenPlaca, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.OrdenPlaca, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @onkeypress = "return SoloNumero(event);" } })
+                                            @Html.ValidationMessageFor(model => model.OrdenPlaca, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="col-md-3">
+                                            @Html.LabelFor(model => model.OrdenSeriePlaca, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.OrdenSeriePlaca, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @onkeypress = "return SoloNumero(event);" } })
+                                            @Html.ValidationMessageFor(model => model.OrdenSeriePlaca, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/Scripts/TiposPlacas/TipoPlacas.js"></script>
+
+    <script>
+        function SoloNumero(evt) {
+
+            let ASCIICode = (evt.which) ? evt.which : evt.keyCode
+            if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+                return false;
+            return true;
+        }
+    </script>
+}

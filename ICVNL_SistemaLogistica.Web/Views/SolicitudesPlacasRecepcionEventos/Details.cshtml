@@ -1,0 +1,233 @@
+﻿@model ICVNL_SistemaLogistica.Web.ViewModels.Detalle_RecepcionSolicitudesPlacas_EventosVM
+
+@{
+    ViewBag.Title = "Consulta de Eventos Registrados en la Recepción de Placas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/css/estilosAlerta.css" rel="stylesheet" />
+@using (Html.BeginForm("Details", "SolicitudesPlacasRecepcion", FormMethod.Post, new { id = "myForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+ 
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="row">
+                <div class="col-md-10">
+                    <h1 class="page-title">
+                        Consulta de Eventos Registrados en la Recepción de Placas
+                        <small>Sistema de Logística de Control de Placas&nbsp;</small>
+                    </h1>
+                </div>
+            </div>
+            <div class="row widget-row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Encabezado
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-actions ">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <button type="button" class="btn default grey" onclick="location.href='@Url.Action("Index", "SolicitudesPlacasRecepcionEventos")';">
+                                            Regresar
+                                            <i class="fa fa-chevron-circle-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-body">
+                                <div class="col-md-12" style="display:none">
+                                    <div class="row">
+                                        <div class="col-md-2" id="divId">
+                                            @Html.LabelFor(model => model.IdEventoRecepcion, htmlAttributes: new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <p class="form-control-static">
+                                                    @Html.EditorFor(model => model.IdEventoRecepcion, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.FechaHoraRegistro, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.FechaHoraRegistro, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.Proveedores.NombreProveedor, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.Proveedores.NombreProveedor, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.NumeroCaja, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.NumeroCaja, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.Delegacion, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.Delegacion, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.IdTipoPlaca, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.TiposPlacas.TipoPlaca, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.Rangos, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.Rangos, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.CantidadLaminas, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.CantidadLaminas, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.IdTiposEventosRecepcionPlacas, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.TipoEventosRecepcionPlacas, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.URL_ArchivoOficio, htmlAttributes: new { @class = "control-label" })
+                                            <br />
+                                            <a href="#" onclick="DescargarArchivo('@Model.IdArchivo')">Descargar</a>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Archivos Adjuntos
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <table class="table table-bordered mb-0 table-sm dataTable" id="tablaRegistros">
+                                            <thead>
+                                                <tr class="bg-light headerCustom">
+                                                    <th>Archivo</th>
+                                                    <th>Acción</th> 
+                                                </tr>
+                                            </thead>
+                                            <tbody id="listadoPartialDetalleSolicitud">
+                                                @if (Model.ListadoArchivos != null && Model.ListadoArchivos.Count > 0)
+                                                {
+                                                    foreach (var item in Model.ListadoArchivos)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.NombreArchivo)
+                                                            </td>
+                                                            <td>
+                                                                <button class="btn btn-xs blue btn-icon-circle" type="button" name="control" value="Descargar Archivo" id="btnDescargarArchivo" onclick="DescargarArchivo('@item.IdArchivo');">
+                                                                    <i class="fa fa-download mr-0 ml-0"></i>
+                                                                </button>
+                                                            </td> 
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            @Html.Label("Sin Información")
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Observaciones
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <table class="table table-bordered mb-0 table-sm dataTable" id="tablaRegistros">
+                                            <thead>
+                                                <tr class="bg-light headerCustom">
+                                                    <th>Observación</th> 
+                                                </tr>
+                                            </thead>
+                                            <tbody id="listadoPartialDetalleSolicitud">
+                                                @if (Model.ListadoObservaciones != null && Model.ListadoObservaciones.Count > 0)
+                                                {
+                                                    foreach (var item in Model.ListadoObservaciones)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.Observacion)
+                                                            </td> 
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td colspan="1">
+                                                            @Html.Label("Sin Información")
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+}
+
+@section scripts
+{
+    <script src="~/Content/js/datatables.js"></script>
+    <script src="~/Content/js/datatables.min.js"></script>
+    <script src="~/Content/js/datatables.bootstrap.js"></script>
+    <script src="~/Content/js/funciones-alertas.js"></script>
+    <script src="~/Scripts/Solicitudes/SolicitudesRecepcion.js"></script>
+
+}

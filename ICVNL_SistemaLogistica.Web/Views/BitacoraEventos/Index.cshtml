@@ -1,0 +1,263 @@
+﻿@model ICVNL_SistemaLogistica.Web.ViewModels.Listado_BitacoraEventosVM
+
+@{
+    ViewBag.Title = "Consulta de la Bitácora";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/css/datatables.min.css" rel="stylesheet" />
+<link href="~/Content/css/datatables.bootstrap.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<style>
+    .FiltroMasterClass {
+        display: inline-table !important;
+        border-bottom: 1px solid #7678B8 !important
+    }
+</style>
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-10">
+                <h1 class="page-title">
+                    Consulta de la Bitácora
+                    <small>Sistema de Logística de Control de Placas&nbsp;</small>
+                </h1>
+            </div>
+        </div>
+        <div class="row widget-row">
+            <div class="col-md-12">
+                <div class="portlet box blue-hoki">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-edit"></i>Listado
+                        </div>
+                        <div class="actions">
+                            <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="table-toolbar">
+
+                            @using (@Html.BeginForm("Index", "BitacoraEventos", FormMethod.Post, new { id = "myForm" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button type="button" class="quick-sidebar-toggler btn sbold blue margin-right-10">
+                                            Filtrar
+                                            <i class="fa fa-filter"></i>
+                                        </button>
+                                        <button type="button" class="btn default grey margin-right-10" onclick="location.href='@Url.Action("Index", "Home")'">
+                                            Regresar
+                                            <i class="fa fa-chevron-circle-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-12 table-responsive">
+                                        <table class="table table-bordered mb-0 table-sm " id="tablaRegistros">
+                                            <thead>
+                                                <tr class="bg-light headerCustom">
+                                                    <th>
+                                                        Fecha y hora del Evento
+                                                    </th>
+                                                    <th>
+                                                        Pantalla/Web Service/Proceso
+                                                    </th>
+                                                    <th>
+                                                        Evento
+                                                    </th>
+                                                    <th>
+                                                        Usuario
+                                                    </th>
+                                                    <th>
+                                                        Instrucción realizada
+                                                    </th>
+                                                    <th>
+                                                        IP
+                                                    </th>
+                                                    <th>
+                                                        JSON
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.Listado != null && Model.Listado.Count > 0)
+                                                {
+                                                    foreach (var item in Model.Listado)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                <span style="display:none;">@Html.DisplayFor(modelItem => item.FechaEventoStr)</span>
+                                                                @Html.DisplayFor(modelItem => item.FechaEvento)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.LugarEvento)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.Evento)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.Usuario)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.InstruccionRealizada)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.IP_Usuario)
+                                                            </td>
+                                                            <td>
+                                                                <div style="width:800px;">
+                                                                    <pre style="height:100%"><code> @Html.DisplayFor(modelItem => item.JsonObject) </code></pre>
+                                                                </div>
+                                                                
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td colspan="5">
+                                                            @Html.Label("Sin Información")
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <a href="javascript:;" class="page-quick-sidebar-toggler">
+                                    <i class="icon-login"></i>
+                                </a>
+
+                                <div class="page-quick-sidebar-wrapper" style="border-width: thick; border-style: solid; background-color: #E9EDEF; display: block;" data-close-on-body-click="false">
+                                    <div class="page-quick-sidebar" style="background-color: #E9EDEF;">
+
+                                        <div class="tab-content" style="background-color: #E9EDEF;">
+
+                                            <div class="row" style="background-color: #E9EDEF;">
+
+                                                <div class="col-md-12  " style="background-color: #E9EDEF;">
+                                                    <!-- BEGIN SAMPLE FORM PORTLET-->
+                                                    <div class="portlet light noborder" style="background-color: #E9EDEF;">
+                                                        <div class="portlet-title noborder">
+                                                            <div class="caption font-green">
+                                                                <i class="icon-pin font-green"></i>
+                                                                <span class="caption-subject bold uppercase">Filtros Búsqueda</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="noborder" id="scroll">
+                                                            <div class="col">
+                                                                <div class="form-group form-md-line-input has-success">
+                                                                    @Html.TextBoxFor(x => Model.FiltroFechaEvento, htmlAttributes: new { @class = "form-control FiltroMasterClass styleFechasFiltro", @id = "txtFiltroFechaEvento", @autocomplete = "off" })
+                                                                    <label for="txtFiltroFechaEvento">Fecha del Evento</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col">
+                                                                <div class="form-group form-md-line-input has-success">
+                                                                    @Html.TextBoxFor(x => Model.FiltroLugarEvento, htmlAttributes: new { @class = "form-control FiltroMasterClass", @id = "txtFiltroLugarEvento", @autocomplete = "off" })
+                                                                    <label for="txtFiltroLugarEvento">Pantalla/Web Service/Proceso</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col">
+                                                                <div class="form-group form-md-line-input has-success">
+                                                                    @Html.DropDownListFor(x => Model.FiltroEvento, new SelectList(Model.ListadoLugarEventoDDL, "Valor", "Texto", Model.FiltroEvento),
+                                                                                       htmlAttributes: new { @class = "form-control", @id = "ddlListadoLugarEventoDDL" })
+                                                                    <label for="ddlFiltroIdInstruccionRealizada">Evento</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col">
+                                                                <div class="form-group form-md-line-input has-success">
+                                                                    @Html.TextBoxFor(x => Model.FiltroUsuario, htmlAttributes: new { @class = "form-control FiltroMasterClass", @id = "txtFiltroUsuario", @autocomplete = "off" })
+                                                                    <label for="txtFiltroUsuario">Usuario</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col">
+                                                                <div class="form-group form-md-line-input has-success">
+                                                                    <div class="form-group form-md-line-input has-success">
+                                                                        @Html.DropDownListFor(x => Model.FiltroInstruccionRealizada, new SelectList(Model.ListadoInstruccionesBitacoraDDL, "Valor", "Texto", Model.FiltroInstruccionRealizada),
+                                                                                           htmlAttributes: new { @class = "form-control", @id = "ddlFiltroIdInstruccionRealizada" })
+                                                                        <label for="ddlFiltroIdInstruccionRealizada">Instrucción Realizada</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col">
+                                                                <div class="form-group form-md-line-input has-success">
+                                                                    @Html.TextBoxFor(x => Model.FiltroIP, htmlAttributes: new { @class = "form-control FiltroMasterClass", @id = "txtFiltroIP", @autocomplete = "off" })
+                                                                    <label for="txtFiltroIP">IP:</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-actions noborder">
+                                                            <button type="submit" value="Buscar" class="btn green" id="btnAplicarFiltro">
+                                                                Aplicar Filtro
+                                                            </button>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <!-- END SAMPLE FORM PORTLET-->
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<link href="~/Content/css/GridView.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/css/Paginado.css" rel="stylesheet" type="text/css" />
+
+@section scripts
+{
+    <script src="~/Content/js/datatables.js"></script>
+    <script src="~/Content/js/datatables.min.js"></script>
+    <script src="~/Content/js/datatables.bootstrap.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="~/Content/js/Daterangepicker2.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#tablaRegistros').DataTable({
+                lengthChange: false,
+                paging: true,
+                searching: false,
+                ordering: true,
+                responsive: true, 
+                pageLength: 50,
+                bInfo: false,
+                order: [[0, 'desc']],
+                language: {
+                    emptyTable: "Sin información.",
+                    info: "Registros del <b>_START_</b> al <b>_END_</b> de <b>_TOTAL_</b> por página",
+                    infoEmpty: "Sin información",
+                    infoFiltered: "(filtered1 de _MAX_ total registros)",
+                    lengthMenu: "_MENU_ registros por p&#225;gina",
+                    search: "Buscar:",
+                    zeroRecords: "Sin coincidencias encontradas."
+                },
+            });
+
+            $('#tablaRegistros').find('[data-toggle="tooltip"]').tooltip();
+
+        });
+    </script>
+}

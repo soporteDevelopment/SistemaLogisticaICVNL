@@ -1,0 +1,49 @@
+create or replace PACKAGE spcpl_solicitud_pl_op
+IS
+   FUNCTION version
+   RETURN NUMBER;
+
+	PROCEDURE agregar_solicitud(p_OCN_ID IN NUMERIC
+								,p_SOLN_ENTIDAD NUMERIC
+								,p_SOLF_FECHA in DATE
+								,p_CONTN_ID in NUMERIC
+								,p_SOLN_ESTATUS in NUMERIC
+								,p_SOLC_USR_REG in VARCHAR2
+								,p_SOLN_BORRADO in NUMERIC
+								,p_PROVN_ID in NUMERIC
+								,p_SOLC_FOLIO in VARCHAR2
+								,p_SOLN_ID OUT NUMERIC
+								,p_SOLF_FECHAENTREGA in DATE
+								,p_SOLF_FECHA_REG in DATE);
+
+
+	PROCEDURE agregar_solicitud_det(p_SOLDC_RNG_PL_INI in VARCHAR2
+									,p_SOLDN_ID OUT NUMERIC
+									,p_SOLDN_ENTIDAD in NUMERIC
+									,p_SOLDC_RNG_PL_FIN in VARCHAR2
+									,p_DBN_ID in NUMERIC
+									,p_SOLN_ID in NUMERIC
+									,p_TPN_ID in NUMERIC
+									,p_SOLDN_BORRADO in NUMERIC
+									,p_SOLDN_CANT_PLACAS in VARCHAR2
+                                    ,p_OCDN_ID IN NUMERIC);
+
+	PROCEDURE eliminar_solicitud_det(p_SOLN_ID in NUMBER);
+
+	PROCEDURE modificar_solicitud(p_OCN_ID IN NUMERIC
+								,p_SOLN_ENTIDAD IN NUMERIC
+								,p_SOLF_FECHA in DATE
+								,p_CONTN_ID in NUMERIC
+								,p_SOLN_ESTATUS in NUMERIC
+								,p_SOLC_USR_REG in VARCHAR2
+								,p_SOLN_BORRADO in NUMERIC
+								,p_PROVN_ID in NUMERIC
+								,p_SOLC_FOLIO in VARCHAR2
+								,p_SOLN_ID IN NUMERIC
+								,p_SOLF_FECHAENTREGA in DATE
+								,p_SOLF_FECHA_REG in DATE);
+
+	PROCEDURE inactiva_solicitud(p_SOLN_ID in number); 
+
+
+END spcpl_solicitud_pl_op;

@@ -1,0 +1,28 @@
+﻿@model IEnumerable<ICVNL_SistemaLogistica.Web.Models.Listado_ContratosArchivosModel>
+
+@if (Model != null && Model.Count() > 0)
+{
+    int index = 0;
+    foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.NombreArchivo
+                <input type="text" class="form-control" name="OrdenesPreparacionOP_Archivos[@index.ToString()].Consecutivo" value="@item.Consecutivo" style="display:none" />
+                <input type="text" class="form-control" name="OrdenesPreparacionOP_Archivos[@index.ToString()].NombreArchivo" value="@item.NombreArchivo" style="display:none" />
+                <input type="text" class="form-control" name="OrdenesPreparacionOP_Archivos[@index.ToString()].ArchivoBase64" value="@item.ArchivoBase64" style="display:none" /> 
+
+            </td>
+
+            <td align="center">
+                <button class="btn btn-xs blue btn-icon-circle" type="button" name="control" value="Descargar Archivo" id="btnDescargarArchivo" onclick="DescargarArchivo('@item.Consecutivo.ToString()');">
+                    <i class="fa fa-download mr-0 ml-0"></i>
+                </button>
+                <button class="btn btn-xs red btn-icon-circle" type="button" name="control" value="Eliminar Archivo" id="btnEliminarArchivo" onclick="EliminarArchivo('@item.Consecutivo.ToString()');">
+                    <i class="fa fa-times mr-0 ml-0"></i>
+                </button>
+            </td>
+        </tr>
+        index++;
+    }
+}

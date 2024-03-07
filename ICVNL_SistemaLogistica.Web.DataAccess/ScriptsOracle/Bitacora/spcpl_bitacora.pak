@@ -1,0 +1,18 @@
+create or replace PACKAGE spcpl_bitacora
+IS
+	FUNCTION version
+	RETURN NUMBER;
+
+    PROCEDURE consulta_listado(p_BITF_EVENTO_INI IN DATE,
+							  p_BITF_EVENTO_FIN IN DATE,
+							  p_BITC_LUGAREVENTO IN VARCHAR2,
+							  p_BITC_EVENTO IN VARCHAR2,
+							  p_BITC_USR IN VARCHAR2,
+							  p_BITC_INSTR_REAL IN VARCHAR2,
+							  p_BITC_IP_USR IN VARCHAR2,
+							  p_BITN_ENTIDAD IN NUMERIC,
+							  p_cursor_out OUT SYS_REFCURSOR);
+    
+    PROCEDURE consulta_bit_instreal_combo(p_BITN_ENTIDAD IN NUMBER,
+									      p_cursor_out OUT SYS_REFCURSOR); 
+END spcpl_bitacora;

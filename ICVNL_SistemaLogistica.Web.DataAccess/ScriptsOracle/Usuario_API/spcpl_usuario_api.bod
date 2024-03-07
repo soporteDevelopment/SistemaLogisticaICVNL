@@ -1,0 +1,64 @@
+create or replace PACKAGE BODY spcpl_usuario_api
+IS
+
+   c_version CONSTANT   NUMBER := 24.1901;
+   c_modulo  CONSTANT   NUMBER := 0;
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.1901 DEVTI   Elaboración del paquete.
+   -- 
+   --------------------------------------------------------------------------
+   ----
+   -- Tipos globales
+   ----
+   ----
+   -- Variables Globales
+   ----
+   -- Variables para manejo de errores.
+   g_mensaje_error      VARCHAR2(4000);
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+      RETURN c_version;
+   END version;
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+
+   PROCEDURE consulta_usuario_api_dev(p_USRC_USUARIO varchar2, p_USRC_PASSWORD varchar2, p_USRN_ENTIDAD NUMERIC, p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN 
+        OPEN p_cursor_out FOR
+		SELECT USRC_USUARIO, 
+               USRC_PASSWORD, 
+               USRN_ENTIDAD
+		FROM CPL_USUARIO_API  
+		where USRC_USUARIO = p_USRC_USUARIO
+		AND USRC_PASSWORD = p_USRC_PASSWORD
+		and USRN_ENTIDAD = p_USRN_ENTIDAD;
+   END consulta_usuario_api_dev;      
+
+   PROCEDURE consulta_usuario_api(p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN 
+        OPEN p_cursor_out FOR
+		SELECT USRC_USUARIO, 
+               USRC_PASSWORD, 
+               USRN_ENTIDAD
+		FROM CPL_USUARIO_API
+		where USRN_ENTIDAD = 1;
+   END consulta_usuario_api;    
+
+END spcpl_usuario_api;

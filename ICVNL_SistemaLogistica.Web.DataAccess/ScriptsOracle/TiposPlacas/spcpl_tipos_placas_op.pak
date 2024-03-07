@@ -1,0 +1,34 @@
+create or replace PACKAGE spcpl_tipos_placas_op
+IS
+   FUNCTION version
+   RETURN NUMBER;
+
+	PROCEDURE agregar(p_TPC_TIPOPLACA in VARCHAR2
+					,p_TPC_MASCARA_PLACA in VARCHAR2
+					,p_TPN_ACTIVO in NUMBER
+					,p_TPC_COD_INFOFIN in VARCHAR2
+					,p_TPN_BORRADO in NUMBER
+					,p_TPN_ID in NUMBER
+					,p_TPC_ORDEN_PLACA in VARCHAR2
+                    ,p_TPN_ORDEN_SERIE in VARCHAR2
+					,p_TPN_CANT_PLACAS_CAJA in NUMBER
+					,p_TPN_ENTIDAD in NUMBER
+					,p_TPN_CANT_LAM_JGO_PL in NUMBER);
+
+
+	PROCEDURE modificar(p_TPC_TIPOPLACA in VARCHAR2
+					,p_TPC_MASCARA_PLACA in VARCHAR2
+					,p_TPN_ACTIVO in NUMBER
+					,p_TPC_COD_INFOFIN in VARCHAR2
+					,p_TPN_BORRADO in NUMBER
+					,p_TPN_ID in NUMBER
+					,p_TPC_ORDEN_PLACA in VARCHAR2
+                    ,p_TPN_ORDEN_SERIE in VARCHAR2
+					,p_TPN_CANT_PLACAS_CAJA in NUMBER
+					,p_TPN_ENTIDAD in NUMBER
+					,p_TPN_CANT_LAM_JGO_PL in NUMBER);
+
+	PROCEDURE cambia_estatus(p_TPN_ID in number);				
+
+
+END spcpl_tipos_placas_op;

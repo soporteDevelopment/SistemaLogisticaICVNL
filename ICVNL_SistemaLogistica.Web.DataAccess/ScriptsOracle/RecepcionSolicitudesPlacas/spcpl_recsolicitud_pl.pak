@@ -1,0 +1,62 @@
+create or replace PACKAGE spcpl_recsolicitud_pl
+IS
+	FUNCTION version
+	RETURN NUMBER;
+
+   PROCEDURE consulta_listado(p_RECC_FOLIO IN VARCHAR2,
+							  p_DBN_ID IN NUMBER,
+							  p_SOLC_FOLIO IN VARCHAR2,
+							  p_PROVN_ID IN NUMBER,
+							  p_CONC_NUMERO IN VARCHAR2,
+							  p_OCN_ID IN NUMBER,
+							  p_RECN_ENTIDAD IN VARCHAR2,
+						      p_cursor_out OUT SYS_REFCURSOR);    
+
+
+    PROCEDURE consulta_recsolicitud_enc(p_RECN_ID IN NUMBER,
+									p_RECN_ENTIDAD IN NUMBER,
+								    p_cursor_out OUT SYS_REFCURSOR); 
+
+   PROCEDURE consulta_recsolicitud_det(p_RECN_ID IN NUMBER,
+								   p_RECDN_ENTIDAD IN NUMBER,
+								   p_cursor_out OUT SYS_REFCURSOR); 
+
+	PROCEDURE consulta_recsolicitud_ev(p_SOLN_ID IN NUMBER,
+								   p_RPEVN_ENTIDAD IN NUMBER,
+								   p_cursor_out OUT SYS_REFCURSOR);    
+   
+   PROCEDURE consulta_recsolicitud_lst_ev(p_RPEVF_FECHA_QR_INI IN DATE,
+										  p_RPEVF_FECHA_QR_FIN IN DATE,
+										  p_PROVN_ID IN NUMBER,
+										  p_DBN_ID IN NUMBER,
+										  p_TPN_ID IN NUMBER,
+										  p_TERPN_ID IN NUMBER,
+										  p_RPEVN_ENTIDAD IN NUMBER,
+								          p_cursor_out OUT SYS_REFCURSOR);
+   
+   PROCEDURE consulta_recsolicitud_ev_val(p_RPEVN_ID IN NUMBER,
+										  p_RVALN_ENTIDAD IN NUMBER,
+								          p_cursor_out OUT SYS_REFCURSOR);
+										  
+   PROCEDURE consulta_recsolicitud_ev_val_i(p_RVALN_ID IN NUMBER,
+										  p_RVALN_ENTIDAD IN NUMBER,
+								          p_cursor_out OUT SYS_REFCURSOR);
+   
+   PROCEDURE consulta_recsolicitud_evento(p_RVALN_ID IN NUMBER,
+										  p_RPEVN_ENTIDAD IN NUMBER,
+								          p_cursor_out OUT SYS_REFCURSOR);
+   
+   PROCEDURE consulta_recsolicitud_ev_val_o(p_RVALN_ID IN NUMBER,
+										  p_OBSN_ENTIDAD IN NUMBER,
+										  p_cursor_out OUT SYS_REFCURSOR);
+   
+    PROCEDURE consulta_recsolicitud_ev_val_a(p_RVALN_ID IN NUMBER,
+										  p_ARN_ENTIDAD IN NUMBER,
+										  p_cursor_out OUT SYS_REFCURSOR);
+
+    PROCEDURE con_recsolicitud_sigfolio(p_cursor_out OUT SYS_REFCURSOR);
+   
+    PROCEDURE consulta_recsolicitud_ev_combo(p_TERPN_ENTIDAD IN NUMBER,
+                                            p_cursor_out OUT SYS_REFCURSOR);
+											
+END spcpl_recsolicitud_pl;

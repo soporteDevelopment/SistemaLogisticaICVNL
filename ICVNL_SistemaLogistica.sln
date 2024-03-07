@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34221.43
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICVNL_SistemaLogistica.Web", "ICVNL_SistemaLogistica.Web\ICVNL_SistemaLogistica.Web.csproj", "{16666CAC-69E2-4003-9F32-4A30B87335C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICVNL_SistemaLogistica.Web.Entities", "ICVNL_SistemaLogistica.Web.Entities\ICVNL_SistemaLogistica.Web.Entities.csproj", "{EEBEE101-AAC1-439A-8FC4-94892ED589B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICVNL_SistemaLogistica.Web.BL", "ICVNL_SistemaLogistica.Web.BL\ICVNL_SistemaLogistica.Web.BL.csproj", "{7F892CA7-EF86-4433-BBD6-5E8D3F9E6AED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICVNL_SistemaLogistica.Web.DataAccess", "ICVNL_SistemaLogistica.Web.DataAccess\ICVNL_SistemaLogistica.Web.DataAccess.csproj", "{BDF459EF-EDEF-45DE-AABA-94FB91A728E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICVNL_SistemaLogistica.API", "ICVNL_SistemaLogistica.API\ICVNL_SistemaLogistica.API.csproj", "{7AFF494E-7E2C-42C2-ADDA-AD049208CE06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICVNL_SistemaLogistica.Procesos", "ICVNL_SistemaLogistica.Procesos\ICVNL_SistemaLogistica.Procesos.csproj", "{8DB92699-6B49-4CDE-8E03-0F145BCDA50B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{16666CAC-69E2-4003-9F32-4A30B87335C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16666CAC-69E2-4003-9F32-4A30B87335C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16666CAC-69E2-4003-9F32-4A30B87335C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16666CAC-69E2-4003-9F32-4A30B87335C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEBEE101-AAC1-439A-8FC4-94892ED589B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEBEE101-AAC1-439A-8FC4-94892ED589B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEBEE101-AAC1-439A-8FC4-94892ED589B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEBEE101-AAC1-439A-8FC4-94892ED589B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F892CA7-EF86-4433-BBD6-5E8D3F9E6AED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F892CA7-EF86-4433-BBD6-5E8D3F9E6AED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F892CA7-EF86-4433-BBD6-5E8D3F9E6AED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F892CA7-EF86-4433-BBD6-5E8D3F9E6AED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDF459EF-EDEF-45DE-AABA-94FB91A728E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDF459EF-EDEF-45DE-AABA-94FB91A728E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDF459EF-EDEF-45DE-AABA-94FB91A728E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDF459EF-EDEF-45DE-AABA-94FB91A728E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AFF494E-7E2C-42C2-ADDA-AD049208CE06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AFF494E-7E2C-42C2-ADDA-AD049208CE06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AFF494E-7E2C-42C2-ADDA-AD049208CE06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AFF494E-7E2C-42C2-ADDA-AD049208CE06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DB92699-6B49-4CDE-8E03-0F145BCDA50B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DB92699-6B49-4CDE-8E03-0F145BCDA50B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DB92699-6B49-4CDE-8E03-0F145BCDA50B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DB92699-6B49-4CDE-8E03-0F145BCDA50B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {58C72C41-5164-477D-9FB2-CEAE240E33A1}
+	EndGlobalSection
+EndGlobal

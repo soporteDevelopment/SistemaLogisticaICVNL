@@ -1,0 +1,168 @@
+﻿@model ICVNL_SistemaLogistica.Web.ViewModels.Listado_RecepcionSolicitudesPlacas_Recibir_ValidacionesVM
+
+@{
+    ViewBag.Title = "Recibir Placas | Administración de Recepción de las Solicitudes de Placas de Proveedores";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/css/datatables.min.css" rel="stylesheet" />
+<link href="~/Content/css/datatables.bootstrap.css" rel="stylesheet" />
+<style>
+    .FiltroMasterClass {
+        display: inline-table !important;
+        border-bottom: 1px solid #7678B8 !important
+    }
+</style>
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-10">
+                <h1 class="page-title">
+                    Validaciones | Administración de Recepción de las Solicitudes de Placas de Proveedores
+                    <small>Sistema de Logística de Control de Placas&nbsp;</small>
+                </h1>
+            </div>
+        </div>
+        @using (@Html.BeginForm("ValidacionesRecepcionPlacas", "SolicitudesPlacasRecepcion", FormMethod.Post, new { id = "myForm" }))
+        {
+            <div class="row widget-row">
+                <div class="col-md-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Listado Validaciones Recepción Cajas
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="table-toolbar">
+
+                                @Html.AntiForgeryToken()
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn default grey margin-right-10" onclick="location.href='RecibirPlacas?IdRecepcion=@Model.IdRecepcion'">
+                                            Regresar
+                                            <i class="fa fa-chevron-circle-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-12 table-responsive">
+                                        <table class="table table-bordered mb-0 table-sm " id="tablaRegistros">
+                                            <thead>
+                                                <tr class="bg-light headerCustom">
+                                                    <th>
+                                                        Nombre Usuario
+                                                    </th>
+                                                    <th>
+                                                        Número de Empleado
+                                                    </th>
+                                                    <th>
+                                                        Puesto
+                                                    </th>
+                                                    <th>
+                                                        Proveedor
+                                                    </th>
+                                                    <th>
+                                                        Contrato
+                                                    </th>
+                                                    <th>
+                                                        Problema Presentado
+                                                    </th>
+                                                    <th style="width: 250px"><div style="text-align: center;">Acciones</div></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.Listado != null && Model.Listado.Count > 0)
+                                                {
+                                                    foreach (var item in Model.Listado)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.Usuario.Nombre)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.Usuario.NumeroEmpleado)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.Usuario.Puesto)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.Proveedores.NombreProveedor)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.Contrato.NumeroContrato)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.TiposProblemasPresentadosValidacion.TiposEventosRecepcionPlacas)
+                                                            </td>
+                                                            <td align="center">
+                                                                <button class="btn btn-xs blue btn-icon-circle" type="button" id="btnObservacion" onclick="AgregarObservacion('@item.IdRecepcionValidaciones.ToString()');">
+                                                                    <i class="fa fa-search mr-0 ml-0"></i>
+                                                                </button>
+                                                                <button class="btn btn-xs blue btn-icon-circle" type="button" id="btnSubirArchivos" onclick="SubirArchivos('@item.IdRecepcionValidaciones.ToString()');">
+                                                                    <i class="fa fa-upload mr-0 ml-0"></i>
+                                                                </button>
+                                                                <button class="btn btn-xs green btn-icon-circle tooltips" type="button"
+                                                                        data-container="body" data-toggle="tooltip" data-original-title="Descargar"
+                                                                        id="btnDescargarArchivo" onclick="DescargarArchivo('@item.IdArchivo');">
+                                                                    <literal class="HiddeLabel">Descargar</literal>
+                                                                    <i class="fa fa-print mr-0 ml-0 HiddenIClass"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td colspan="7">
+                                                            @Html.Label("Sin Información")
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modalArchivos" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" id="divArchivosAdjuntos">
+            @Html.Partial("PartialDetalleArchivosAdjuntos", Model.DetalleVM)
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modalObservaciones" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" id="divObservaciones">
+            @Html.Partial("PartialDetalleObservaciones", Model.DetalleVM)
+        </div>
+    </div>
+</div>
+
+<link href="~/Content/css/GridView.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/css/Paginado.css" rel="stylesheet" type="text/css" />
+
+@section scripts
+{
+    <script src="~/Content/js/datatables.js"></script>
+    <script src="~/Content/js/datatables.min.js"></script>
+    <script src="~/Content/js/datatables.bootstrap.js"></script>
+    <script src="~/Scripts/Solicitudes/SolicitudesValidacion.js"></script>
+
+}

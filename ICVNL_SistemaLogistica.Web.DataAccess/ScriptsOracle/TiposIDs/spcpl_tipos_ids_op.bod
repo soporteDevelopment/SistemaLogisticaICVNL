@@ -1,0 +1,92 @@
+create or replace PACKAGE BODY spcpl_tipos_ids_op
+IS
+   c_version CONSTANT   NUMBER := 24.0501;
+   c_modulo  CONSTANT   NUMBER := 0;
+
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.3011 DEVTI   Elaboración del paquete.
+   -- 24.0501 DEVTI   se modifica el nombre del SP inactiva por cambia_estatus para que soporte el mismo sp la inactivación y reactivación de registros
+   --------------------------------------------------------------------------
+
+   ----
+   -- Variables Globales
+   next_val 	number;
+   ----
+   -- Variables para manejo de errores. 
+   ----
+   -- Excepciones globales
+   ----
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+   RETURN c_version;
+   END VERSION;
+
+
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+	PROCEDURE agregar(p_TIN_BORRADO in NUMBER
+					,p_TIN_ID in NUMBER
+					,p_TIC_TIPOID in varchar2
+					,p_TIN_ACTIVO in NUMBER
+					,p_TIN_ENTIDAD in NUMBER)
+	IS
+	BEGIN   
+
+		select  nvl(max(TIN_ID),0) + 1  into next_val from CPL_TIPOS_IDS;
+
+		insert into CPL_TIPOS_IDS(TIN_BORRADO
+								,TIN_ID
+								,TIC_TIPOID
+								,TIN_ACTIVO
+								,TIN_ENTIDAD) 
+		values (p_TIN_BORRADO
+				,next_val
+				,p_TIC_TIPOID
+				,p_TIN_ACTIVO
+				,p_TIN_ENTIDAD);
+
+	END agregar;         
+
+
+	PROCEDURE modificar(p_TIN_BORRADO in NUMBER
+					,p_TIN_ID in NUMBER
+					,p_TIC_TIPOID in varchar2
+					,p_TIN_ACTIVO in NUMBER
+					,p_TIN_ENTIDAD in NUMBER)
+	IS
+	BEGIN
+	
+		update CPL_TIPOS_IDS 
+		set TIN_BORRADO = p_TIN_BORRADO
+			,TIC_TIPOID = p_TIC_TIPOID
+			,TIN_ACTIVO = p_TIN_ACTIVO
+			,TIN_ENTIDAD = p_TIN_ENTIDAD
+		where TIN_ID = p_TIN_ID;
+
+	END modificar;
+
+	PROCEDURE cambia_estatus(p_TIN_ID in number)
+	IS
+	BEGIN
+        UPDATE CPL_TIPOS_IDS 
+		SET TIN_ACTIVO = case TIN_ACTIVO when 1 then 0 else 1 end
+		WHERE TIN_ID = p_TIN_ID;
+	END cambia_estatus;
+
+
+END spcpl_tipos_ids_op;

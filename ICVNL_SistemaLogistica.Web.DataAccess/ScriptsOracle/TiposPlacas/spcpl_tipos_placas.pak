@@ -1,0 +1,24 @@
+create or replace PACKAGE spcpl_tipos_placas
+IS
+	FUNCTION version
+	RETURN NUMBER;
+
+	PROCEDURE consulta_listado(p_tpn_entidad NUMBER,
+							  p_TPN_ACTIVO NUMBER,
+						      p_cursor_out OUT SYS_REFCURSOR);
+
+	PROCEDURE consulta_tiposplacas(p_tpn_id NUMBER,
+								  p_tpn_entidad NUMBER,
+								  p_cursor_out OUT SYS_REFCURSOR);
+
+	PROCEDURE consulta_tiposplacas_combo(p_tpn_entidad NUMBER,
+										  p_cursor_out OUT SYS_REFCURSOR);
+
+	PROCEDURE existe_tipoplaca(p_TPC_TIPOPLACA VARCHAR2,
+									p_tpn_entidad NUMBER,
+									p_cursor_out OUT SYS_REFCURSOR); 
+									
+   PROCEDURE existe_tipoplaca_infofin(p_TPC_COD_INFOFIN VARCHAR2,
+                                    p_tpn_entidad NUMBER,
+                                    p_cursor_out OUT SYS_REFCURSOR);
+END spcpl_tipos_placas;

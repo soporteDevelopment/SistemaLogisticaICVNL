@@ -1,0 +1,82 @@
+create or replace PACKAGE BODY spcpl_bitacora_op
+IS
+   c_version CONSTANT   NUMBER := 23.2711;
+   c_modulo  CONSTANT   NUMBER := 0;
+
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.2711 DEVTI   Elaboración del paquete.
+   -- 
+   --------------------------------------------------------------------------
+
+   ----
+   -- Variables Globales
+      next_val 	number;
+   ----
+   -- Variables para manejo de errores. 
+   ----
+   -- Excepciones globales
+   ----
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+   RETURN c_version;
+   END VERSION;
+
+
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+   PROCEDURE agrega_bit(p_BITC_USR in varchar2
+					,p_BITF_EVENTO in DATE
+					,p_BITC_IP_USR in varchar2
+					,p_BITN_ID in NUMBER
+					,p_BITC_LUGAREVENTO in varchar2
+					,p_BITN_ENTIDAD in NUMBER
+					,p_BITC_JSONOBJECT in varchar2
+					,p_BITC_INSTR_REAL in varchar2
+					,p_BITC_EVENTO in varchar2)
+   IS
+   BEGIN   
+
+
+		select  nvl(max(BITN_ID),0) + 1  into next_val from CPL_BITACORA;
+
+		insert into CPL_BITACORA(BITC_USR
+								,BITF_EVENTO
+								,BITC_IP_USR
+								,BITN_ID
+								,BITC_LUGAREVENTO
+								,BITN_ENTIDAD
+								,BITC_JSONOBJECT
+								,BITC_INSTR_REAL
+								,BITC_EVENTO
+								) values (
+								p_BITC_USR
+								,p_BITF_EVENTO
+								,p_BITC_IP_USR
+								,next_val
+								,p_BITC_LUGAREVENTO
+								,p_BITN_ENTIDAD
+								,p_BITC_JSONOBJECT
+								,p_BITC_INSTR_REAL
+								,p_BITC_EVENTO
+								);
+
+  END agrega_bit;         
+
+
+
+END spcpl_bitacora_op;

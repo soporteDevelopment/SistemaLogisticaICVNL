@@ -1,0 +1,84 @@
+create or replace PACKAGE BODY spcpl_archivos
+IS
+
+   c_version CONSTANT   NUMBER := 23.0612;
+   c_modulo  CONSTANT   NUMBER := 0;
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.0612 DEVTI   Elaboración del paquete.
+   -- 
+   --------------------------------------------------------------------------
+   ----
+   -- Tipos globales
+   ----
+   ----
+   -- Variables Globales
+   ----
+   -- Variables para manejo de errores.
+   g_mensaje_error      VARCHAR2(4000);
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+      RETURN c_version;
+   END version;
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+
+   PROCEDURE consulta_archivo(p_ARN_IDORIGEN IN NUMERIC,
+							  p_ARC_TABLAORIGEN IN VARCHAR2, 
+							  p_ARN_ENTIDAD IN NUMERIC,
+						      p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+		OPEN p_cursor_out FOR
+		SELECT ARN_IDORIGEN
+				,ARC_TABLAORIGEN
+				,ARN_BORRADO
+				,ARC_ARCHIVO
+				,ARN_ENTIDAD
+				,ARN_ID
+				,ARB_ARCHIVO
+		FROM CPL_ARCHIVOS  
+		where ARN_IDORIGEN = p_ARN_IDORIGEN 
+		AND ARC_TABLAORIGEN = p_ARC_TABLAORIGEN
+		AND ARN_ENTIDAD = p_ARN_ENTIDAD
+		and ARN_BORRADO = 0;
+
+   END consulta_archivo;      
+
+   PROCEDURE consulta_archivo_i(p_ARN_ID IN NUMERIC, 
+							  p_ARN_ENTIDAD IN NUMERIC,
+						      p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+		OPEN p_cursor_out FOR
+        SELECT ARN_IDORIGEN
+				,ARC_TABLAORIGEN
+				,ARN_BORRADO
+				,ARC_ARCHIVO
+				,ARN_ENTIDAD
+				,ARN_ID
+				,ARB_ARCHIVO
+		FROM CPL_ARCHIVOS  
+		where ARN_ID = p_ARN_ID
+		AND ARN_ENTIDAD = p_ARN_ENTIDAD
+		and ARN_BORRADO = 0;
+
+   END consulta_archivo_i;   
+
+END spcpl_archivos;

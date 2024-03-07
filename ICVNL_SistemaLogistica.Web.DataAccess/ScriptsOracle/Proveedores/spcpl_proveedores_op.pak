@@ -1,0 +1,26 @@
+create or replace PACKAGE spcpl_proveedores_op
+IS
+   FUNCTION version
+   RETURN NUMBER;
+
+	PROCEDURE agregar(p_PROVN_BORRADO in NUMBER
+					,p_PROVN_ACTIVO in NUMBER
+					,p_PROVN_ENTIDAD in NUMBER
+					,p_PROVC_NUMERO in VARCHAR2
+					,p_PROVC_EMAIL in VARCHAR2
+					,p_PROVN_ID in NUMBER
+					,p_PROVC_NOMBRE in VARCHAR2);
+
+
+	PROCEDURE modificar(p_PROVN_BORRADO in NUMBER
+					,p_PROVN_ACTIVO in NUMBER
+					,p_PROVN_ENTIDAD in NUMBER
+					,p_PROVC_NUMERO in VARCHAR2
+					,p_PROVC_EMAIL in VARCHAR2
+					,p_PROVN_ID in NUMBER
+					,p_PROVC_NOMBRE in VARCHAR2);
+
+	PROCEDURE cambia_estatus(p_PROVN_ID in number);				
+
+
+END spcpl_proveedores_op;

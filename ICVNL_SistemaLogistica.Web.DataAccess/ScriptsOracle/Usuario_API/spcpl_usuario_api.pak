@@ -1,0 +1,10 @@
+create or replace PACKAGE spcpl_usuario_api
+IS
+	FUNCTION version
+	RETURN NUMBER;
+
+   PROCEDURE consulta_usuario_api_dev(p_USRC_USUARIO varchar2, p_USRC_PASSWORD varchar2, p_USRN_ENTIDAD NUMERIC, p_cursor_out OUT SYS_REFCURSOR);
+   
+   PROCEDURE consulta_usuario_api(p_cursor_out OUT SYS_REFCURSOR);
+   
+END spcpl_usuario_api;

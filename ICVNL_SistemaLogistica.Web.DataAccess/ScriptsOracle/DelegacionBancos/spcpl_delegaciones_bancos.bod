@@ -1,0 +1,128 @@
+create or replace PACKAGE BODY spcpl_delegaciones_bancos
+IS
+
+   c_version CONSTANT   NUMBER := 24.0501;
+   c_modulo  CONSTANT   NUMBER := 0;
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.2911 DEVTI   Elaboración del paquete.
+   -- 23.2612 DEVTI   Se agrega búsqueda por clave de infofin
+   -- 24.0501 DEVTI   Se agrega filtro de estatus en el consulta_listado
+   --------------------------------------------------------------------------
+   ----
+   -- Tipos globales
+   ----
+   ----
+   -- Variables Globales
+   ----
+   -- Variables para manejo de errores.
+   g_mensaje_error      VARCHAR2(4000);
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+      RETURN c_version;
+   END version;
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+
+   PROCEDURE consulta_listado(p_dbn_entidad NUMBER,
+                              p_DBN_ACTIVO in number,
+						      p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT DBC_CC_INFOFIN
+             ,DBC_ALMACEN_CC
+			 ,DBC_NOMBRE_DEL
+			 ,DBN_ENTIDAD
+			 ,DBN_ID
+			 ,DBN_ACTIVO
+			 ,DBN_BORRADO
+      FROM CPL_DELEGACIONES_BANCOS
+	  where DBN_ENTIDAD = p_dbn_entidad
+      AND (p_DBN_ACTIVO IS NULL OR DBN_ACTIVO = p_DBN_ACTIVO)  
+	  and DBN_BORRADO = 0;
+
+   END consulta_listado;      
+
+   PROCEDURE consulta_delegacionbanco(p_dbn_id NUMBER,
+									  p_dbn_entidad NUMBER,
+									  p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT DBC_CC_INFOFIN
+             ,DBC_ALMACEN_CC
+			 ,DBC_NOMBRE_DEL
+			 ,DBN_ENTIDAD
+			 ,DBN_ID
+			 ,DBN_ACTIVO
+			 ,DBN_BORRADO
+      FROM CPL_DELEGACIONES_BANCOS
+	  where DBN_ENTIDAD = p_dbn_entidad
+	  and DBN_ID = p_dbn_id;
+
+   END consulta_delegacionbanco;   
+
+
+ PROCEDURE consulta_delegacionbanco_combo(p_dbn_entidad NUMBER,
+									      p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT DBN_ID as Valor
+			 ,DBC_NOMBRE_DEL as Texto			  
+      FROM CPL_DELEGACIONES_BANCOS
+	  where DBN_ENTIDAD = p_dbn_entidad
+	  and DBN_ACTIVO = 1
+	  and DBN_BORRADO = 0;
+
+   END consulta_delegacionbanco_combo;    
+
+   PROCEDURE existe_delegacionbanco(p_DBC_NOMBRE_DEL VARCHAR2,
+                                    p_dbn_entidad NUMBER,
+                                    p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT DBN_ID 
+			 ,DBC_NOMBRE_DEL		  
+      FROM CPL_DELEGACIONES_BANCOS
+	  where DBC_NOMBRE_DEL = p_DBC_NOMBRE_DEL
+      and dbn_entidad = p_dbn_entidad;
+
+   END existe_delegacionbanco; 
+
+   PROCEDURE existe_delegacionbco_infofin(p_DBC_CC_INFOFIN VARCHAR2,
+                                    p_dbn_entidad NUMBER,
+                                    p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT DBN_ID 
+			 ,DBC_NOMBRE_DEL		  
+      FROM CPL_DELEGACIONES_BANCOS
+	  where DBC_CC_INFOFIN = p_DBC_CC_INFOFIN
+      and dbn_entidad = p_dbn_entidad;
+
+   END existe_delegacionbco_infofin; 
+
+END spcpl_delegaciones_bancos;

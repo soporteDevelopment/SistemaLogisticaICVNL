@@ -1,0 +1,39 @@
+create or replace PACKAGE spcpl_contratos
+IS
+	FUNCTION version
+	RETURN NUMBER;
+
+    PROCEDURE consulta_listado(p_CONN_ID IN NUMERIC,
+                              p_CONC_NUMERO IN VARCHAR2,
+                              p_PROVN_ID IN NUMERIC,
+                              p_CONN_ENTIDAD IN NUMBER,
+                              p_cursor_out OUT SYS_REFCURSOR);
+    
+    PROCEDURE consulta_contrato_enc(p_CONN_ID IN NUMBER,
+                                   p_CONN_ENTIDAD IN NUMBER,
+                                   p_cursor_out OUT SYS_REFCURSOR);
+    
+    PROCEDURE consulta_contrato_det(p_CONN_ID IN NUMBER,
+                                   p_CONDN_ENTIDAD IN NUMBER,
+                                   p_cursor_out OUT SYS_REFCURSOR);
+    
+    PROCEDURE consulta_contrato_det_rng(p_CONDN_ID IN NUMBER,
+                                       p_CDRN_ENTIDAD IN NUMBER,
+                                       p_cursor_out OUT SYS_REFCURSOR);    
+                                       
+    PROCEDURE consulta_contratos_combo(p_CONN_ENTIDAD IN NUMBER,
+									p_cursor_out OUT SYS_REFCURSOR);
+                                    
+    PROCEDURE consulta_contratos_prov_combo(p_PROVN_ID IN NUMBER,
+                                            p_CONN_ENTIDAD IN NUMBER,
+                                            p_cursor_out OUT SYS_REFCURSOR);
+    
+    PROCEDURE existe_contrato(p_CONC_NUMERO IN VARCHAR2,
+                                    p_CONN_ENTIDAD IN NUMBER,
+                                    p_cursor_out OUT SYS_REFCURSOR);		
+                                    
+    PROCEDURE consulta_contdet_tipoplaca(p_CONN_ID IN NUMBER,
+                                         p_TPN_ID IN NUMBER,
+                                         p_CONDN_ENTIDAD IN NUMBER,
+                                         p_cursor_out OUT SYS_REFCURSOR);
+END spcpl_contratos;

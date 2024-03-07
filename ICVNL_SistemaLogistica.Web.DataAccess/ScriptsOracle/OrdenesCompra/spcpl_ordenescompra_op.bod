@@ -1,0 +1,158 @@
+create or replace PACKAGE BODY spcpl_ordenescompra_op
+IS
+   c_version CONSTANT   NUMBER := 23.2112;
+   c_modulo  CONSTANT   NUMBER := 0;
+
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.2112 DEVTI   Elaboración del paquete.
+   -- 
+   --------------------------------------------------------------------------
+
+   ----
+   -- Variables Globales 
+   ----
+   -- Variables para manejo de errores. 
+   ----
+   -- Excepciones globales
+   ----
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+   RETURN c_version;
+   END VERSION;
+
+
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+	PROCEDURE agrega_ordencompra(p_OCN_ID OUT NUMBER
+								,p_OCN_BORRADO in NUMBER
+								,p_DBN_IDRECIBE in NUMBER default NULL
+								,p_OCF_FECHA in DATE
+								,p_PROVN_ID in NUMBER
+								,p_OCN_NUMERO in NUMBER
+								,p_OCN_ENTIDAD in NUMBER
+								,p_OCF_FECHA_AUT in DATE
+								,p_OCC_ENTIDADINFOFIN in VARCHAR2)
+	IS
+	BEGIN   
+
+		select  nvl(max(OCN_ID),0) + 1  into p_OCN_ID from CPL_ORDENES_COMPRA;
+
+		insert into CPL_ORDENES_COMPRA(OCN_ID
+									,OCN_BORRADO
+									,DBN_IDRECIBE
+									,OCF_FECHA
+									,PROVN_ID
+									,OCN_NUMERO
+									,OCN_ENTIDAD
+									,OCF_FECHA_AUT
+									,OCC_ENTIDADINFOFIN) 
+							values (p_OCN_ID
+									,p_OCN_BORRADO 
+									,p_DBN_IDRECIBE
+									,p_OCF_FECHA
+									,p_PROVN_ID
+									,p_OCN_NUMERO
+									,p_OCN_ENTIDAD
+									,p_OCF_FECHA_AUT
+									,p_OCC_ENTIDADINFOFIN);
+
+
+	END agrega_ordencompra;
+
+	PROCEDURE agrega_ordencompra_det(p_OCDN_ID OUT NUMBER
+									,p_OCN_ID in NUMBER
+									,p_OCDC_CUENTACONTABLE in VARCHAR2 default null 
+									,p_OCDN_COSTOTOTAL in NUMBER
+									,p_OCDN_COSTOPLACA in NUMBER
+									,p_OCDN_ENTIDAD in NUMBER
+									,p_TPN_ID in NUMBER
+									,p_OCDN_RENGLON_NE in NUMBER default null 
+									,p_OCDN_BORRADO in NUMBER
+									,p_OCDC_COD_ART_TP in VARCHAR2
+									,p_OCDC_CEN_COSTOS_ALM in VARCHAR2 default null 
+									,p_OCDN_CANTIDADPIEZAS in NUMBER
+									,p_OCDF_FECHA_REC_TP in DATE default null 
+									,p_OCDN_RENGLON in NUMBER)
+	IS
+	BEGIN   
+
+		select  nvl(max(OCDN_ID),0) + 1  into p_OCDN_ID from CPL_ORDENES_COMPRA_DET;
+
+		insert into CPL_ORDENES_COMPRA_DET(OCN_ID
+										,OCDC_CUENTACONTABLE
+										,OCDN_COSTOTOTAL
+										,OCDN_COSTOPLACA
+										,OCDN_ENTIDAD
+										,TPN_ID
+										,OCDN_RENGLON_NE
+										,OCDN_BORRADO
+										,OCDC_COD_ART_TP
+										,OCDC_CEN_COSTOS_ALM
+										,OCDN_CANTIDADPIEZAS
+										,OCDN_ID
+										,OCDF_FECHA_REC_TP
+										,OCDN_RENGLON) 
+								values (p_OCN_ID
+										,p_OCDC_CUENTACONTABLE
+										,p_OCDN_COSTOTOTAL
+										,p_OCDN_COSTOPLACA
+										,p_OCDN_ENTIDAD
+										,p_TPN_ID
+										,p_OCDN_RENGLON_NE
+										,p_OCDN_BORRADO
+										,p_OCDC_COD_ART_TP
+										,p_OCDC_CEN_COSTOS_ALM
+										,p_OCDN_CANTIDADPIEZAS
+										,p_OCDN_ID
+										,p_OCDF_FECHA_REC_TP
+										,p_OCDN_RENGLON);
+
+	END agrega_ordencompra_det;	
+
+
+	PROCEDURE actualiza_ordencompra(p_OCN_ID in NUMBER 
+								,p_DBN_IDRECIBE in NUMBER default NULL)
+	IS
+	BEGIN    
+		UPDATE CPL_ORDENES_COMPRA set DBN_IDRECIBE = p_DBN_IDRECIBE
+		where OCN_ID = p_OCN_ID;
+
+	END actualiza_ordencompra;
+
+	PROCEDURE actualiza_ordencompra_det(p_OCDN_ID in NUMBER
+									,p_OCDC_CUENTACONTABLE in VARCHAR2 default null 
+									,p_OCDN_RENGLON_NE in NUMBER default null 
+									,p_OCDC_CEN_COSTOS_ALM in VARCHAR2 default null 
+									,p_OCDF_FECHA_REC_TP in DATE default null)
+	IS
+	BEGIN   
+
+ 
+		update CPL_ORDENES_COMPRA_DET 
+		set OCDC_CUENTACONTABLE = p_OCDC_CUENTACONTABLE,
+		    OCDN_RENGLON_NE = p_OCDN_RENGLON_NE,
+			OCDC_CEN_COSTOS_ALM = p_OCDC_CEN_COSTOS_ALM,
+			OCDF_FECHA_REC_TP = p_OCDF_FECHA_REC_TP
+		where OCDN_ID = p_OCDN_ID;
+
+	END actualiza_ordencompra_det; 	
+	
+	
+	
+
+END spcpl_ordenescompra_op;

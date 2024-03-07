@@ -1,0 +1,282 @@
+﻿@model ICVNL_SistemaLogistica.Web.ViewModels.Detalle_TransferenciaPlacasVM
+
+@{
+    ViewBag.Title = "Packing List | Administrador de Transferencia de Placas entre Delegaciones/Bancos ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/css/estilosAlerta.css" rel="stylesheet" />
+@using (Html.BeginForm("PackingList", "TransferenciaPlacas", FormMethod.Post, new { id = "myForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="row">
+                <div class="col-md-10">
+                    <h1 class="page-title">
+                        Packing List | Administrador de Transferencia de Placas entre Delegaciones/Bancos
+                        <small>Sistema de Logística de Control de Placas&nbsp;</small>
+                    </h1>
+                </div>
+            </div>
+            <div class="row widget-row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Encabezado
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-actions ">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        @if (HttpContext.Current.Session["UserSC"] != null &&
+                                        ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_TransferenciasPlacasEntreDelegacionesBancos.GenerarPackList)
+                                        {
+                                            <button type="button" class="btn dark margin-right-10" onclick="GeneraPDF();">
+                                                Generar PDF
+                                                <i class="fa fa-file-pdf-o"></i>
+                                            </button>
+                                        }
+
+                                        <button type="button" class="btn default grey" onclick="location.href='Details?IdTransferencia=@Model.IdTransferencia'">
+                                            Regresar
+                                            <i class="fa fa-chevron-circle-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-body">
+                                <div class="col-md-12" style="display:none">
+                                    <div class="row">
+                                        <div class="col-md-2" id="divId">
+                                            @Html.LabelFor(model => model.IdTransferencia, htmlAttributes: new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <p class="form-control-static">
+                                                    @Html.EditorFor(model => model.IdTransferencia, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            @Html.LabelFor(model => model.IdDelegacionBancoOrigen, htmlAttributes: new { @class = "control-label" })
+                                            @Html.DropDownListFor(x => Model.IdDelegacionBancoOrigen, new SelectList(Model.ListadoDelegacionesDDL, "Valor", "Texto", Model.IdDelegacionBancoOrigen),
+                                                           htmlAttributes: new { @class = "form-control", @id = "ddlListadoDelegacionesOrigenDDL", @disabled = "disabled" })
+                                        </div>
+                                        <div class="col-md-6">
+                                            @Html.LabelFor(model => model.IdDelegacionBancoDestino, htmlAttributes: new { @class = "control-label" })
+                                            @Html.DropDownListFor(x => Model.IdDelegacionBancoDestino, new SelectList(Model.ListadoDelegacionesDDL, "Valor", "Texto", Model.IdDelegacionBancoDestino),
+                                                           htmlAttributes: new { @class = "form-control", @id = "ddlListadoDelegacionesDestinoDDL", @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Detalle 1. Listado resumen
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <table class="table table-bordered mb-0 table-sm dataTable" id="tablaRegistrosListado1">
+                                            <thead>
+                                                <tr class="bg-light headerCustom">
+                                                    <th>Tipo Placa</th>
+                                                    <th>Cant. de Placas a Transferir</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="listadoPartialDetalleSolicitud">
+                                                @if (Model.TransferenciaPlacas_Listado1 != null && Model.TransferenciaPlacas_Listado1.Count > 0)
+                                                {
+                                                    foreach (var item in Model.TransferenciaPlacas_Listado1)
+                                                    {
+                                                        int index = 0;
+                                                        <tr>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.TiposPlacas.TipoPlaca)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.CantidadDisponiblesSerTransferidas)
+                                                            </td>
+                                                        </tr>
+                                                        index++;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            @Html.Label("Sin Información")
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Detalle 2. Listado de Placas Individuales seleccionadas automáticamente por el sistema
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <table class="table table-bordered mb-0 table-sm dataTable" id="tablaRegistrosListado2">
+                                            <thead>
+                                                <tr class="bg-light headerCustom">
+                                                    <th>Tipo Placa</th>
+                                                    <th>Número de Placa</th>
+                                                    <th>Estatus</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="listadoPartialDetalleSolicitud">
+                                                @if (Model.TransferenciaPlacas_Listado2.Where(x => x.Automatico == true) != null && Model.TransferenciaPlacas_Listado2.Where(x => x.Automatico == true).ToList().Count > 0)
+                                                {
+                                                    int index = 0;
+
+                                                    foreach (var item in Model.TransferenciaPlacas_Listado2.Where(x => x.Automatico == true).ToList())
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.TiposPlacas.TipoPlaca)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.NumeroPlaca)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.TiposEstatusPlacas.TipoEstatusPlacas)
+                                                            </td>
+                                                        </tr>
+                                                        index++;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td colspan="3">
+                                                            @Html.Label("Sin Información")
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Detalle 2. Listado de Placas Individuales seleccionadas manualmente por el usuario
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <table class="table table-bordered mb-0 table-sm dataTable" id="tablaRegistrosListado2">
+                                            <thead>
+                                                <tr class="bg-light headerCustom">
+                                                    <th>Tipo Placa</th>
+                                                    <th>Número de Placa</th>
+                                                    <th>Estatus</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="listadoPartialDetalleSolicitud">
+                                                @if (Model.TransferenciaPlacas_Listado2.Where(x => x.Automatico == false) != null && Model.TransferenciaPlacas_Listado2.Where(x => x.Automatico == false).ToList().Count > 0)
+                                                {
+                                                    int index = 0;
+
+                                                    foreach (var item in Model.TransferenciaPlacas_Listado2.Where(x => x.Automatico == false).ToList())
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.TiposPlacas.TipoPlaca)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.NumeroPlaca)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.TiposEstatusPlacas.TipoEstatusPlacas)
+                                                            </td>
+                                                        </tr>
+                                                        index++;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td colspan="3">
+                                                            @Html.Label("Sin Información")
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+@section scripts
+{
+    <script src="~/Content/js/datatables.js"></script>
+    <script src="~/Content/js/datatables.min.js"></script>
+    <script src="~/Content/js/datatables.bootstrap.js"></script>
+    <script src="~/Content/js/funciones-alertas.js"></script>
+    <script src="~/Scripts/Transferencias/Transferencias.js"></script>
+    <script>
+        $(document).ready(function () {
+            setTimeout(function () { CargaPackingList(); }, 300);
+        });
+
+    </script>
+}

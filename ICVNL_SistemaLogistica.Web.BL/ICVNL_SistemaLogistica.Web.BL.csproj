@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7F892CA7-EF86-4433-BBD6-5E8D3F9E6AED}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ICVNL_SistemaLogistica.Web.BL</RootNamespace>
+    <AssemblyName>ICVNL_SistemaLogistica.Web.BL</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Framework.Net.Transactions">
+      <HintPath>..\DLLs\Framework.Net.Transactions.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AlgoritmoGeneracionPlacas_BL.cs" />
+    <Compile Include="Archivos_BL.cs" />
+    <Compile Include="BitacoraEventos_BL.cs" />
+    <Compile Include="ConsultaPlacas_BL.cs" />
+    <Compile Include="Contratos_BL.cs" />
+    <Compile Include="Controles_DDL.cs" />
+    <Compile Include="DelegacionesBancos_BL.cs" />
+    <Compile Include="Estados_BL.cs" />
+    <Compile Include="InventarioPlacas_BL.cs" />
+    <Compile Include="NotasEntradasPlacas_BL.cs" />
+    <Compile Include="OrdenesCompra_BL.cs" />
+    <Compile Include="Parametrizacion_BL.cs" />
+    <Compile Include="Polizas_BL.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Proveedores_BL.cs" />
+    <Compile Include="SolicitudesPlacasRecepcion_BL.cs" />
+    <Compile Include="SolicitudesPlacas_BL.cs" />
+    <Compile Include="TiposIDS_BL.cs" />
+    <Compile Include="TiposPlacas_BL.cs" />
+    <Compile Include="TransferenciasPlacas_BL.cs" />
+    <Compile Include="Usuarios_API_BL.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ICVNL_SistemaLogistica.Web.DataAccess\ICVNL_SistemaLogistica.Web.DataAccess.csproj">
+      <Project>{bdf459ef-edef-45de-aaba-94fb91a728e0}</Project>
+      <Name>ICVNL_SistemaLogistica.Web.DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ICVNL_SistemaLogistica.Web.Entities\ICVNL_SistemaLogistica.Web.Entities.csproj">
+      <Project>{eebee101-aac1-439a-8fc4-94892ed589b7}</Project>
+      <Name>ICVNL_SistemaLogistica.Web.Entities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

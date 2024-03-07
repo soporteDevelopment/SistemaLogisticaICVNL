@@ -1,0 +1,23 @@
+create or replace PACKAGE spcpl_proveedores
+IS
+	FUNCTION version
+	RETURN NUMBER;
+
+	PROCEDURE consulta_listado(p_PROVC_NUMERO IN VARCHAR2,
+							  p_PROVC_NOMBRE IN VARCHAR2,
+							  p_PROVN_ACTIVO IN NUMBER,							  
+							  p_PROVN_ENTIDAD IN NUMBER,
+						      p_cursor_out OUT SYS_REFCURSOR);
+
+	PROCEDURE consulta_proveedor(p_PROVN_ID IN NUMBER,
+							 p_PROVN_ENTIDAD IN NUMBER,
+							 p_cursor_out OUT SYS_REFCURSOR);
+
+	PROCEDURE consulta_proveedor_combo(p_PROVN_ENTIDAD IN NUMBER,
+								 p_cursor_out OUT SYS_REFCURSOR);
+
+	PROCEDURE existe_proveedor(p_PROVC_NUMERO IN VARCHAR2,
+									p_PROVN_ENTIDAD IN NUMBER,
+									p_cursor_out OUT SYS_REFCURSOR);                   
+
+END spcpl_proveedores;

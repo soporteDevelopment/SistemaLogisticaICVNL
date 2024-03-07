@@ -1,0 +1,267 @@
+create or replace PACKAGE BODY spcpl_transf_placas_pl_op
+IS
+   c_version CONSTANT   NUMBER := 24.1501;
+   c_modulo  CONSTANT   NUMBER := 0;
+
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.1912 DEVTI   Elaboración del paquete.
+   -- 24.1001 DEVTI   Se agrega SP para el cambio de estatus de una transferencia
+   -- 24.1501 DEVTI   Se agrega SP para el update de un detalle (linea) de transferencia
+   --------------------------------------------------------------------------
+
+   ----
+   -- Variables Globales 
+   ----
+   -- Variables para manejo de errores. 
+   ----
+   -- Excepciones globales
+   ----
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+   RETURN c_version;
+   END VERSION;
+
+
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+	PROCEDURE agregar_transf_placas(p_TRNN_ID OUT NUMBER
+									,p_TRNC_USR_REG in VARCHAR2
+									,p_TRNN_BORRADO in NUMBER
+									,p_TRNN_ENTIDAD in NUMBER
+									,p_ETN_ID in NUMBER
+									,p_TRNN_FOLIO in VARCHAR2
+									,p_DBN_ID_ORIGEN in NUMBER
+									,p_DBN_ID_DESTINO in NUMBER
+									,p_TRNF_FECHA in DATE)
+	IS
+	BEGIN   
+
+		select  nvl(max(TRNN_ID),0) + 1  into p_TRNN_ID from CPL_TRANS_PL;
+
+		insert into CPL_TRANS_PL(TRNN_ID
+								,TRNC_USR_REG
+								,TRNN_BORRADO
+								,TRNN_ENTIDAD
+								,ETN_ID
+								,TRNN_FOLIO
+								,DBN_ID_ORIGEN
+								,DBN_ID_DESTINO
+								,TRNF_FECHA) 
+						values (p_TRNN_ID
+								,p_TRNC_USR_REG
+								,p_TRNN_BORRADO
+								,p_TRNN_ENTIDAD
+								,p_ETN_ID
+								,p_TRNN_FOLIO
+								,p_DBN_ID_ORIGEN
+								,p_DBN_ID_DESTINO
+								,p_TRNF_FECHA);
+
+	END agregar_transf_placas;
+
+	PROCEDURE modifica_transf_placas(p_TRNN_ID in NUMBER
+									,p_TRNC_USR_REG in VARCHAR2
+									,p_TRNN_BORRADO in NUMBER
+									,p_TRNN_ENTIDAD in NUMBER
+									,p_ETN_ID in NUMBER
+									,p_TRNN_FOLIO in VARCHAR2
+									,p_DBN_ID_ORIGEN in NUMBER
+									,p_DBN_ID_DESTINO in NUMBER
+									,p_TRNF_FECHA in DATE)
+	IS
+	BEGIN   
+
+		update CPL_TRANS_PL 
+		set	DBN_ID_ORIGEN = p_DBN_ID_ORIGEN
+			,DBN_ID_DESTINO = p_DBN_ID_DESTINO
+		where TRNN_FOLIO = p_TRNN_FOLIO;
+
+	END modifica_transf_placas;
+
+	PROCEDURE agregar_transf_placas_dp(p_TDPC_NOMBRE in varchar2
+										,p_TIN_ID in number
+										,p_TDPN_BORRADO in number
+										,p_TRNN_ID in number
+										,p_TDPN_ENTIDAD in number
+										,p_TDPN_NUMEROID in number
+										,p_TDPC_APELLIDO in varchar2
+										,p_TDPC_TIPO in varchar2
+										,p_TDPN_ID out number)
+	IS
+	BEGIN   
+
+		select  nvl(max(TDPN_ID),0) + 1  into p_TDPN_ID from CPL_TRANS_PL_DP;
+
+		insert into CPL_TRANS_PL_DP(TDPC_NOMBRE
+									,TIN_ID
+									,TDPN_BORRADO
+									,TRNN_ID
+									,TDPN_ENTIDAD
+									,TDPN_NUMEROID
+									,TDPC_APELLIDO
+									,TDPC_TIPO
+									,TDPN_ID) 
+							values (p_TDPC_NOMBRE
+									,p_TIN_ID
+									,p_TDPN_BORRADO
+									,p_TRNN_ID
+									,p_TDPN_ENTIDAD
+									,p_TDPN_NUMEROID
+									,p_TDPC_APELLIDO
+									,p_TDPC_TIPO
+									,p_TDPN_ID);
+
+	END agregar_transf_placas_dp;
+
+	PROCEDURE agregar_transf_placas_tr(p_TTC_MARCAVEHICULO in varchar2
+										,p_TTC_TIPO in varchar2
+										,p_TRNN_ID in number
+										,p_TTC_NUMEROECONOMICO in varchar2
+										,p_TTN_ID out number
+										,p_TTC_PLACASVEHICULO in varchar2
+										,p_TTC_MODELOVEHICULO in varchar2
+										,p_TTN_BORRADO in number
+										,p_TTN_ENTIDAD in number)
+	IS
+	BEGIN   
+
+		select  nvl(max(TTN_ID),0) + 1  into p_TTN_ID from CPL_TRANS_PL_TRANSPORTE;
+
+		insert into CPL_TRANS_PL_TRANSPORTE(TTC_MARCAVEHICULO
+											,TTC_TIPO
+											,TRNN_ID
+											,TTC_NUMEROECONOMICO
+											,TTN_ID
+											,TTC_PLACASVEHICULO
+											,TTC_MODELOVEHICULO
+											,TTN_BORRADO
+											,TTN_ENTIDAD) 
+									values (p_TTC_MARCAVEHICULO
+											,p_TTC_TIPO
+											,p_TRNN_ID
+											,p_TTC_NUMEROECONOMICO
+											,p_TTN_ID
+											,p_TTC_PLACASVEHICULO
+											,p_TTC_MODELOVEHICULO
+											,p_TTN_BORRADO
+											,p_TTN_ENTIDAD);
+
+	END agregar_transf_placas_tr;
+
+	PROCEDURE agregar_transf_placas_det(p_DPN_ID out number
+										,p_DPN_BORRADO in number
+										,p_DPF_FECHAESTATUSPLACA in date
+										,p_DPN_ENTIDAD in number
+										,p_TRNN_ID in number
+										,p_DPN_AUTOMATICO in number
+										,p_DPN_TRANSFERENCIA_IND in number
+										,p_DPC_USUARIORECIBIO in varchar2										
+										,p_DPC_NUMEROPLACA in varchar2
+										,p_TPN_ID in number
+										,p_TENP_ID in number
+										,p_DPN_TRANSFERIRPLACA in number)
+	IS
+	BEGIN   
+
+		select  nvl(max(DPN_ID),0) + 1  into p_DPN_ID from CPL_TRANS_PL_DET_PLACAS;
+
+		insert into CPL_TRANS_PL_DET_PLACAS(DPN_BORRADO
+										,DPF_FECHAESTATUSPLACA
+										,DPN_ENTIDAD
+										,TRNN_ID
+										,DPN_AUTOMATICO
+										,DPN_TRANSFERENCIA_IND
+										,DPC_USUARIORECIBIO
+										,DPN_ID
+										,DPC_NUMEROPLACA
+										,TPN_ID
+										,TENP_ID
+										,DPN_TRANSFERIRPLACA) 
+								values (p_DPN_BORRADO
+										,p_DPF_FECHAESTATUSPLACA
+										,p_DPN_ENTIDAD
+										,p_TRNN_ID
+										,p_DPN_AUTOMATICO
+										,p_DPN_TRANSFERENCIA_IND
+										,p_DPC_USUARIORECIBIO
+										,p_DPN_ID
+										,p_DPC_NUMEROPLACA
+										,p_TPN_ID
+										,p_TENP_ID
+										,p_DPN_TRANSFERIRPLACA);
+
+	END agregar_transf_placas_det;
+    
+    PROCEDURE modifica_transf_placas_det(p_DPN_ENTIDAD in number
+                                        ,p_TRNN_ID in number
+                                        ,p_DPC_NUMEROPLACA in varchar2
+										,p_DPC_USUARIORECIBIO in varchar2
+                                        ,p_DPN_TRANSFERENCIA_IND in number)
+    IS
+	BEGIN                                    
+            UPDATE CPL_TRANS_PL_DET_PLACAS
+            SET DPC_USUARIORECIBIO = p_DPC_USUARIORECIBIO
+               ,DPN_TRANSFERENCIA_IND = p_DPN_TRANSFERENCIA_IND
+            WHERE DPN_ENTIDAD = p_DPN_ENTIDAD
+            AND DPC_NUMEROPLACA = p_DPC_NUMEROPLACA
+            AND TRNN_ID = p_TRNN_ID;    
+    
+    END modifica_transf_placas_det;
+    
+	PROCEDURE elimina_transf_placas_dp(p_TRNN_ID in number, p_TDPC_TIPO in varchar2)
+	IS
+	BEGIN   
+
+		delete from CPL_TRANS_PL_DP 
+		where TRNN_ID = p_TRNN_ID
+		AND TDPC_TIPO = p_TDPC_TIPO;
+
+	END elimina_transf_placas_dp;	
+
+	PROCEDURE elimina_transf_placas_tr(p_TRNN_ID in number,p_TTC_TIPO in varchar2)
+	IS
+	BEGIN   
+
+		delete from CPL_TRANS_PL_TRANSPORTE
+		where TRNN_ID = p_TRNN_ID
+		AND TTC_TIPO = p_TTC_TIPO;
+
+	END elimina_transf_placas_tr;	
+
+	PROCEDURE delete_transf_placas_det(p_TRNN_ID in number										
+										,p_DPN_ENTIDAD in number)	
+	IS
+	BEGIN   
+
+		delete from CPL_TRANS_PL_DET_PLACAS where TRNN_ID = p_TRNN_ID and DPN_ENTIDAD = p_DPN_ENTIDAD;
+
+	END delete_transf_placas_det;
+
+
+	PROCEDURE cambia_estatus_transf_placas(p_TRNN_ID in number, p_ETN_ID in number)
+	IS
+	BEGIN
+    
+		update CPL_TRANS_PL 
+        set ETN_ID = p_ETN_ID
+        where TRNN_ID = p_TRNN_ID;
+        
+	END cambia_estatus_transf_placas;
+
+
+END spcpl_transf_placas_pl_op;

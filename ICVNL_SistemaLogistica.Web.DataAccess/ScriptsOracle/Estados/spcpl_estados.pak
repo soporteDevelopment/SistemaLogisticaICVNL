@@ -1,0 +1,21 @@
+create or replace PACKAGE spcpl_estados
+IS
+	FUNCTION version
+	RETURN NUMBER;
+
+   PROCEDURE consulta_listado(p_esn_entidad NUMBER,
+						      p_ESN_ACTIVO NUMBER,
+						      p_cursor_out OUT SYS_REFCURSOR);
+
+   PROCEDURE consulta_estado(p_ESN_ID NUMBER,
+							 p_esn_entidad NUMBER,
+							 p_cursor_out OUT SYS_REFCURSOR);
+
+	PROCEDURE consulta_estados_combo(p_esn_entidad VARCHAR2,
+										  p_cursor_out OUT SYS_REFCURSOR);
+
+	PROCEDURE existe_estado(p_ESC_NOMBRE VARCHAR2,
+                                    p_esn_entidad numeric,
+                                    p_cursor_out OUT SYS_REFCURSOR);                   
+
+END spcpl_estados;

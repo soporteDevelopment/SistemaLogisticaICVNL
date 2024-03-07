@@ -1,0 +1,189 @@
+create or replace PACKAGE BODY spcpl_notasentrada_pl
+IS
+
+   c_version CONSTANT   NUMBER := 23.1912;
+   c_modulo  CONSTANT   NUMBER := 0;
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.1912 DEVTI   Elaboración del paquete.
+   -- 
+   --------------------------------------------------------------------------
+   ----
+   -- Tipos globales
+   ----
+   ----
+   -- Variables Globales
+   ----
+   -- Variables para manejo de errores.
+   g_mensaje_error      VARCHAR2(4000);
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+      RETURN c_version;
+   END version;
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+
+   PROCEDURE consulta_listado(p_NEN_NUMERO IN VARCHAR2,
+							  p_NEF_FECHA_INI IN DATE,
+							  p_NEF_FECHA_FIN IN DATE,
+							  p_OCN_NUMERO IN VARCHAR2,
+							  p_OCF_FECHA_INI IN DATE,
+							  p_OCF_FECHA_FIN IN DATE,
+							  p_ENEN_ID IN NUMBER,
+							  p_NEN_ENTIDAD IN NUMBER,
+						      p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+		OPEN p_cursor_out FOR
+		SELECT CPL_NOTAS_ENT_PL.NEN_ID,
+               CPL_NOTAS_ENT_PL.NEN_NUMERO,
+			   CPL_NOTAS_ENT_PL.NEF_FECHA,
+			   CPL_ORDENES_COMPRA.OCN_NUMERO,
+			   CPL_ORDENES_COMPRA.OCF_FECHA,
+			   (SELECT SUM(NEDN_CANTIDADPLACAS) FROM CPL_NOTAS_ENT_PL_DET WHERE CPL_NOTAS_ENT_PL_DET.NEN_ID = CPL_NOTAS_ENT_PL.NEN_ID) AS NEDN_CANTIDADPLACAS,
+			   (SELECT SUM(NEDN_CANT_PL_X_IDENT) FROM CPL_NOTAS_ENT_PL_DET WHERE CPL_NOTAS_ENT_PL_DET.NEN_ID = CPL_NOTAS_ENT_PL.NEN_ID) AS NEDN_CANT_PL_X_IDENT,
+			   (SELECT SUM(NEDN_CANT_PL_IDENT) FROM CPL_NOTAS_ENT_PL_DET WHERE CPL_NOTAS_ENT_PL_DET.NEN_ID = CPL_NOTAS_ENT_PL.NEN_ID) AS NEDN_CANT_PL_IDENT,
+			   CASE CPL_NOTAS_ENT_PL.ENEN_ID WHEN 1 THEN 'Notas de Entrada con todas sus placas identificadas' ELSE 'Notas de Entrada con placas pendientes de ser identificadas' END AS ESTATUS1,
+               CPL_NOTAS_ENT_PL.ENEN_ID
+		FROM CPL_NOTAS_ENT_PL
+		INNER JOIN CPL_ORDENES_COMPRA ON CPL_ORDENES_COMPRA.OCN_ID = CPL_NOTAS_ENT_PL.OCN_ID
+		WHERE CPL_NOTAS_ENT_PL.NEN_ENTIDAD = p_NEN_ENTIDAD
+		AND (p_NEN_NUMERO = '' OR UPPER(CPL_NOTAS_ENT_PL.NEN_NUMERO) like '%'|| UPPER(p_NEN_NUMERO)||'%')  
+		AND (CPL_NOTAS_ENT_PL.NEF_FECHA >= p_NEF_FECHA_INI AND CPL_NOTAS_ENT_PL.NEF_FECHA <= p_NEF_FECHA_FIN) 
+		AND (p_OCN_NUMERO = '' OR UPPER(CPL_ORDENES_COMPRA.OCN_NUMERO) like '%'|| UPPER(p_OCN_NUMERO)||'%')  
+		AND (CPL_ORDENES_COMPRA.OCF_FECHA >= p_OCF_FECHA_INI AND CPL_ORDENES_COMPRA.OCF_FECHA <= p_OCF_FECHA_FIN)   
+		AND (p_ENEN_ID = 0 OR CPL_NOTAS_ENT_PL.ENEN_ID = p_ENEN_ID)    
+		AND CPL_NOTAS_ENT_PL.NEN_BORRADO = 0;
+
+   END consulta_listado;    
+
+
+    PROCEDURE consulta_notasentrada_enc(p_NEN_ID IN NUMBER,
+									   p_NEN_ENTIDAD IN NUMBER,
+								       p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT CPL_NOTAS_ENT_PL.NEC_USR
+			,NEN_BORRADO
+			,ENEN_ID
+			,CPL_NOTAS_ENT_PL.OCN_ID
+			,NEN_ID
+			,NEF_FECHA
+			,NEN_ENTIDAD
+			,NEN_NUMERO            
+            ,(SELECT SUM(NEDN_CANTIDADPLACAS) FROM CPL_NOTAS_ENT_PL_DET WHERE CPL_NOTAS_ENT_PL_DET.NEN_ID = CPL_NOTAS_ENT_PL.NEN_ID) AS NEDN_CANTIDADPLACAS
+			,(SELECT SUM(NEDN_CANT_PL_X_IDENT) FROM CPL_NOTAS_ENT_PL_DET WHERE CPL_NOTAS_ENT_PL_DET.NEN_ID = CPL_NOTAS_ENT_PL.NEN_ID) AS NEDN_CANT_PL_X_IDENT
+			,(SELECT SUM(NEDN_CANT_PL_IDENT) FROM CPL_NOTAS_ENT_PL_DET WHERE CPL_NOTAS_ENT_PL_DET.NEN_ID = CPL_NOTAS_ENT_PL.NEN_ID) AS NEDN_CANT_PL_IDENT
+            ,CPL_ORDENES_COMPRA.OCN_NUMERO
+            ,CPL_ORDENES_COMPRA.OCF_FECHA
+            ,CASE CPL_NOTAS_ENT_PL.ENEN_ID WHEN 1 THEN 'Notas de Entrada con todas sus placas identificadas' ELSE 'Notas de Entrada con placas pendientes de ser identificadas' END AS ESTATUS1
+		FROM CPL_NOTAS_ENT_PL  
+        INNER JOIN CPL_ORDENES_COMPRA ON CPL_ORDENES_COMPRA.OCN_ID = CPL_NOTAS_ENT_PL.OCN_ID
+		where NEN_ENTIDAD = p_NEN_ENTIDAD
+		AND NEN_ID =  p_NEN_ID    
+		and NEN_BORRADO = 0;
+
+   END consulta_notasentrada_enc; 
+
+   PROCEDURE consulta_notasentrada_det(p_NEN_ID IN NUMBER,
+									   p_NEN_ENTIDAD IN NUMBER,
+								       p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT ENEN_ID
+			,NEDN_ENTIDAD
+			,NEDN_COSTOPLACA
+			,NEDN_COSTOTOTAL
+			,NEDN_BORRADO
+			,NEDN_CANT_PL_IDENT
+			,NEN_ID
+			,NEDN_CANTIDADPLACAS
+			,NEDN_CANT_PL_X_IDENT
+			,TPN_ID
+			,NEDN_ID
+			,NEDN_NUM_RENGLON            
+		FROM CPL_NOTAS_ENT_PL_DET  
+		where NEDN_ENTIDAD = p_NEN_ENTIDAD
+		AND NEN_ID =  p_NEN_ID    
+		and NEDN_BORRADO = 0;
+
+   END consulta_notasentrada_det;  
+
+ PROCEDURE consulta_notasentrada_fol_enc(p_NEN_NUMERO IN NUMBER,
+									   p_NEN_ENTIDAD IN NUMBER,
+								       p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT CPL_NOTAS_ENT_PL.NEC_USR
+			,NEN_BORRADO
+			,ENEN_ID
+			,CPL_NOTAS_ENT_PL.OCN_ID
+			,NEN_ID
+			,NEF_FECHA
+			,NEN_ENTIDAD
+			,NEN_NUMERO            
+            ,(SELECT SUM(NEDN_CANTIDADPLACAS) FROM CPL_NOTAS_ENT_PL_DET WHERE CPL_NOTAS_ENT_PL_DET.NEN_ID = CPL_NOTAS_ENT_PL.NEN_ID) AS NEDN_CANTIDADPLACAS
+			,(SELECT SUM(NEDN_CANT_PL_X_IDENT) FROM CPL_NOTAS_ENT_PL_DET WHERE CPL_NOTAS_ENT_PL_DET.NEN_ID = CPL_NOTAS_ENT_PL.NEN_ID) AS NEDN_CANT_PL_X_IDENT
+			,(SELECT SUM(NEDN_CANT_PL_IDENT) FROM CPL_NOTAS_ENT_PL_DET WHERE CPL_NOTAS_ENT_PL_DET.NEN_ID = CPL_NOTAS_ENT_PL.NEN_ID) AS NEDN_CANT_PL_IDENT
+            ,CPL_ORDENES_COMPRA.OCN_NUMERO
+            ,CPL_ORDENES_COMPRA.OCF_FECHA
+            ,CASE CPL_NOTAS_ENT_PL.ENEN_ID WHEN 1 THEN 'Notas de Entrada con todas sus placas identificadas' ELSE 'Notas de Entrada con placas pendientes de ser identificadas' END AS ESTATUS1
+		FROM CPL_NOTAS_ENT_PL  
+        INNER JOIN CPL_ORDENES_COMPRA ON CPL_ORDENES_COMPRA.OCN_ID = CPL_NOTAS_ENT_PL.OCN_ID
+		where NEN_ENTIDAD = p_NEN_ENTIDAD
+		AND NEN_NUMERO =  p_NEN_NUMERO    
+		and NEN_BORRADO = 0;
+
+   END consulta_notasentrada_fol_enc; 
+
+   PROCEDURE consulta_notasentrada_fol_det(p_NEN_NUMERO IN VARCHAR2,
+									   p_NEN_ENTIDAD IN NUMBER,
+								       p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT CPL_NOTAS_ENT_PL_DET.NEDN_ENTIDAD
+			,CPL_NOTAS_ENT_PL_DET.NEDN_COSTOPLACA
+			,CPL_NOTAS_ENT_PL_DET.NEDN_COSTOTOTAL
+			,CPL_NOTAS_ENT_PL_DET.NEDN_BORRADO
+			,CPL_NOTAS_ENT_PL_DET.NEDN_CANT_PL_IDENT
+			,CPL_NOTAS_ENT_PL_DET.NEN_ID
+			,CPL_NOTAS_ENT_PL_DET.NEDN_CANTIDADPLACAS
+			,CPL_NOTAS_ENT_PL_DET.NEDN_CANT_PL_X_IDENT
+			,CPL_NOTAS_ENT_PL_DET.TPN_ID
+            ,CPL_TIPOS_PLACAS.TPC_TIPOPLACA
+			,CPL_NOTAS_ENT_PL_DET.NEDN_ID
+			,CPL_NOTAS_ENT_PL_DET.NEDN_NUM_RENGLON       
+            ,CPL_NOTAS_ENT_PL.ENEN_ID
+		FROM CPL_NOTAS_ENT_PL_DET  
+        INNER JOIN CPL_NOTAS_ENT_PL ON CPL_NOTAS_ENT_PL.NEN_ID = CPL_NOTAS_ENT_PL_DET.NEN_ID
+        INNER JOIN CPL_TIPOS_PLACAS ON CPL_TIPOS_PLACAS.TPN_ID = CPL_NOTAS_ENT_PL_DET.TPN_ID
+		where CPL_NOTAS_ENT_PL_DET.NEDN_ENTIDAD = p_NEN_ENTIDAD
+		AND CPL_NOTAS_ENT_PL.NEN_NUMERO = p_NEN_NUMERO    
+		and CPL_NOTAS_ENT_PL_DET.NEDN_BORRADO = 0;
+
+   END consulta_notasentrada_fol_det;  
+
+END spcpl_notasentrada_pl;

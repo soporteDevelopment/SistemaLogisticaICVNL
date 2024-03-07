@@ -1,0 +1,60 @@
+﻿@model IEnumerable<ICVNL_SistemaLogistica.Web.Models.Listado_SolicitudesPlacasRecepcion_RecibirPlacasModel>
+
+@if (Model != null && Model.Count() > 0)
+{
+    int index = 0;
+    foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaHoraRegistro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Proveedores.NombreProveedor)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumeroCaja)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DelegacionesBancos.NombreDelegacionBanco)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TiposPlacas.TipoPlaca)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rangos)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CantidadLaminas)
+            </td> 
+            <td align="center">
+                @if (item.IdEventoRecepcion != 0)
+                {
+                    <button class="btn btn-xs blue btn-icon-circle tooltips" type="button"
+                            data-container="body" data-toggle="tooltip" data-original-title="Ver Validaciones"
+                            onclick="location.href='ValidacionesRecepcionPlacas?IdEventoRecepcion=@item.IdEventoRecepcion&IdRecepcion=@item.IdRecepcion'">
+                        <literal class="HiddeLabel">Validaciones</literal>
+                        <i class="fa fa-pencil mr-0 ml-0 HiddenIClass"></i>
+                    </button>
+                }
+
+                @if (HttpContext.Current.Session["UserSC"] != null &&
+                    ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_RecepcionSolicitudesPlacasProveedor.RecibirPlacaEliminar)
+                {
+                    if (item.IdEventoRecepcion != 0)
+                    {
+                        <button class="btn btn-xs red btn-icon-circle tooltips" type="button"
+                                data-container="body" data-toggle="tooltip" data-original-title="Eliminar"
+                                onclick="if (!ShowConfirmation('¿Desea eliminar el evento de esta caja?',
+                            '@Url.Action("DeleteEventoCaja", "SolicitudesPlacasRecepcion", new { id = item.IdEventoRecepcion })')) return false;">
+                            <literal class="HiddeLabel">Eliminar</literal>
+                            <i class="fa fa-times mr-0 ml-0 HiddenIClass"></i>
+                        </button>
+                    }
+                }
+
+            </td>
+        </tr>
+        index++;
+    }
+}

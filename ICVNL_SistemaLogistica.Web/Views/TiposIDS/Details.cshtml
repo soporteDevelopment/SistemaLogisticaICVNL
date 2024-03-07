@@ -1,0 +1,83 @@
+﻿@model ICVNL_SistemaLogistica.Web.ViewModels.Detalle_TiposIDSVM
+
+@{
+    ViewBag.Title = "Administración de Tipos de IDs";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-10">
+                <h1 class="page-title">
+                    Administración de Tipos de IDs
+                    <small>Sistema de Logística de Control de Placas&nbsp;</small>
+                </h1>
+            </div>
+        </div>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+            <div class="row widget-row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Detalle
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-actions ">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        @if (HttpContext.Current.Session["UserSC"] != null &&
+                                        ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_TiposIDS.Actualizar)
+                                        {
+                                            <button type="submit" class="btn dark margin-right-10">
+                                                Guardar
+                                                <i class="fa fa-save"></i>
+                                            </button>
+                                        } 
+
+                                        <button type="button" class="btn default grey" onclick="location.href='@Url.Action("Index", "TiposIDS")';">
+                                            Regresar
+                                            <i class="fa fa-chevron-circle-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-body"> 
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-6" id="divId">
+                                            <label class="control-label">Id</label>
+                                            <div class="input-group">
+                                                <p class="form-control-static">
+                                                    @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.TipoID, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.TipoID, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
+                                            @Html.ValidationMessageFor(model => model.TipoID, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

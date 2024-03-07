@@ -1,0 +1,57 @@
+create or replace PACKAGE spcpl_contratos_op
+IS
+   FUNCTION version
+   RETURN NUMBER;
+
+	PROCEDURE agregar_contrato(p_CONN_BORRADO in NUMERIC
+								,p_CONN_ENTIDAD in NUMERIC
+								,p_CONC_NUMERO in VARCHAR2
+								,p_CONC_USR_REG in VARCHAR2
+								,p_CONF_REGISTRO in DATE
+								,p_CONN_ESTATUS in VARCHAR2
+								,p_CONN_ID OUT NUMERIC
+                                ,p_CONN_ACTIVO in NUMERIC);
+
+
+	PROCEDURE agregar_contrato_det(p_CONDC_RANGOFINAL in VARCHAR2
+									,p_CONDN_BORRADO in NUMERIC
+									,p_CONDN_CANTIDADPLACAS in NUMERIC
+									,p_TPN_ID NUMERIC
+									,p_CONDC_MASCARAPLACA in VARCHAR2
+									,p_CONN_ID in NUMERIC
+									,p_CONDC_ORDENPLACA in VARCHAR2
+									,p_CONDN_CANTIDADPLACASCAJA in NUMERIC
+									,p_CONDN_ENTIDAD in NUMERIC
+									,p_CONDC_OFICIOSICT in VARCHAR2
+									,p_CONDN_ID OUT NUMERIC
+									,p_CONDC_RANGOINICIAL in VARCHAR2
+									,p_PROVN_ID in NUMERIC);
+
+	PROCEDURE agregar_contrato_det_rng(p_CDRN_ENTIDAD in NUMERIC
+										,p_CONDN_ID in NUMERIC
+										,p_CDRC_RANGOINICIAL in VARCHAR2
+										,p_CDRN_CANTIDADSERIE in NUMERIC
+										,p_CDRN_BORRADO in NUMERIC
+										,p_CDRN_ID out NUMERIC
+										,p_CDRC_RANGOFINAL in VARCHAR2);
+
+	PROCEDURE modificar_contrato(p_CONN_BORRADO in NUMERIC
+								,p_CONN_ENTIDAD in NUMERIC
+								,p_CONC_NUMERO in VARCHAR2
+								,p_CONC_USR_REG in VARCHAR2
+								,p_CONF_REGISTRO in DATE
+								,p_CONN_ESTATUS in VARCHAR2
+								,p_CONN_ID OUT NUMERIC
+                                ,p_CONN_ACTIVO in NUMERIC);
+
+	PROCEDURE eliminar_contrato_det(p_CONN_ID in NUMBER);
+
+
+	PROCEDURE eliminar_contrato_det_rng(p_CONDN_ID in NUMBER);
+
+
+	PROCEDURE inactiva_contrato(p_CONN_ID in number);	
+
+
+
+END spcpl_contratos_op;

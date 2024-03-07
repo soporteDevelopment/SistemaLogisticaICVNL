@@ -1,0 +1,33 @@
+create or replace PACKAGE spcpl_solicitud_pl
+IS
+	FUNCTION version
+	RETURN NUMBER;
+
+   PROCEDURE consulta_listado(p_SOLC_FOLIO IN VARCHAR2,
+							  p_SOLF_FECHA_INI IN DATE,
+							  p_SOLF_FECHA_FIN IN DATE,
+							  p_SOLF_FECHAENTREGA_INI IN DATE,
+							  p_SOLF_FECHAENTREGA_FIN IN DATE,
+							  P_PROVN_ID IN NUMERIC,
+							  p_CONC_NUMERO IN VARCHAR2,
+							  p_OCN_NUMERO IN NUMERIC,
+							  p_SOLN_ENTIDAD IN NUMERIC,
+						      p_cursor_out OUT SYS_REFCURSOR);
+
+    PROCEDURE consulta_solicitud_enc(p_SOLN_ID IN NUMBER,
+									p_SOLN_ENTIDAD IN NUMBER,
+								    p_cursor_out OUT SYS_REFCURSOR);
+
+
+    PROCEDURE consulta_solicitud_det(p_SOLN_ID IN NUMBER,
+								   p_SOLDN_ENTIDAD IN NUMBER,
+								   p_cursor_out OUT SYS_REFCURSOR); 	
+                                   
+    PROCEDURE consulta_solicitud_sigfolio(p_cursor_out OUT SYS_REFCURSOR);
+	
+	
+	PROCEDURE consulta_solicitud_delbanco(p_DBN_ID IN NUMERIC,
+										  p_dbn_entidad NUMBER,
+									      p_cursor_out OUT SYS_REFCURSOR);
+
+END spcpl_solicitud_pl;

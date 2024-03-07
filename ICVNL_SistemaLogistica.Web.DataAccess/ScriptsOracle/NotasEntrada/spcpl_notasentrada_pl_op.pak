@@ -1,0 +1,32 @@
+create or replace PACKAGE spcpl_notasentrada_pl_op
+IS
+   FUNCTION version
+   RETURN NUMBER;
+
+	PROCEDURE agregar_notaentrada(p_NEC_USR in VARCHAR2
+								 ,p_NEN_BORRADO in NUMBER
+								 ,p_ENEN_ID in NUMBER
+								 ,p_OCN_ID in NUMBER
+								 ,p_NEN_ID OUT NUMBER
+								 ,p_NEF_FECHA in DATE
+								 ,p_NEN_ENTIDAD in NUMBER
+								 ,p_NEN_NUMERO in NUMBER);
+
+	PROCEDURE agregar_notaentrada_det(p_ENEN_ID in NUMBER
+									 ,p_NEDN_ENTIDAD in NUMBER
+                                     ,p_NEDN_CTA_CON_CARGO in NUMBER
+									 ,p_NEDN_COSTOPLACA in NUMBER
+									 ,p_NEDN_COSTOTOTAL in NUMBER
+									 ,p_NEDN_BORRADO in NUMBER
+									 ,p_NEDN_CANT_PL_IDENT in NUMBER
+									 ,p_NEN_ID in NUMBER
+									 ,p_NEDN_CANTIDADPLACAS in NUMBER
+									 ,p_NEDN_CANT_PL_X_IDENT in NUMBER
+									 ,p_TPN_ID in NUMBER
+									 ,p_NEDN_ID out NUMBER
+									 ,p_NEDN_NUM_RENGLON in NUMBER);
+
+	PROCEDURE inactiva_notaentrada(p_NEN_ID in number);
+
+
+END spcpl_notasentrada_pl_op;

@@ -1,0 +1,193 @@
+create or replace PACKAGE BODY spcpl_ordenescompra
+IS
+
+   c_version CONSTANT   NUMBER := 23.1312;
+   c_modulo  CONSTANT   NUMBER := 0;
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.0612 DEVTI   Elaboración del paquete.
+   -- 
+   --------------------------------------------------------------------------
+   ----
+   -- Tipos globales
+   ----
+   ----
+   -- Variables Globales
+   ----
+   -- Variables para manejo de errores.
+   g_mensaje_error      VARCHAR2(4000);
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+      RETURN c_version;
+   END version;
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+   
+   PROCEDURE consulta_ordencompra_enc(p_OCN_ID IN NUMBER,
+									p_OCN_ENTIDAD IN NUMBER,
+								    p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT OCN_BORRADO
+            ,OCN_ID
+            ,DBN_IDRECIBE
+            ,OCF_FECHA
+            ,PROVN_ID
+            ,OCN_ENTIDAD
+            ,OCN_NUMERO
+            ,OCF_FECHA_AUT
+            ,OCC_ENTIDADINFOFIN
+		FROM CPL_ORDENES_COMPRA  
+		where OCN_ENTIDAD = OCN_ENTIDAD
+		AND p_OCN_ID =  p_OCN_ID    
+		and OCN_BORRADO = 0;
+
+   END consulta_ordencompra_enc; 
+
+   PROCEDURE consulta_ordencompra_det(p_OCN_ID IN NUMBER,
+								   p_OCDN_ENTIDAD IN NUMBER,
+								   p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT OCN_ID
+            ,OCDC_CUENTACONTABLE
+            ,OCDN_COSTOTOTAL
+            ,OCDN_COSTOPLACA
+            ,OCDN_ENTIDAD
+            ,TPN_ID
+            ,OCDN_RENGLON_NE
+            ,OCDN_BORRADO
+            ,OCDC_COD_ART_TP
+            ,OCDC_CEN_COSTOS_ALM
+            ,OCDN_CANTIDADPIEZAS
+            ,OCDN_ID
+            ,OCDF_FECHA_REC_TP
+            ,OCDN_RENGLON
+		FROM CPL_ORDENES_COMPRA_DET  
+		where OCDN_ENTIDAD = p_OCDN_ENTIDAD
+		AND OCN_ID =  p_OCN_ID;
+
+   END consulta_ordencompra_det;  
+   
+   PROCEDURE consulta_ordencompra_enc_folio(p_OCN_NUMERO IN VARCHAR2,
+									p_OCN_ENTIDAD IN NUMBER,
+								    p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT OCN_BORRADO
+            ,OCN_ID
+            ,DBN_IDRECIBE
+            ,OCF_FECHA
+            ,PROVN_ID
+            ,OCN_ENTIDAD
+            ,OCN_NUMERO
+            ,OCF_FECHA_AUT
+            ,OCC_ENTIDADINFOFIN
+		FROM CPL_ORDENES_COMPRA  
+		where OCN_ENTIDAD = OCN_ENTIDAD
+		AND OCN_NUMERO =  p_OCN_NUMERO    
+		and OCN_BORRADO = 0;
+
+   END consulta_ordencompra_enc_folio; 
+   
+   PROCEDURE consulta_oc_tipoplaca(p_OCN_ID IN NUMBER,
+                                    p_TPN_ID IN NUMBER,
+									p_OCDN_ENTIDAD IN NUMBER,
+									p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+		OPEN p_cursor_out FOR
+        SELECT cpl_ordenes_compra_det.ocdn_id AS IdDetalleOrdenCompra
+        FROM CPL_ORDENES_COMPRA_DET  
+        WHERE OCN_ID = p_OCN_ID
+        AND OCDN_ENTIDAD = p_OCDN_ENTIDAD
+        AND TPN_ID = p_TPN_ID;
+
+   END consulta_oc_tipoplaca;
+   
+  PROCEDURE consulta_oc_cant_det(p_OCDN_ID IN NUMBER,
+									p_OCDN_ENTIDAD IN NUMBER,
+									p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+		OPEN p_cursor_out FOR
+        SELECT OCDN_CANTIDADPIEZAS    
+        FROM CPL_ORDENES_COMPRA_DET  
+        WHERE OCDN_ID = p_OCDN_ID
+        AND OCDN_ENTIDAD = p_OCDN_ENTIDAD;
+
+   END consulta_oc_cant_det;
+   
+   
+    PROCEDURE consulta_ordencompra_combo(p_OCN_ENTIDAD IN NUMBER,
+                                         p_cursor_out OUT SYS_REFCURSOR)
+    IS
+    BEGIN
+    
+    OPEN p_cursor_out FOR
+    SELECT OCN_ID as Valor,
+           OCN_NUMERO as Texto
+    FROM CPL_ORDENES_COMPRA  
+    where OCN_ENTIDAD = p_OCN_ENTIDAD 
+    and OCN_BORRADO = 0;
+    
+    END consulta_ordencompra_combo;
+   
+    PROCEDURE consulta_oc_prov_combo(p_PROVN_ID IN NUMBER,
+									p_OCN_ENTIDAD IN NUMBER,
+									p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+		OPEN p_cursor_out FOR
+		SELECT OCN_ID as Valor,
+			   OCN_NUMERO as Texto
+		FROM CPL_ORDENES_COMPRA  
+		where OCN_ENTIDAD = p_OCN_ENTIDAD
+		AND PROVN_ID = p_PROVN_ID 
+		and OCN_BORRADO = 0;
+
+   END consulta_oc_prov_combo;
+   
+   PROCEDURE consulta_oc_tipoplaca_combo(p_OCN_ID IN NUMBER,
+                                        p_CONN_ID IN NUMBER,
+                                        p_OCDN_ENTIDAD IN NUMBER,
+                                        p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+		OPEN p_cursor_out FOR
+        SELECT CPL_TIPOS_PLACAS.TPN_ID AS Valor,
+               CPL_TIPOS_PLACAS.TPC_TIPOPLACA AS Texto
+        FROM CPL_ORDENES_COMPRA_DET 
+        INNER JOIN CPL_TIPOS_PLACAS ON CPL_ORDENES_COMPRA_DET.TPN_ID = CPL_TIPOS_PLACAS.TPN_ID
+        INNER JOIN CPL_CONTRATOS_DET ON CPL_CONTRATOS_DET.TPN_ID = CPL_TIPOS_PLACAS.TPN_ID
+        WHERE CPL_ORDENES_COMPRA_DET.OCN_ID = p_OCN_ID
+        AND CPL_ORDENES_COMPRA_DET.OCDN_ENTIDAD = p_OCDN_ENTIDAD
+        AND CPL_CONTRATOS_DET.CONN_ID = p_CONN_ID;
+
+   END consulta_oc_tipoplaca_combo;
+
+END spcpl_ordenescompra;

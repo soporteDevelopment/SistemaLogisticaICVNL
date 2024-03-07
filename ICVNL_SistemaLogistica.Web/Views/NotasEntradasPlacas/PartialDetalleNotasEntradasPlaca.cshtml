@@ -1,0 +1,19 @@
+﻿@model IEnumerable<ICVNL_SistemaLogistica.Web.Models.Listado_NotasEntradasPlacasDetailsModel>
+
+@if (Model != null && Model.Count() > 0)
+{
+    int index = 0;
+    foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.TiposPlacas.TipoPlaca</td>
+            <td>@item.CantidadPlacas</td>
+            <td>@item.CostoPlaca</td>
+            <td>@item.CostoTotal</td> 
+            <td>@item.CantidadNumerosPlacaIdentificada</td> 
+            <td>@item.CantidadNumerosPlacaPorIdentificarse</td> 
+            <td>@item.TiposEstatus.EstatusNotaEntrada</td> 
+        </tr>
+        index++;
+    }
+}

@@ -1,0 +1,20 @@
+﻿@model IEnumerable<ICVNL_SistemaLogistica.Web.Models.Listado_SolicitudesPlacasRecepcionDetailsModel>
+
+@if (Model != null && Model.Count() > 0)
+{
+    int index = 0;
+    foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.TiposPlacas.TipoPlaca
+                <input type="text" class="form-control" name="Detalle_SolicitudesPlacasRecepcionDetailsVM[@index.ToString()].Id" value="@item.IdRecepcion" style="display:none" />
+                <input type="text" class="form-control" name="Detalle_SolicitudesPlacasRecepcionDetailsVM[@index.ToString()].Consecutivo" value="@item.Consecutivo" style="display:none" />
+            </td>
+            <td>@item.CantidadSolicitadaOrdenCompra</td> 
+            <td>@item.CantidadNotasEntradaAutorizada</td>
+            <td>@item.CantidadRecibida</td>  
+        </tr>
+        index++;
+    }
+}

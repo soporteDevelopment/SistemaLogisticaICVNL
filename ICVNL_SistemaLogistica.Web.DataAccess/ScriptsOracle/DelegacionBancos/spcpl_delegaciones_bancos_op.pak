@@ -1,0 +1,26 @@
+create or replace PACKAGE spcpl_delegaciones_bancos_op
+IS
+   FUNCTION version
+   RETURN NUMBER;
+
+	PROCEDURE agregar(p_DBC_ALMACEN_CC in VARCHAR2
+					,p_DBC_CC_INFOFIN in VARCHAR2 
+					,p_DBC_NOMBRE_DEL in VARCHAR2
+					,p_DBN_ENTIDAD in NUMBER
+					,p_DBN_ID in NUMBER
+					,p_DBN_ACTIVO in NUMBER
+					,p_DBN_BORRADO in NUMBER);
+
+
+	PROCEDURE modificar(p_DBC_ALMACEN_CC in VARCHAR2
+					,p_DBC_CC_INFOFIN in VARCHAR2 
+					,p_DBC_NOMBRE_DEL in VARCHAR2
+					,p_DBN_ENTIDAD in NUMBER
+					,p_DBN_ID in NUMBER
+					,p_DBN_ACTIVO in NUMBER
+					,p_DBN_BORRADO in NUMBER);
+
+	PROCEDURE cambia_estatus(p_DBN_ID in number);				
+
+
+END spcpl_delegaciones_bancos_op;

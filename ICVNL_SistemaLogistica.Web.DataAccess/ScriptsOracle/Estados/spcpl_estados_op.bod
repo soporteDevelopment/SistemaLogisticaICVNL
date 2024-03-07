@@ -1,0 +1,92 @@
+create or replace PACKAGE BODY spcpl_estados_op
+IS
+   c_version CONSTANT   NUMBER := 24.3011;
+   c_modulo  CONSTANT   NUMBER := 0;
+
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.3011 DEVTI   Elaboración del paquete.
+   -- 24.0501 DEVTI   se modifica el nombre del SP inactiva por cambia_estatus para que soporte el mismo sp la inactivación y reactivación de registros
+   --------------------------------------------------------------------------
+
+   ----
+   -- Variables Globales
+   next_val 	number;
+   ----
+   -- Variables para manejo de errores. 
+   ----
+   -- Excepciones globales
+   ----
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+   RETURN c_version;
+   END VERSION;
+
+
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+	PROCEDURE agregar(p_ESN_BORRADO in NUMBER
+					,p_ESC_NOMBRE in varchar2
+					,p_ESN_ACTIVO in NUMBER
+					,p_ESN_ENTIDAD in NUMBER
+					,p_ESN_ID in NUMBER)
+	IS
+	BEGIN   
+
+		select  nvl(max(ESN_ID),0) + 1  into next_val from CPL_ESTADOS;
+
+		insert into CPL_ESTADOS(ESN_BORRADO
+								,ESC_NOMBRE
+								,ESN_ACTIVO
+								,ESN_ENTIDAD
+								,ESN_ID) 
+						values (p_ESN_BORRADO
+								,p_ESC_NOMBRE
+								,p_ESN_ACTIVO
+								,p_ESN_ENTIDAD
+								,next_val);
+
+	END agregar;         
+
+
+	PROCEDURE modificar(p_ESN_BORRADO in NUMBER
+					,p_ESC_NOMBRE in varchar2
+					,p_ESN_ACTIVO in NUMBER
+					,p_ESN_ENTIDAD in NUMBER
+					,p_ESN_ID in NUMBER)
+	IS
+	BEGIN
+	
+		update CPL_ESTADOS 
+		set ESN_BORRADO = p_ESN_BORRADO
+			,ESC_NOMBRE = p_ESC_NOMBRE
+			,ESN_ACTIVO = p_ESN_ACTIVO
+			,ESN_ENTIDAD = p_ESN_ENTIDAD
+		where ESN_ID = p_ESN_ID;
+		
+	END modificar;
+
+	PROCEDURE cambia_estatus(p_ESN_ID in number)
+	IS
+	BEGIN
+       UPDATE CPL_estados 
+	   SET ESN_ACTIVO = case ESN_ACTIVO when 1 then 0 else 1 end
+	   WHERE ESN_ID = p_ESN_ID;
+	END cambia_estatus;
+
+
+END spcpl_estados_op;

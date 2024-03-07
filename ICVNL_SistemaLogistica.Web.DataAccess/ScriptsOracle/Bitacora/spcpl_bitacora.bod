@@ -1,0 +1,87 @@
+create or replace PACKAGE BODY spcpl_bitacora
+IS
+
+   c_version CONSTANT   NUMBER := 23.1412;
+   c_modulo  CONSTANT   NUMBER := 0;
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.1412 DEVTI   Elaboración del paquete.
+   -- 
+   --------------------------------------------------------------------------
+   ----
+   -- Tipos globales
+   ----
+   ----
+   -- Variables Globales
+   ----
+   -- Variables para manejo de errores.
+   g_mensaje_error      VARCHAR2(4000);
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+      RETURN c_version;
+   END version;
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+
+	PROCEDURE consulta_listado(p_BITF_EVENTO_INI IN DATE,
+							  p_BITF_EVENTO_FIN IN DATE,
+							  p_BITC_LUGAREVENTO IN VARCHAR2,
+							  p_BITC_EVENTO IN VARCHAR2,
+							  p_BITC_USR IN VARCHAR2,
+							  p_BITC_INSTR_REAL IN VARCHAR2,
+							  p_BITC_IP_USR IN VARCHAR2,
+							  p_BITN_ENTIDAD IN NUMERIC,
+							  p_cursor_out OUT SYS_REFCURSOR)
+	IS
+	BEGIN
+
+		OPEN p_cursor_out FOR
+		SELECT BITF_EVENTO
+				,BITC_USR
+				,BITC_IP_USR
+				,BITN_ID
+				,BITC_LUGAREVENTO
+				,BITC_EVENTO
+				,BITC_INSTR_REAL
+				,BITC_JSONOBJECT
+				,BITN_ENTIDAD
+		FROM CPL_BITACORA  
+		where BITN_ENTIDAD = p_BITN_ENTIDAD
+		AND (BITF_EVENTO >= p_BITF_EVENTO_INI AND BITF_EVENTO <= p_BITF_EVENTO_FIN) 
+		AND (p_BITC_EVENTO IS NULL OR BITC_EVENTO = p_BITC_EVENTO)
+		AND (p_BITC_LUGAREVENTO IS NULL OR  UPPER(BITC_LUGAREVENTO) like '%'|| UPPER(p_BITC_LUGAREVENTO)||'%')
+		AND (p_BITC_USR IS NULL OR  UPPER(BITC_USR) like '%'|| UPPER(p_BITC_USR)||'%')
+		AND (p_BITC_INSTR_REAL IS NULL OR BITC_INSTR_REAL = p_BITC_INSTR_REAL)
+		AND (p_BITC_IP_USR IS NULL OR  UPPER(BITC_IP_USR) like '%'|| UPPER(p_BITC_IP_USR)||'%');
+
+	END consulta_listado;      
+   
+	PROCEDURE consulta_bit_instreal_combo(p_BITN_ENTIDAD IN NUMBER,
+									      p_cursor_out OUT SYS_REFCURSOR)
+	IS
+	BEGIN
+
+	  OPEN p_cursor_out FOR
+	  select distinct BITC_EVENTO as Valor,
+					  BITC_EVENTO as Texto
+	  from CPL_BITACORA
+	  where BITN_ENTIDAD = p_BITN_ENTIDAD ;
+
+	END consulta_bit_instreal_combo; 
+   
+
+END spcpl_bitacora;

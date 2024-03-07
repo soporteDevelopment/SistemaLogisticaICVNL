@@ -1,0 +1,61 @@
+create or replace PACKAGE BODY spcpl_parametrizacion
+IS
+
+   c_version CONSTANT   NUMBER := 23.2111;
+   c_modulo  CONSTANT   NUMBER := 0;
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.2111 DEVTI   Elaboración del paquete.
+   -- 
+   --------------------------------------------------------------------------
+   ----
+   -- Tipos globales
+   ----
+   ----
+   -- Variables Globales
+   ----
+   -- Variables para manejo de errores.
+   g_mensaje_error      VARCHAR2(4000);
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+      RETURN c_version;
+   END version;
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+
+   PROCEDURE consulta_parametrizacion(p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT PARC_EMAIL_NOT_PL_V
+			,PARC_CTACOST_ENT_GOB
+			,PARC_ENT_VTA_PL_RPT
+			,PARC_CTACOST_VTA_PL_RPT
+			,PARC_CVE_ENT_GOB
+			,PARN_BORRADO
+			,PARN_ID
+			,PARN_ENTIDAD
+			,PARC_EMAIL_ENV_SP
+			,PARC_CVE_ENT_GOB_VEN
+            ,PARF_ULT_EJEC_NE
+            ,parn_tp_pl_rpt
+            ,parn_tp_pl_ven
+      FROM CPL_PARAMETRIZACION;
+
+   END consulta_parametrizacion;      
+end;

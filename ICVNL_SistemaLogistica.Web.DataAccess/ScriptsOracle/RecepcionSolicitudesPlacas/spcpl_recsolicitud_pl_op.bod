@@ -1,0 +1,314 @@
+create or replace PACKAGE BODY spcpl_recsolicitud_pl_op
+IS
+   c_version CONSTANT   NUMBER := 23.2001;
+   c_modulo  CONSTANT   NUMBER := 0;
+
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.1314 DEVTI   Elaboración del paquete.
+   -- 24.1801 DEVTI   Se agrega SP para insercion de las observaciones y eliminacion
+   -- 24.2001 DEVTI   Se agrega SP para insercion de los eventos registrados al recibir placas
+   --------------------------------------------------------------------------
+
+   ----
+   -- Variables Globales 
+   ----
+   -- Variables para manejo de errores. 
+   ----
+   -- Excepciones globales
+   ----
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+   RETURN c_version;
+   END VERSION;
+
+
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+	PROCEDURE agregar_recepcionsol(p_RECC_NE_AUTORIZADA in VARCHAR2
+								  ,p_RECC_FOLIO in VARCHAR2
+								  ,p_RECF_FECHA_ENT in DATE
+								  ,p_DBN_ID in NUMERIC
+								  ,p_SOLN_ID in NUMERIC
+								  ,p_RECN_RECIBIDO in NUMERIC
+								  ,p_RECC_USR_REG in VARCHAR2
+								  ,p_RECN_ESTATUS in NUMERIC
+								  ,p_RECN_ID OUT NUMERIC
+								  ,p_RECN_ENTIDAD in NUMERIC
+								  ,p_RECN_BORRADO in NUMERIC)
+	IS
+	BEGIN   
+
+		select  nvl(max(RECN_ID),0) + 1  into p_RECN_ID from CPL_REC_SOL_PLACAS;
+
+		insert into CPL_REC_SOL_PLACAS(RECC_NE_AUTORIZADA
+										,RECC_FOLIO
+										,RECF_FECHA_ENT
+										,DBN_ID
+										,SOLN_ID
+										,RECN_RECIBIDO
+										,RECC_USR_REG
+										,RECN_ESTATUS
+										,RECN_ID
+										,RECN_ENTIDAD
+										,RECN_BORRADO) 
+							values (p_RECC_NE_AUTORIZADA
+									,p_RECC_FOLIO
+									,p_RECF_FECHA_ENT
+									,p_DBN_ID
+									,p_SOLN_ID
+									,p_RECN_RECIBIDO
+									,p_RECC_USR_REG
+									,p_RECN_ESTATUS
+									,p_RECN_ID
+									,p_RECN_ENTIDAD
+									,p_RECN_BORRADO);               
+
+
+	END agregar_recepcionsol;
+
+	PROCEDURE agregar_recepcionsol_det(p_RECDN_CANT_REC in NUMERIC
+										,p_RECDN_ID OUT NUMERIC
+										,p_RECDN_CANT_NE_AUT in NUMERIC
+										,p_RECDN_BORRADO in NUMERIC
+										,p_TPN_ID in NUMERIC
+										,p_RECDN_CANT_SOL_OC in NUMERIC
+										,p_RECDN_ENTIDAD in NUMERIC
+										,p_RECN_ID in NUMERIC)
+	IS
+	BEGIN   
+
+		select  nvl(max(RECDN_ID),0) + 1  into p_RECDN_ID from CPL_REC_SOL_PLACAS_DET;
+
+		insert into CPL_REC_SOL_PLACAS_DET(RECDN_CANT_REC
+											,RECDN_ID
+											,RECDN_CANT_NE_AUT
+											,RECDN_BORRADO
+											,TPN_ID
+											,RECDN_CANT_SOL_OC
+											,RECDN_ENTIDAD
+											,RECN_ID) 
+									values (p_RECDN_CANT_REC
+											,p_RECDN_ID
+											,p_RECDN_CANT_NE_AUT
+											,p_RECDN_BORRADO
+											,p_TPN_ID
+											,p_RECDN_CANT_SOL_OC
+											,p_RECDN_ENTIDAD
+											,p_RECN_ID);
+
+	END agregar_recepcionsol_det;	 
+
+	PROCEDURE modificar_recepcionsol(p_RECC_NE_AUTORIZADA in VARCHAR2
+								  ,p_RECC_FOLIO in VARCHAR2
+								  ,p_RECF_FECHA_ENT in DATE
+								  ,p_DBN_ID in NUMERIC
+								  ,p_SOLN_ID in NUMERIC
+								  ,p_RECN_RECIBIDO in NUMERIC
+								  ,p_RECC_USR_REG in VARCHAR2
+								  ,p_RECN_ESTATUS in NUMERIC
+								  ,p_RECN_ID IN NUMERIC
+								  ,p_RECN_ENTIDAD in NUMERIC
+								  ,p_RECN_BORRADO in NUMERIC)
+	IS
+	BEGIN
+
+		update CPL_REC_SOL_PLACAS 
+		set	RECC_NE_AUTORIZADA = p_RECC_NE_AUTORIZADA
+			,RECC_FOLIO = p_RECC_FOLIO
+			,RECF_FECHA_ENT = p_RECF_FECHA_ENT
+			,DBN_ID = p_DBN_ID
+			,SOLN_ID = p_SOLN_ID
+			,RECN_RECIBIDO = p_RECN_RECIBIDO
+			,RECC_USR_REG = p_RECC_USR_REG
+			,RECN_ESTATUS = p_RECN_ESTATUS
+			,RECN_ENTIDAD = p_RECN_ENTIDAD
+			,RECN_BORRADO = p_RECN_BORRADO
+		where RECN_ID = p_RECN_ID;
+
+	END modificar_recepcionsol;
+	
+	PROCEDURE agregar_recepcionsol_obsv( p_OBSN_ID OUT NUMERIC
+										,p_OBSC_OBSERVACION in VARCHAR2
+										,p_OBSN_BORRADO in NUMERIC
+										,p_RVALN_ID in NUMERIC
+										,p_OBSN_ENTIDAD in NUMERIC)
+	IS
+	BEGIN   
+
+		select  nvl(max(OBSN_ID),0) + 1  into p_OBSN_ID from CPL_REC_SOL_PLACAS_EV_VAL_OB;
+
+		insert into CPL_REC_SOL_PLACAS_EV_VAL_OB(OBSN_ENTIDAD
+												,OBSC_OBSERVACION
+												,OBSN_BORRADO
+												,RVALN_ID
+												,OBSN_ID) 
+										values (p_OBSN_ENTIDAD
+												,p_OBSC_OBSERVACION
+												,p_OBSN_BORRADO
+												,p_RVALN_ID
+												,p_OBSN_ID);               
+
+
+	END agregar_recepcionsol_obsv;
+
+	PROCEDURE eliminar_recsolicitud_det(p_RECN_ID in NUMBER)
+	IS
+	BEGIN
+
+		DELETE FROM CPL_REC_SOL_PLACAS_DET WHERE RECN_ID = p_RECN_ID;
+
+	END eliminar_recsolicitud_det; 
+	
+	
+	PROCEDURE agregar_recepcionsol_ev(p_RPEVN_ID OUT NUMERIC
+									,p_RPEVN_BORRADO in NUMERIC
+									,p_RPEVN_ENTIDAD in NUMERIC
+									,p_PROVN_ID in NUMERIC
+									,p_RPEVC_NUM_CAJA in VARCHAR2
+									,p_DBN_ID in NUMERIC
+									,p_TPN_ID in NUMERIC
+									,p_RPEVC_RANGOS in VARCHAR2
+									,p_TRPN_ID in NUMERIC
+									,p_RPEVF_FECHA_QR in DATE
+									,p_RECN_ID in NUMERIC
+									,p_RPEVN_CANTIDADLAMINAS in NUMERIC)
+	IS
+	BEGIN   
+
+		select  nvl(max(RPEVN_ID),0) + 1  into p_RPEVN_ID from CPL_REC_SOL_PLACAS_EV;
+
+		insert into CPL_REC_SOL_PLACAS_EV(RPEVN_ENTIDAD
+										,RPEVN_BORRADO
+										,RPEVN_ID
+										,PROVN_ID
+										,RPEVC_NUM_CAJA
+										,DBN_ID
+										,TPN_ID
+										,RPEVC_RANGOS
+										,TRPN_ID
+										,RPEVF_FECHA_QR
+										,RECN_ID
+										,RPEVN_CANTIDADLAMINAS
+										) 
+								values (p_RPEVN_ENTIDAD
+										,p_RPEVN_BORRADO
+										,p_RPEVN_ID
+										,p_PROVN_ID
+										,p_RPEVC_NUM_CAJA
+										,p_DBN_ID
+										,p_TPN_ID
+										,p_RPEVC_RANGOS
+										,p_TRPN_ID
+										,p_RPEVF_FECHA_QR
+										,p_RECN_ID
+										,p_RPEVN_CANTIDADLAMINAS);              
+
+
+	END agregar_recepcionsol_ev;
+
+	PROCEDURE eliminar_recepcionsol_ev(p_RPEVN_ID in NUMBER)
+	IS
+	BEGIN
+
+		DELETE FROM CPL_REC_SOL_PLACAS_EV WHERE RPEVN_ID = p_RPEVN_ID;
+
+	END eliminar_recepcionsol_ev; 
+	
+	
+	PROCEDURE agregar_recepcionsol_ev_val(p_RVALN_ID OUT NUMERIC
+										,p_CONTN_ID in NUMERIC
+										,p_RVALC_PUESTOUSUARIO in VARCHAR2
+										,p_NEN_ID in NUMERIC
+										,p_RPEVN_ID in NUMERIC
+										,p_RVALC_NOMBREUSUARIO in VARCHAR2
+										,p_TPN_ID in NUMERIC
+										,p_RVALC_NOTAENTRADA in VARCHAR2
+										,p_RVALC_CAJANDEM in VARCHAR2
+										,p_RVALF_FECHA_VAL in date
+										,p_TERPN_ID in NUMERIC
+										,p_PROVN_ID in NUMERIC
+										,p_DBN_ID in NUMERIC
+										,p_RVALN_PARTIDA_CON in NUMERIC
+										,p_RVALC_NUMEMPLEADO in VARCHAR2
+										,p_RVALN_ENTIDAD in NUMERIC)
+	IS
+	BEGIN   
+
+		select  nvl(max(RVALN_ID),0) + 1  into p_RVALN_ID from CPL_REC_SOL_PLACAS_EV_VAL;
+
+		insert into CPL_REC_SOL_PLACAS_EV_VAL(RVALC_CAJANDEM
+											,CONTN_ID
+											,RVALC_PUESTOUSUARIO
+											,NEN_ID
+											,RPEVN_ID
+											,RVALC_NOMBREUSUARIO
+											,TPN_ID
+											,RVALC_NOTAENTRADA
+											,RVALN_ID
+											,RVALF_FECHA_VAL
+											,TERPN_ID
+											,PROVN_ID
+											,DBN_ID
+											,RVALN_PARTIDA_CON
+											,RVALC_NUMEMPLEADO
+											,RVALN_ENTIDAD) 
+									values (p_RVALC_CAJANDEM
+										,p_CONTN_ID
+										,p_RVALC_PUESTOUSUARIO
+										,p_NEN_ID
+										,p_RPEVN_ID
+										,p_RVALC_NOMBREUSUARIO
+										,p_TPN_ID
+										,p_RVALC_NOTAENTRADA
+										,p_RVALN_ID
+										,p_RVALF_FECHA_VAL
+										,p_TERPN_ID
+										,p_PROVN_ID
+										,p_DBN_ID
+										,p_RVALN_PARTIDA_CON
+										,p_RVALC_NUMEMPLEADO
+										,p_RVALN_ENTIDAD);              
+
+
+	END agregar_recepcionsol_ev_val;
+
+	PROCEDURE eliminar_recepcionsol_ev_val(p_RVALN_ID in NUMBER)
+	IS
+	BEGIN
+
+		DELETE FROM CPL_REC_SOL_PLACAS_EV_VAL WHERE RVALN_ID = p_RVALN_ID;
+
+	END eliminar_recepcionsol_ev_val; 
+	
+	
+	PROCEDURE eliminar_recsolicitud_obs(p_OBSN_ID in NUMBER)
+	IS
+	BEGIN
+
+		DELETE FROM CPL_REC_SOL_PLACAS_EV_VAL_OB WHERE OBSN_ID = p_OBSN_ID;
+
+	END eliminar_recsolicitud_obs;
+
+	PROCEDURE inactiva_recepcionsol(p_RECN_ID in number)
+	IS
+	BEGIN
+		update CPL_REC_SOL_PLACAS set RECN_BORRADO = 1 WHERE RECN_ID = p_RECN_ID;
+	END inactiva_recepcionsol;
+
+
+END spcpl_recsolicitud_pl_op;

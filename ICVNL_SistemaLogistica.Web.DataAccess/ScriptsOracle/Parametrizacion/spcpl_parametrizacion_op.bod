@@ -1,0 +1,132 @@
+create or replace PACKAGE BODY spcpl_parametrizacion_op
+IS
+   c_version CONSTANT   NUMBER := 23.2111;
+   c_modulo  CONSTANT   NUMBER := 0;
+
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.2111 DEVTI   Elaboración del paquete.
+   -- 
+   --------------------------------------------------------------------------
+
+   ----
+   -- Variables Globales
+   next_val 	number;
+   ----
+   -- Variables para manejo de errores. 
+   ----
+   -- Excepciones globales
+   ----
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+   RETURN c_version;
+   END VERSION;
+
+
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+   PROCEDURE agrega_param(p_PARN_ID in NUMBER 
+					,p_PARC_EMAIL_NOT_PL_V in VARCHAR2
+					,p_PARC_CTACOST_ENT_GOB in VARCHAR2
+					,p_PARC_ENT_VTA_PL_RPT in VARCHAR2
+					,p_PARC_CTACOST_VTA_PL_RPT in VARCHAR2
+					,p_PARC_CVE_ENT_GOB in VARCHAR2					
+					,p_PARC_EMAIL_ENV_SP in VARCHAR2
+					,p_PARC_CVE_ENT_GOB_VEN in VARCHAR2
+					,p_PARN_TP_PL_VEN in NUMBER
+					,p_PARN_TP_PL_RPT in NUMBER
+					,p_PARN_BORRADO in NUMBER					
+					,p_PARN_ENTIDAD in NUMBER
+                    ,p_PARF_ULT_EJEC_NE in DATE)
+   IS
+   BEGIN   
+
+		  select  nvl(max(PARN_ID),0) + 1  into next_val from CPL_PARAMETRIZACION;
+
+         insert into CPL_PARAMETRIZACION(
+                    PARN_ID
+                    ,PARC_CTACOST_ENT_GOB
+                    ,PARC_ENT_VTA_PL_RPT
+                    ,PARC_CTACOST_VTA_PL_RPT
+                    ,PARC_CVE_ENT_GOB
+                    ,PARN_BORRADO
+                    ,PARC_EMAIL_NOT_PL_V
+                    ,PARN_ENTIDAD
+                    ,PARC_EMAIL_ENV_SP
+                    ,PARC_CVE_ENT_GOB_VEN
+                    ,PARN_TP_PL_VEN
+                    ,PARN_TP_PL_RPT
+                    ,PARF_ULT_EJEC_NE 
+                    ) values (
+					next_val
+                    ,p_PARC_EMAIL_NOT_PL_V
+                    ,p_PARC_CTACOST_ENT_GOB
+                    ,p_PARC_ENT_VTA_PL_RPT
+                    ,p_PARC_CTACOST_VTA_PL_RPT
+                    ,p_PARC_CVE_ENT_GOB
+                    ,p_PARN_BORRADO                    
+                    ,p_PARN_ENTIDAD
+                    ,p_PARC_EMAIL_ENV_SP
+                    ,p_PARC_CVE_ENT_GOB_VEN
+                    ,p_PARN_TP_PL_VEN
+                    ,p_PARN_TP_PL_RPT
+                    ,p_PARF_ULT_EJEC_NE 
+                    );
+
+  END agrega_param;         
+
+
+   PROCEDURE modifica_param(p_PARN_ID in NUMBER 
+					,p_PARC_EMAIL_NOT_PL_V in VARCHAR2
+					,p_PARC_CTACOST_ENT_GOB in VARCHAR2
+					,p_PARC_ENT_VTA_PL_RPT in VARCHAR2
+					,p_PARC_CTACOST_VTA_PL_RPT in VARCHAR2
+					,p_PARC_CVE_ENT_GOB in VARCHAR2					
+					,p_PARC_EMAIL_ENV_SP in VARCHAR2
+					,p_PARC_CVE_ENT_GOB_VEN in VARCHAR2
+					,p_PARN_TP_PL_VEN in NUMBER
+					,p_PARN_TP_PL_RPT in NUMBER
+					,p_PARN_BORRADO in NUMBER					
+					,p_PARN_ENTIDAD in NUMBER)
+   IS
+   BEGIN
+		update CPL_PARAMETRIZACION set
+		PARC_EMAIL_NOT_PL_V = p_PARC_EMAIL_NOT_PL_V
+		,PARC_CTACOST_ENT_GOB = p_PARC_CTACOST_ENT_GOB
+		,PARC_ENT_VTA_PL_RPT = p_PARC_ENT_VTA_PL_RPT
+		,PARC_CTACOST_VTA_PL_RPT = p_PARC_CTACOST_VTA_PL_RPT
+		,PARC_CVE_ENT_GOB = p_PARC_CVE_ENT_GOB
+		,PARN_BORRADO = p_PARN_BORRADO
+		,PARN_ENTIDAD = p_PARN_ENTIDAD
+		,PARC_EMAIL_ENV_SP = p_PARC_EMAIL_ENV_SP
+		,PARC_CVE_ENT_GOB_VEN = p_PARC_CVE_ENT_GOB_VEN
+        ,PARN_TP_PL_VEN = p_PARN_TP_PL_VEN
+        ,PARN_TP_PL_RPT = p_PARN_TP_PL_RPT
+		where PARN_ID = p_PARN_ID;      
+   END modifica_param;
+
+   PROCEDURE modifica_param_fecha(p_PARN_ID in NUMBER 
+					,p_PARF_ULT_EJEC_NE  in VARCHAR2)
+   IS
+   BEGIN
+		update CPL_PARAMETRIZACION set
+		PARF_ULT_EJEC_NE = p_PARF_ULT_EJEC_NE		
+		where PARN_ID = p_PARN_ID;      
+   END modifica_param_fecha;
+
+
+END spcpl_parametrizacion_op;

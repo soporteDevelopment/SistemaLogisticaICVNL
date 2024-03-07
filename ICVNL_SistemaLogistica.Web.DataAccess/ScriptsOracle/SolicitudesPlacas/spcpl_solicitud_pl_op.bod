@@ -1,0 +1,168 @@
+create or replace PACKAGE BODY spcpl_solicitud_pl_op
+IS
+   c_version CONSTANT   NUMBER := 23.1312;
+   c_modulo  CONSTANT   NUMBER := 0;
+
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.1312 DEVTI   Elaboración del paquete.
+   -- 
+   --------------------------------------------------------------------------
+
+   ----
+   -- Variables Globales 
+   ----
+   -- Variables para manejo de errores. 
+   ----
+   -- Excepciones globales
+   ----
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+   RETURN c_version;
+   END VERSION;
+
+
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+	PROCEDURE agregar_solicitud(p_OCN_ID NUMERIC
+								,p_SOLN_ENTIDAD NUMERIC
+								,p_SOLF_FECHA in DATE
+								,p_CONTN_ID in NUMERIC
+								,p_SOLN_ESTATUS in NUMERIC
+								,p_SOLC_USR_REG in VARCHAR2
+								,p_SOLN_BORRADO in NUMERIC
+								,p_PROVN_ID in NUMERIC
+								,p_SOLC_FOLIO in VARCHAR2
+								,p_SOLN_ID OUT NUMERIC
+								,p_SOLF_FECHAENTREGA in DATE
+								,p_SOLF_FECHA_REG in DATE)
+	IS
+	BEGIN   
+
+		select  nvl(max(SOLN_ID),0) + 1  into p_SOLN_ID from CPL_SOL_PL;
+
+		insert into CPL_SOL_PL(OCN_ID
+								,SOLN_ENTIDAD
+								,SOLF_FECHA
+								,CONTN_ID
+								,SOLN_ESTATUS
+								,SOLC_USR_REG
+								,SOLN_BORRADO
+								,PROVN_ID
+								,SOLC_FOLIO
+								,SOLN_ID
+								,SOLF_FECHAENTREGA
+								,SOLF_FECHA_REG) 
+					values (p_OCN_ID
+					,p_SOLN_ENTIDAD
+					,p_SOLF_FECHA
+					,p_CONTN_ID
+					,p_SOLN_ESTATUS
+					,p_SOLC_USR_REG
+					,p_SOLN_BORRADO
+					,p_PROVN_ID
+					,p_SOLC_FOLIO
+					,p_SOLN_ID
+					,p_SOLF_FECHAENTREGA
+					,p_SOLF_FECHA_REG);               
+
+
+	END agregar_solicitud;
+
+	PROCEDURE agregar_solicitud_det(p_SOLDC_RNG_PL_INI in VARCHAR2
+									,p_SOLDN_ID OUT NUMERIC
+									,p_SOLDN_ENTIDAD in NUMERIC
+									,p_SOLDC_RNG_PL_FIN in VARCHAR2
+									,p_DBN_ID in NUMERIC
+									,p_SOLN_ID in NUMERIC
+									,p_TPN_ID in NUMERIC
+									,p_SOLDN_BORRADO in NUMERIC
+									,p_SOLDN_CANT_PLACAS in VARCHAR2
+                                    ,p_OCDN_ID IN NUMERIC)
+	IS
+	BEGIN   
+
+		select  nvl(max(SOLDN_ID),0) + 1  into p_SOLDN_ID from CPL_SOL_PL_DET;
+
+		insert into CPL_SOL_PL_DET(SOLDC_RNG_PL_INI
+								,SOLDN_ID
+								,SOLDN_ENTIDAD
+								,SOLDC_RNG_PL_FIN
+								,DBN_ID
+								,SOLN_ID
+								,TPN_ID
+								,SOLDN_BORRADO
+								,SOLDN_CANT_PLACAS
+                                ,OCDN_ID) 
+						values (p_SOLDC_RNG_PL_INI
+								,p_SOLDN_ID
+								,p_SOLDN_ENTIDAD
+								,p_SOLDC_RNG_PL_FIN
+								,p_DBN_ID
+								,p_SOLN_ID
+								,p_TPN_ID
+								,p_SOLDN_BORRADO
+								,p_SOLDN_CANT_PLACAS
+                                ,p_OCDN_ID);
+
+	END agregar_solicitud_det;	 
+
+	PROCEDURE modificar_solicitud(p_OCN_ID IN NUMERIC
+								,p_SOLN_ENTIDAD IN NUMERIC
+								,p_SOLF_FECHA in DATE
+								,p_CONTN_ID in NUMERIC
+								,p_SOLN_ESTATUS in NUMERIC
+								,p_SOLC_USR_REG in VARCHAR2
+								,p_SOLN_BORRADO in NUMERIC
+								,p_PROVN_ID in NUMERIC
+								,p_SOLC_FOLIO in VARCHAR2
+								,p_SOLN_ID IN NUMERIC
+								,p_SOLF_FECHAENTREGA in DATE
+								,p_SOLF_FECHA_REG in DATE)
+	IS
+	BEGIN
+
+		update CPL_SOL_PL 
+		set OCN_ID = p_OCN_ID
+			,SOLN_ENTIDAD = p_SOLN_ENTIDAD
+			,SOLF_FECHA = p_SOLF_FECHA
+			,CONTN_ID = p_CONTN_ID
+			,SOLN_ESTATUS = p_SOLN_ESTATUS
+			,SOLN_BORRADO = p_SOLN_BORRADO
+			,PROVN_ID = p_PROVN_ID
+			,SOLC_FOLIO = p_SOLC_FOLIO
+			,SOLF_FECHAENTREGA = p_SOLF_FECHAENTREGA
+		where SOLN_ID = p_SOLN_ID;
+
+	END modificar_solicitud;
+
+	PROCEDURE eliminar_solicitud_det(p_SOLN_ID in NUMBER)
+	IS
+	BEGIN
+
+		DELETE FROM CPL_SOL_PL_DET WHERE SOLN_ID = p_SOLN_ID;
+
+	END eliminar_solicitud_det; 
+
+	PROCEDURE inactiva_solicitud(p_SOLN_ID in number)
+	IS
+	BEGIN
+		update CPL_SOL_PL set SOLN_BORRADO = 1 WHERE SOLN_ID = p_SOLN_ID;
+	END inactiva_solicitud;
+
+
+END spcpl_solicitud_pl_op;

@@ -1,0 +1,57 @@
+﻿@model IEnumerable<ICVNL_SistemaLogistica.Web.Models.Listado_RecepcionPlacas_IndividualesModel>
+
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        int index = 0;
+        <tr>
+            <td> 
+                @Html.DisplayFor(modelItem => item.TiposPlacas.TipoPlaca)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumeroPlaca)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TiposEstatusPlacas.TipoEstatusPlacas)
+            </td>
+            <td style="text-align:center">
+                @if (HttpContext.Current.Session["UserSC"] != null &&
+                ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_RecepcionPlacasEntreDelegacionesBancos.RecibirPlacasIndividualesPlacasDisponibles)
+                {
+                    <input type="checkbox" class="form-check-input" id="chkbEstatus_1_@item.NumeroPlaca" onclick="SeleccionaEstatus(this.id, '@item.NumeroPlaca', 1);" name="Listado[@index.ToString()].Disponible" checked="@item.Disponible" />
+                }
+            </td>
+            <td style="text-align:center">
+                @if (HttpContext.Current.Session["UserSC"] != null &&
+                ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_RecepcionPlacasEntreDelegacionesBancos.RecibirPlacasIndividualesPlacasObsoleta)
+                {
+                    <input type="checkbox" class="form-check-input" id="chkbEstatus_2_@item.NumeroPlaca" onclick="SeleccionaEstatus(this.id, '@item.NumeroPlaca', 2);" name="Listado[@index.ToString()].Obsoleta" checked="@item.Obsoleta" />
+                }
+            </td>
+            <td style="text-align:center">
+                @if (HttpContext.Current.Session["UserSC"] != null &&
+                ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_RecepcionPlacasEntreDelegacionesBancos.RecibirPlacasIndividualesColocarPlacaRechazada)
+                {
+                    <input type="checkbox" class="form-check-input" id="chkbEstatus_3_@item.NumeroPlaca" onclick="SeleccionaEstatus(this.id, '@item.NumeroPlaca', 3);" name="Listado[@index.ToString()].Rechazada" checked="@item.Rechazada" />
+                }
+            </td>
+            <td style="text-align:center">
+                @if (HttpContext.Current.Session["UserSC"] != null &&
+                ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_RecepcionPlacasEntreDelegacionesBancos.RecibirPlacasIndividualesPlacasPerdida)
+                {
+                    <input type="checkbox" class="form-check-input" id="chkbEstatus_4_@item.NumeroPlaca" onclick="SeleccionaEstatus(this.id, '@item.NumeroPlaca', 4);" name="Listado[@index.ToString()].Perdida" checked="@item.Perdida" />
+                }
+            </td>
+        </tr>
+        index++;
+    }
+}
+else
+{
+    <tr>
+        <td colspan="7">
+            @Html.Label("Sin Información")
+        </td>
+    </tr>
+}

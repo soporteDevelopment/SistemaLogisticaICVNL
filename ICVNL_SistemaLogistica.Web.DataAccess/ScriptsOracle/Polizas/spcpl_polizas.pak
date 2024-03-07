@@ -1,0 +1,12 @@
+create or replace PACKAGE spcpl_polizas
+IS
+	FUNCTION version
+	RETURN NUMBER;
+	
+   PROCEDURE con_placas_ven_no_cont(p_RNO_ENTIDAD in NUMBER,
+									 p_cursor_out OUT SYS_REFCURSOR);
+
+   PROCEDURE consulta_placas_no_cont(p_RNO_ENTIDAD in NUMBER,
+									 p_cursor_out OUT SYS_REFCURSOR);   
+    
+END spcpl_polizas;

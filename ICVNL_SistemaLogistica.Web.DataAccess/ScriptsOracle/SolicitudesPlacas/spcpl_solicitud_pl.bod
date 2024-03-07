@@ -1,0 +1,153 @@
+create or replace PACKAGE BODY spcpl_solicitud_pl
+IS
+
+   c_version CONSTANT   NUMBER := 23.1312;
+   c_modulo  CONSTANT   NUMBER := 0;
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.1312 DEVTI   Elaboración del paquete.
+   -- 
+   --------------------------------------------------------------------------
+   ----
+   -- Tipos globales
+   ----
+   ----
+   -- Variables Globales
+   ----
+   -- Variables para manejo de errores.
+   g_mensaje_error      VARCHAR2(4000);
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+      RETURN c_version;
+   END version;
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+
+   PROCEDURE consulta_listado(p_SOLC_FOLIO IN VARCHAR2,
+							  p_SOLF_FECHA_INI IN DATE,
+							  p_SOLF_FECHA_FIN IN DATE,
+							  p_SOLF_FECHAENTREGA_INI IN DATE,
+							  p_SOLF_FECHAENTREGA_FIN IN DATE,
+							  P_PROVN_ID IN NUMERIC,
+							  p_CONC_NUMERO IN VARCHAR2,
+							  p_OCN_NUMERO IN NUMERIC,
+							  p_SOLN_ENTIDAD IN NUMERIC,
+						      p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+		OPEN p_cursor_out FOR
+		SELECT CPL_SOL_PL.SOLN_ID,
+			   CPL_SOL_PL.SOLC_FOLIO,
+               CPL_SOL_PL.PROVN_ID,
+			   CPL_PROVEEDORES.PROVC_NOMBRE,
+               CPL_CONTRATOS.CONC_NUMERO
+		FROM CPL_SOL_PL 
+		inner join CPL_SOL_PL_DET on CPL_SOL_PL.SOLN_ID = CPL_SOL_PL_DET.SOLN_ID
+		inner join CPL_CONTRATOS on CPL_SOL_PL.CONTN_ID = CPL_CONTRATOS.CONN_ID
+		inner join CPL_ORDENES_COMPRA on CPL_SOL_PL.OCN_ID = CPL_ORDENES_COMPRA.OCN_ID		
+		inner join CPL_PROVEEDORES on CPL_SOL_PL.PROVN_ID = CPL_PROVEEDORES.PROVN_ID	
+		where CPL_SOL_PL.SOLN_ENTIDAD = p_SOLN_ENTIDAD
+		AND (CPL_SOL_PL.SOLF_FECHA >= p_SOLF_FECHA_INI AND CPL_SOL_PL.SOLF_FECHA <= p_SOLF_FECHA_FIN) 
+		AND (CPL_SOL_PL.SOLF_FECHAENTREGA >= p_SOLF_FECHAENTREGA_INI AND CPL_SOL_PL.SOLF_FECHAENTREGA <= p_SOLF_FECHAENTREGA_FIN) 
+		AND (p_CONC_NUMERO IS NULL OR  UPPER(CPL_CONTRATOS.CONC_NUMERO) like '%'|| UPPER(p_CONC_NUMERO)||'%')   
+		AND (p_OCN_NUMERO IS NULL OR  UPPER(CPL_ORDENES_COMPRA.OCN_NUMERO) like '%'|| UPPER(p_OCN_NUMERO)||'%')   
+		AND (p_PROVN_ID = 0 OR CPL_SOL_PL.PROVN_ID = p_PROVN_ID)  
+        AND (p_SOLC_FOLIO = '' OR  UPPER(CPL_SOL_PL.SOLC_FOLIO) like '%'|| UPPER(p_SOLC_FOLIO)||'%')
+		and CPL_SOL_PL.SOLN_BORRADO = 0;
+
+   END consulta_listado;      
+
+
+
+    PROCEDURE consulta_solicitud_enc(p_SOLN_ID IN NUMBER,
+									p_SOLN_ENTIDAD IN NUMBER,
+								    p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT OCN_ID
+			,SOLN_ENTIDAD
+			,SOLF_FECHA
+			,CONTN_ID
+			,SOLN_ESTATUS
+			,SOLC_USR_REG
+			,SOLN_BORRADO
+			,PROVN_ID
+			,SOLC_FOLIO
+			,SOLN_ID
+			,SOLF_FECHAENTREGA
+			,SOLF_FECHA_REG
+		FROM CPL_SOL_PL  
+		where SOLN_ENTIDAD = p_SOLN_ENTIDAD
+		AND SOLN_ID =  p_SOLN_ID    
+		and SOLN_BORRADO = 0;
+
+   END consulta_solicitud_enc; 
+
+   PROCEDURE consulta_solicitud_det(p_SOLN_ID IN NUMBER,
+								   p_SOLDN_ENTIDAD IN NUMBER,
+								   p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT SOLDC_RNG_PL_INI
+			,SOLDN_ID
+			,SOLDN_ENTIDAD
+			,SOLDC_RNG_PL_FIN
+			,DBN_ID
+			,SOLN_ID
+			,TPN_ID
+            ,OCDN_ID
+			,SOLDN_BORRADO
+			,SOLDN_CANT_PLACAS
+		FROM CPL_SOL_PL_DET  
+		where SOLDN_ENTIDAD = p_SOLDN_ENTIDAD
+		AND SOLN_ID =  p_SOLN_ID    
+		and SOLDN_BORRADO = 0;
+
+   END consulta_solicitud_det;  
+
+   PROCEDURE consulta_solicitud_sigfolio(p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      select  nvl(max(SOLN_ID),0) + 1 as SiguienteFolio from CPL_SOL_PL;
+
+   END consulta_solicitud_sigfolio;
+
+    PROCEDURE consulta_solicitud_delbanco(p_DBN_ID IN NUMERIC,
+										  p_dbn_entidad NUMBER,
+									      p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+		OPEN p_cursor_out FOR
+		SELECT DISTINCT CPL_SOL_PL.SOLN_ID as Valor,
+			   CPL_SOL_PL.SOLC_FOLIO as Texto			   
+		FROM CPL_SOL_PL_DET 
+		INNER JOIN CPL_SOL_PL ON CPL_SOL_PL.SOLN_ID = CPL_SOL_PL_DET.SOLN_ID
+		where DBN_ID = p_DBN_ID   
+		and SOLDN_BORRADO = 0;
+
+   END consulta_solicitud_delbanco;   
+
+
+END spcpl_solicitud_pl;

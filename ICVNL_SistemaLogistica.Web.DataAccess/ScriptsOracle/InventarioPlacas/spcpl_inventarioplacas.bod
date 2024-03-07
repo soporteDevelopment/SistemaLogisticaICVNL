@@ -1,0 +1,238 @@
+create or replace PACKAGE BODY spcpl_inventarioplacas
+IS
+
+   c_version CONSTANT   NUMBER := 24.0901;
+   c_modulo  CONSTANT   NUMBER := 0;
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.2612 DEVTI   Elaboración del paquete.
+   -- 24.0901 DEVTI   se agregan SP consulta_inventario_get_pl, consulta_inventario_det_tr
+   --------------------------------------------------------------------------
+   ----
+   -- Tipos globales
+   ----
+   ----
+   -- Variables Globales
+   ----
+   -- Variables para manejo de errores.
+   g_mensaje_error      VARCHAR2(4000);
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+      RETURN c_version;
+   END version;
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+
+   PROCEDURE consulta_inventario(p_DBN_ID in NUMBER,
+								 p_TPN_ID in NUMBER,
+								 p_INVN_ENTIDAD in NUMBER,
+								 p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT distinct CPL_INV_PL.INVN_ID
+			,CPL_INV_PL.DBN_ID
+		    ,CPL_DELEGACIONES_BANCOS.DBC_NOMBRE_DEL
+			,CPL_INV_PL.INVF_FECHA
+			,CPL_INV_PL.INVN_ENTIDAD
+			,CPL_INV_PL.INVN_BORRADO 
+      FROM CPL_INV_PL
+	  INNER JOIN CPL_INV_PL_DET ON CPL_INV_PL_DET.INVN_ID = CPL_INV_PL.INVN_ID
+	  INNER JOIN CPL_DELEGACIONES_BANCOS ON CPL_DELEGACIONES_BANCOS.DBN_ID = CPL_INV_PL.DBN_ID	  
+	  where CPL_INV_PL.INVN_ENTIDAD = p_INVN_ENTIDAD 
+	  AND (p_DBN_ID = 0 OR CPL_INV_PL.DBN_ID = p_DBN_ID) 
+	  AND (p_TPN_ID = 0 OR CPL_INV_PL_DET.TPN_ID = p_TPN_ID) 	  
+	  AND CPL_INV_PL.INVN_BORRADO = 0;
+
+   END consulta_inventario;   
+
+PROCEDURE consulta_inventario_enc(p_DBN_ID in NUMBER, 
+								   p_INVN_ENTIDAD in NUMBER,
+								   p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+		OPEN p_cursor_out FOR
+		SELECT INVN_ENTIDAD
+                ,INVF_FECHA
+                ,DBN_ID
+                ,INVN_ID
+                ,INVN_BORRADO
+		FROM CPL_INV_PL 
+		where  CPL_INV_PL.INVN_ENTIDAD = p_INVN_ENTIDAD 
+		AND CPL_INV_PL.DBN_ID = p_DBN_ID   
+		AND CPL_INV_PL.INVN_BORRADO = 0;
+
+   END consulta_inventario_enc;    
+
+
+ PROCEDURE consulta_inventario_det(p_DBN_ID in NUMBER, 
+								   p_INVN_ENTIDAD in NUMBER,
+								   p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+		OPEN p_cursor_out FOR
+		SELECT CPL_DELEGACIONES_BANCOS.DBC_NOMBRE_DEL
+			,INVDC_NUMEROPLACA
+			,INVDN_ID
+			,INVDN_ENTIDAD
+			,INVDC_NUM_POL_INFOFIN
+			,INVDC_SERIE
+			,INVDN_PLACA_CONT
+			,INVDN_EXISTENCIA
+			,INVDN_BORRADO
+			,INVDN_COSTOPLACA
+			,CPL_INV_PL_DET.TPN_ID
+			,CPL_TIPOS_PLACAS.TPC_TIPOPLACA
+			,CPL_INV_PL_DET.INVN_ID
+			,CPL_INV_PL_DET.EPN_ID
+			,CPL_TIPO_EST_PL.TEPC_ESTATUS
+			,CPL_NOTAS_ENT_PL.NEF_FECHA
+		FROM CPL_INV_PL_DET
+		INNER JOIN CPL_INV_PL ON CPL_INV_PL_DET.INVN_ID = CPL_INV_PL.INVN_ID
+		INNER JOIN CPL_DELEGACIONES_BANCOS ON CPL_DELEGACIONES_BANCOS.DBN_ID = CPL_INV_PL.DBN_ID	
+		INNER JOIN CPL_TIPOS_PLACAS ON CPL_TIPOS_PLACAS.TPN_ID = CPL_INV_PL_DET.TPN_ID	
+		INNER JOIN CPL_TIPO_EST_PL ON CPL_TIPO_EST_PL.TEPN_ID = CPL_INV_PL_DET.EPN_ID	  
+		INNER JOIN CPL_NOTAS_ENT_PL ON CPL_NOTAS_ENT_PL.NEN_ID = CPL_INV_PL_DET.NEN_ID	
+		where  CPL_INV_PL.INVN_ENTIDAD = p_INVN_ENTIDAD 
+		AND CPL_INV_PL.DBN_ID = p_DBN_ID   
+		AND CPL_INV_PL.INVN_BORRADO = 0;
+
+   END consulta_inventario_det;    
+
+    PROCEDURE consulta_inventario_det_tr(p_DBN_ID in NUMBER, 
+                                       p_INVN_ENTIDAD in NUMBER,
+                                       p_cursor_out OUT SYS_REFCURSOR)
+        IS
+        BEGIN
+
+              OPEN p_cursor_out FOR
+              SELECT CPL_DELEGACIONES_BANCOS.DBC_NOMBRE_DEL
+                    ,INVDC_NUMEROPLACA
+                    ,INVDN_ID
+                    ,INVDN_ENTIDAD
+                    ,INVDC_NUM_POL_INFOFIN
+                    ,INVDC_SERIE
+                    ,INVDN_PLACA_CONT
+                    ,INVDN_EXISTENCIA
+                    ,INVDN_BORRADO
+                    ,INVDN_COSTOPLACA
+                    ,CPL_INV_PL_DET.TPN_ID
+                    ,CPL_TIPOS_PLACAS.TPC_TIPOPLACA
+                    ,CPL_INV_PL_DET.INVN_ID
+                    ,CPL_INV_PL_DET.EPN_ID
+                    ,CPL_TIPO_EST_PL.TEPC_ESTATUS
+              FROM CPL_INV_PL_DET
+              INNER JOIN CPL_INV_PL ON CPL_INV_PL_DET.INVN_ID = CPL_INV_PL.INVN_ID
+              INNER JOIN CPL_DELEGACIONES_BANCOS ON CPL_DELEGACIONES_BANCOS.DBN_ID = CPL_INV_PL.DBN_ID	
+              INNER JOIN CPL_TIPOS_PLACAS ON CPL_TIPOS_PLACAS.TPN_ID = CPL_INV_PL_DET.TPN_ID	
+              INNER JOIN CPL_TIPO_EST_PL ON CPL_TIPO_EST_PL.TEPN_ID = CPL_INV_PL_DET.EPN_ID	  
+              where CPL_INV_PL.INVN_ENTIDAD = p_INVN_ENTIDAD 
+              AND CPL_INV_PL.DBN_ID = p_DBN_ID  
+              AND CPL_INV_PL.INVN_BORRADO = 0
+              AND CPL_TIPO_EST_PL.TEPN_ID NOT IN (4,5,6);
+
+	END consulta_inventario_det_tr;    
+
+	PROCEDURE consulta_inventario_info_pl(p_INVDC_NUMEROPLACA in VARCHAR2, 
+									   p_DBN_ID in NUMBER,
+                                       p_INVN_ENTIDAD in NUMBER,
+                                       p_cursor_out OUT SYS_REFCURSOR)
+        IS
+        BEGIN
+
+              OPEN p_cursor_out FOR
+              SELECT CPL_DELEGACIONES_BANCOS.DBC_NOMBRE_DEL
+                    ,INVDC_NUMEROPLACA
+                    ,INVDN_ID
+                    ,INVDN_ENTIDAD
+                    ,INVDC_NUM_POL_INFOFIN
+                    ,INVDC_SERIE
+                    ,INVDN_PLACA_CONT
+                    ,INVDN_EXISTENCIA
+                    ,INVDN_BORRADO
+                    ,INVDN_COSTOPLACA
+                    ,CPL_INV_PL_DET.TPN_ID
+                    ,CPL_TIPOS_PLACAS.TPC_TIPOPLACA
+                    ,CPL_INV_PL_DET.INVN_ID
+                    ,CPL_INV_PL_DET.EPN_ID
+                    ,CPL_TIPO_EST_PL.TEPC_ESTATUS
+              FROM CPL_INV_PL_DET
+              INNER JOIN CPL_INV_PL ON CPL_INV_PL_DET.INVN_ID = CPL_INV_PL.INVN_ID
+              INNER JOIN CPL_DELEGACIONES_BANCOS ON CPL_DELEGACIONES_BANCOS.DBN_ID = CPL_INV_PL.DBN_ID	
+              INNER JOIN CPL_TIPOS_PLACAS ON CPL_TIPOS_PLACAS.TPN_ID = CPL_INV_PL_DET.TPN_ID	
+              INNER JOIN CPL_TIPO_EST_PL ON CPL_TIPO_EST_PL.TEPN_ID = CPL_INV_PL_DET.EPN_ID	  
+              where CPL_INV_PL.INVN_ENTIDAD = p_INVN_ENTIDAD 
+			  AND CPL_INV_PL.DBN_ID = p_DBN_ID
+              AND CPL_INV_PL_DET.INVDC_NUMEROPLACA = p_INVDC_NUMEROPLACA  
+              AND CPL_INV_PL.INVN_BORRADO = 0;
+
+	END consulta_inventario_info_pl;
+
+	PROCEDURE consulta_inventario_infoh_pl(p_INVDC_NUMEROPLACA in VARCHAR2, 
+									   p_DBN_ID in NUMBER,
+                                       p_INVN_ENTIDAD in NUMBER,
+                                       p_cursor_out OUT SYS_REFCURSOR)
+        IS
+        BEGIN
+
+			OPEN p_cursor_out FOR
+			SELECT CPL_INV_PL_DET_HIST_C.INVDN_ID
+				,CPL_INV_PL_DET_HIST_C.IDHN_ID
+				,CPL_INV_PL_DET_HIST_C.EPN_IDNUEVO
+				,A.TEPC_ESTATUS as EPC_NUEVO
+				,CPL_INV_PL_DET_HIST_C.IDHN_ENTIDAD
+				,CPL_INV_PL_DET_HIST_C.IDHF_FECHA_OP
+				,CPL_INV_PL_DET_HIST_C.EPN_IDANTERIOR
+				,N.TEPC_ESTATUS as EPC_ANTERIOR
+				,CPL_INV_PL_DET_HIST_C.IDHN_BORRADO
+			FROM CPL_INV_PL_DET
+			INNER JOIN CPL_INV_PL ON CPL_INV_PL_DET.INVN_ID = CPL_INV_PL.INVN_ID
+			INNER JOIN CPL_INV_PL_DET_HIST_C ON CPL_INV_PL_DET_HIST_C.INVDN_ID = CPL_INV_PL_DET.INVDN_ID	  
+			INNER JOIN CPL_TIPO_EST_PL A ON A.TEPN_ID = CPL_INV_PL_DET_HIST_C.EPN_IDNUEVO
+			INNER JOIN CPL_TIPO_EST_PL N ON N.TEPN_ID = CPL_INV_PL_DET_HIST_C.EPN_IDANTERIOR
+			where CPL_INV_PL.INVN_ENTIDAD = p_INVN_ENTIDAD 
+			AND CPL_INV_PL.DBN_ID = p_DBN_ID
+			AND CPL_INV_PL_DET.INVDC_NUMEROPLACA = p_INVDC_NUMEROPLACA  
+			AND CPL_INV_PL.INVN_BORRADO = 0 
+			order by cpl_inv_pl_det_hist_c.idhf_fecha_op DESC;
+
+	END consulta_inventario_infoh_pl;    
+    
+    PROCEDURE consulta_placas_noinv_notif(p_PVNIN_ENTIDAD in NUMBER, p_cursor_out OUT SYS_REFCURSOR)
+    IS
+    BEGIN
+
+			OPEN p_cursor_out FOR
+			SELECT PVNIN_ID, 
+                   PVNIC_NUMEROPLACA, 
+                   CPL_PLACAS_VENDIDAS_NO_INV.DBN_ID,
+                   CPL_DELEGACIONES_BANCOS.DBC_NOMBRE_DEL,
+                   PVNIC_DELEGACIONVENTA,
+                   PVNIF_FECHAPAGO,
+                   PVNIN_ENTIDAD
+            FROM CPL_PLACAS_VENDIDAS_NO_INV
+            LEFT JOIN CPL_DELEGACIONES_BANCOS ON CPL_DELEGACIONES_BANCOS.DBN_ID = CPL_PLACAS_VENDIDAS_NO_INV.DBN_ID
+            WHERE PVNIN_ENTIDAD = p_PVNIN_ENTIDAD
+            AND PVNIN_NOTIFICACION_ENV = 0;
+
+	END consulta_placas_noinv_notif;    
+
+
+END spcpl_inventarioplacas;

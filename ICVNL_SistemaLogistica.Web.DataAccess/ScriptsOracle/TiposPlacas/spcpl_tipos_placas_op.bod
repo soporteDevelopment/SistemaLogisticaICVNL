@@ -1,0 +1,120 @@
+create or replace PACKAGE BODY spcpl_tipos_placas_op
+IS
+   c_version CONSTANT   NUMBER := 23.2911;
+   c_modulo  CONSTANT   NUMBER := 0;
+
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.2911 DEVTI   Elaboración del paquete.
+   -- 24.0501 DEVTI   se modifica el nombre del SP inactiva por cambia_estatus para que soporte el mismo sp la inactivación y reactivación de registros
+   --------------------------------------------------------------------------
+
+   ----
+   -- Variables Globales
+   next_val 	number;
+   ----
+   -- Variables para manejo de errores. 
+   ----
+   -- Excepciones globales
+   ----
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+   RETURN c_version;
+   END VERSION;
+
+
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+	PROCEDURE agregar(p_TPC_TIPOPLACA in VARCHAR2
+					,p_TPC_MASCARA_PLACA in VARCHAR2
+					,p_TPN_ACTIVO in NUMBER
+					,p_TPC_COD_INFOFIN in VARCHAR2
+					,p_TPN_BORRADO in NUMBER
+					,p_TPN_ID in NUMBER
+					,p_TPC_ORDEN_PLACA in VARCHAR2
+                    ,p_TPN_ORDEN_SERIE in VARCHAR2
+					,p_TPN_CANT_PLACAS_CAJA in NUMBER
+					,p_TPN_ENTIDAD in NUMBER
+					,p_TPN_CANT_LAM_JGO_PL in NUMBER)
+	IS
+	BEGIN   
+
+		select  nvl(max(TPN_ID),0) + 1  into next_val from CPL_TIPOS_PLACAS;
+
+		insert into CPL_TIPOS_PLACAS(TPC_TIPOPLACA
+									,TPC_MASCARA_PLACA
+									,TPN_ACTIVO
+									,TPC_COD_INFOFIN
+									,TPN_BORRADO
+									,TPN_ID
+									,TPC_ORDEN_PLACA
+									,TPN_CANT_PLACAS_CAJA
+									,TPN_ENTIDAD
+									,TPN_CANT_LAM_JGO_PL
+									,TPN_ORDEN_SERIE) 
+									values (p_TPC_TIPOPLACA
+									,p_TPC_MASCARA_PLACA
+									,p_TPN_ACTIVO
+									,p_TPC_COD_INFOFIN
+									,p_TPN_BORRADO
+									,next_val
+									,p_TPC_ORDEN_PLACA
+									,p_TPN_CANT_PLACAS_CAJA
+									,p_TPN_ENTIDAD
+									,p_TPN_CANT_LAM_JGO_PL
+                                    ,p_TPN_ORDEN_SERIE);
+
+	END agregar;         
+
+
+	PROCEDURE modificar(p_TPC_TIPOPLACA in VARCHAR2
+					,p_TPC_MASCARA_PLACA in VARCHAR2
+					,p_TPN_ACTIVO in NUMBER
+					,p_TPC_COD_INFOFIN in VARCHAR2
+					,p_TPN_BORRADO in NUMBER
+					,p_TPN_ID in NUMBER
+					,p_TPC_ORDEN_PLACA in VARCHAR2
+                    ,p_TPN_ORDEN_SERIE in VARCHAR2
+					,p_TPN_CANT_PLACAS_CAJA in NUMBER
+					,p_TPN_ENTIDAD in NUMBER
+					,p_TPN_CANT_LAM_JGO_PL in NUMBER)
+	IS
+	BEGIN
+		update CPL_TIPOS_PLACAS 
+		set TPC_TIPOPLACA = p_TPC_TIPOPLACA
+			,TPC_MASCARA_PLACA = p_TPC_MASCARA_PLACA
+			,TPN_ACTIVO = p_TPN_ACTIVO
+			,TPC_COD_INFOFIN = p_TPC_COD_INFOFIN
+			,TPN_BORRADO = p_TPN_BORRADO
+			,TPC_ORDEN_PLACA = p_TPC_ORDEN_PLACA 
+			,TPN_ORDEN_SERIE = p_TPN_ORDEN_SERIE
+			,TPN_ENTIDAD = p_TPN_ENTIDAD
+			,TPN_CANT_LAM_JGO_PL = p_TPN_CANT_LAM_JGO_PL
+		where TPN_ID = p_TPN_ID;
+
+	END modificar;
+
+	PROCEDURE cambia_estatus(p_TPN_ID in number)
+	IS
+	BEGIN
+        UPDATE CPL_TIPOS_PLACAS 
+		SET TPN_ACTIVO = (case TPN_ACTIVO when 1 then 0 else 1 end) 
+		WHERE TPN_ID = p_TPN_ID;
+	END cambia_estatus;
+
+
+END spcpl_tipos_placas_op;

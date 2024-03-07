@@ -1,0 +1,135 @@
+create or replace PACKAGE BODY spcpl_tipos_placas
+IS
+
+   c_version CONSTANT   NUMBER := 24.0501;
+   c_modulo  CONSTANT   NUMBER := 0;
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.2911 DEVTI   Elaboración del paquete.
+   -- 24.0501 DEVTI   Se agrega filtro de estatus en el consulta_listado
+   --------------------------------------------------------------------------
+   ----
+   -- Tipos globales
+   ----
+   ----
+   -- Variables Globales
+   ----
+   -- Variables para manejo de errores.
+   g_mensaje_error      VARCHAR2(4000);
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+      RETURN c_version;
+   END version;
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+
+   PROCEDURE consulta_listado(p_tpn_entidad NUMBER,
+							  p_TPN_ACTIVO NUMBER,
+						      p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT TPC_TIPOPLACA
+			,TPC_MASCARA_PLACA
+			,TPN_ACTIVO
+			,TPC_COD_INFOFIN
+			,TPN_BORRADO
+			,TPN_ID
+			,TPC_ORDEN_PLACA
+			,TPN_CANT_PLACAS_CAJA
+			,TPN_ENTIDAD
+			,TPN_CANT_LAM_JGO_PL
+			,TPN_ORDEN_SERIE
+      FROM CPL_TIPOS_PLACAS
+	  where TPN_ENTIDAD = p_tpn_entidad
+	  and (p_TPN_ACTIVO IS NULL OR TPN_ACTIVO = p_TPN_ACTIVO); 
+
+   END consulta_listado;      
+
+   PROCEDURE consulta_tiposplacas(p_tpn_id NUMBER,
+								  p_tpn_entidad NUMBER,
+								  p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT TPC_TIPOPLACA
+			,TPC_MASCARA_PLACA
+			,TPN_ACTIVO
+			,TPC_COD_INFOFIN
+			,TPN_BORRADO
+			,TPN_ID
+			,TPC_ORDEN_PLACA
+			,TPN_CANT_PLACAS_CAJA
+			,TPN_ENTIDAD
+			,TPN_CANT_LAM_JGO_PL
+            ,TPN_ORDEN_SERIE
+      FROM CPL_TIPOS_PLACAS
+	  where TPN_ENTIDAD = p_tpn_entidad
+	  and TPN_ID = p_tpn_id;
+
+   END consulta_tiposplacas;   
+
+
+ PROCEDURE consulta_tiposplacas_combo(p_tpn_entidad NUMBER,
+									      p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT TPN_ID as Valor
+			 ,TPC_TIPOPLACA as Texto			  
+      FROM CPL_TIPOS_PLACAS
+	  where TPN_ENTIDAD = p_tpn_entidad 
+	  and TPN_ACTIVO = 1
+	  and TPN_BORRADO = 0;
+
+   END consulta_tiposplacas_combo;    
+
+   PROCEDURE existe_tipoplaca(p_TPC_TIPOPLACA VARCHAR2,
+                                    p_tpn_entidad NUMBER,
+                                    p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT TPN_ID 
+			 ,TPC_TIPOPLACA		  
+      FROM CPL_TIPOS_PLACAS
+	  where TPN_ENTIDAD = p_tpn_entidad
+	  and TPC_TIPOPLACA = p_TPC_TIPOPLACA;
+
+   END existe_tipoplaca; 
+
+
+   PROCEDURE existe_tipoplaca_infofin(p_TPC_COD_INFOFIN VARCHAR2,
+                                    p_tpn_entidad NUMBER,
+                                    p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT TPN_ID 
+			 ,TPC_TIPOPLACA		  
+      FROM CPL_TIPOS_PLACAS
+	  where TPN_ENTIDAD = p_tpn_entidad
+	  and TPC_COD_INFOFIN = p_TPC_COD_INFOFIN;
+
+   END existe_tipoplaca_infofin; 
+
+END spcpl_tipos_placas;

@@ -1,0 +1,257 @@
+﻿@model ICVNL_SistemaLogistica.Web.ViewModels.Detalle_SolicitudesPlacasVM
+
+@{
+    ViewBag.Title = "Administración de Solicitudes de Placas de Proveedores";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/css/estilosAlerta.css" rel="stylesheet" />
+<link href="~/Content/css/bootstrap-datepicker3.min.css" rel="stylesheet" />
+<link href="~/Content/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+@using (Html.BeginForm("Details", "SolicitudesPlacas", FormMethod.Post, new { id = "myForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.NumeroFila)
+
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="row">
+                <div class="col-md-10">
+                    <h1 class="page-title">
+                        Administración de Solicitudes de Placas de Proveedores
+                        <small>Sistema de Logística de Control de Placas&nbsp;</small>
+                    </h1>
+                </div>
+            </div>
+            <div class="row widget-row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Encabezado
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-actions ">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        @if (HttpContext.Current.Session["UserSC"] != null &&
+                                        ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_SolicitudesPlacasProveedor.Actualizar)
+                                        {
+                                            <button type="button" id="btnUpsertSolicitud" onclick="UpdateSolicitud();" class="btn dark margin-right-10">
+                                                Guardar
+                                                <i class="fa fa-save"></i>
+                                            </button>
+                                        }
+                                        @if (HttpContext.Current.Session["UserSC"] != null &&
+                                        ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_SolicitudesPlacasProveedor.GeneraPDF_SolicitudPlaca)
+                                        {
+                                            <button type="button" id="btnGeneraPDF" onclick="SolicitudGeneraPDF();" class="btn blue margin-right-10">
+                                                Generar PDF
+                                                <i class="fa fa-file-pdf-o"></i>
+                                            </button>
+                                        }
+                                        @if (HttpContext.Current.Session["UserSC"] != null &&
+                                        ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_SolicitudesPlacasProveedor.GeneraPDF_EnvioEmailProveedor)
+                                        {
+                                            <button type="button" id="btnGeneraEnviaPDF" onclick="SolicitudGeneraEnviaPDF();" class="btn grey-cararra margin-right-10">
+                                                Generar y Enviar PDF al Proveedor
+                                                <i class="fa fa-mail-reply-all"></i>
+                                            </button>
+                                        }
+                                        
+                                        <button type="button" class="btn default grey" onclick="location.href='@Url.Action("Index", "SolicitudesPlacas")';">
+                                            Regresar
+                                            <i class="fa fa-chevron-circle-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-body">
+                                <div class="col-md-12" style="display:none">
+                                    <div class="row">
+                                        <div class="col-md-2" id="divId">
+                                            @Html.LabelFor(model => model.IdSolicitud, htmlAttributes: new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <p class="form-control-static">
+                                                    @Html.EditorFor(model => model.IdSolicitud, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled", @id = "txtIdSolicitud" } })
+
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.FolioSolicitud, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.FolioSolicitud, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled", @id = "txtFolioSolicitud" } })
+                                            @Html.ValidationMessageFor(model => model.FolioSolicitud, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.FechaSolicitud, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.FechaSolicitudStr, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled", @id = "txtFechaSolicitud" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.FechaEntrega, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.FechaEntregaStr, new { htmlAttributes = new { @class = "form-control datemaskSD validaCamposSolicitudPlacasText", @autocomplete = "off", @id = "txtFechaEntrega" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.IdProveedor, htmlAttributes: new { @class = "control-label" })
+                                            @Html.DropDownListFor(x => Model.IdProveedor, new SelectList(Model.ListadoProveedoresDDL, "Valor", "Texto", Model.IdProveedor),
+                                                           htmlAttributes: new { @class = "form-control validaCamposSolicitudPlacas", @id = "ddlListadoProveedoresDDL", @onchange = "CargaCombosAnidados();", @disabled="disabled" })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.IdContrato, htmlAttributes: new { @class = "control-label" })
+                                            @Html.DropDownListFor(x => Model.IdContrato, new SelectList(Model.ListadoContratosDDL, "Valor", "Texto", Model.IdContrato),
+                                                           htmlAttributes: new { @class = "form-control validaCamposSolicitudPlacas", @id = "ddlListadoContratosDDL", @disabled = "disabled" })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.IdOrdenCompra, htmlAttributes: new { @class = "control-label" })
+                                            @Html.DropDownListFor(x => Model.IdOrdenCompra, new SelectList(Model.ListadoOrdenesCompraDDL, "Valor", "Texto", Model.IdOrdenCompra),
+                                                           htmlAttributes: new { @class = "form-control validaCamposSolicitudPlacas", @id = "ddlListadoOrdenesCompraDDL", onchange = "CargaComboDetalleTipoPlacas();", @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Detalle
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-actions ">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        @if (HttpContext.Current.Session["UserSC"] != null &&       
+                                        ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_SolicitudesPlacasProveedor.Actualizar)
+                                        {
+                                            <button type="button" class="btn dark margin-right-10" onclick="AgregarDetalleSolicitud();">
+                                                Agregar Detalle
+                                                <i class="fa fa-save"></i>
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <table class="table table-bordered mb-0 table-sm dataTable" id="tablaRegistros">
+                                            <thead>
+                                                <tr class="bg-light headerCustom">
+                                                    <th>Delegación</th>
+                                                    <th>Tipo de Placa</th>
+                                                    <th>Rango Placas Inicial</th>
+                                                    <th>Rango Placas Final</th>
+                                                    <th>Cantidad de Placas</th>
+                                                    <th style="width:150px"><div style="text-align: center">Acciones</div></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="listadoPartialDetalleSolicitud">
+                                                @Html.Partial("PartialDetalleSolicitud", Model.Detalle_SolicitudesPlacasDetailsVM)
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modalAgregarDetalle" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="tituloModalAgregar"></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body portlet-body form form-horizontal">
+                    <div class="form-body" style="overflow-y: auto;">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <input type="hidden" id="txtConsecutivo" value="" />
+                                <input type="hidden" id="txtDetalleSolicitud_IdDetalleOrdenCompra" value="" />
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.DetalleSolicitud.IdDelegacionBanco, htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(x => Model.DetalleSolicitud.IdDelegacionBanco, new SelectList(Model.DetalleSolicitud.ListadoDelegacionesBancosDDL, "Valor", "Texto", Model.DetalleSolicitud.IdDelegacionBanco),
+                                                   htmlAttributes: new { @class = "form-control validaCampos", @id = "ddlDetalleSolicitud_IdDelegacionBanco" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.DetalleSolicitud.IdTipoPlaca, htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(x => Model.DetalleSolicitud.IdTipoPlaca, new SelectList(Model.DetalleSolicitud.ListadoTiposPlacasDDL, "Valor", "Texto", Model.DetalleSolicitud.IdTipoPlaca),
+                                                   htmlAttributes: new { @class = "form-control validaCampos", @id = "ddlDetalleSolicitud_IdTipoPlaca", @onchange = "GetDataTiposPlacas();" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.DetalleSolicitud.RangoPlacaInicial, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.DetalleSolicitud.RangoPlacaInicial, new { htmlAttributes = new { @class = "form-control validaCamposDet", @id = "txtDetalleSolicitud_RangoPlacaInicial", @autocomplete = "off", @disabled = "disabled" } })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.DetalleSolicitud.RangoPlacaFinal, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.DetalleSolicitud.RangoPlacaFinal, new { htmlAttributes = new { @class = "form-control validaCamposDet", @id = "txtDetalleSolicitud_RangoPlacaFinal", @autocomplete = "off", @onchange= "ValidaCantidadesPlacas();" } })
+
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.DetalleSolicitud.CantidadPlacas, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.DetalleSolicitud.CantidadPlacas, new { htmlAttributes = new { @class = "form-control validaCamposDet", @id = "txtDetalleSolicitud_CantidadPlacas", @autocomplete = "off", @disabled = "disabled" } })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn green margin-right-10" onclick="ValidaGuardarDetalle();">
+                        Agregar
+                        <i class="fa fa-save"></i>
+                    </button>
+                    <button type="button" class="btn dark btn-outline" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts
+{
+    <script src="~/Content/js/datatables.js"></script>
+    <script src="~/Content/js/datatables.min.js"></script>
+    <script src="~/Content/js/datatables.bootstrap.js"></script>
+    <script src="~/Content/js/funciones-alertas.js"></script>
+    <script src="~/Scripts/Solicitudes/SolicitudesPlacas.js"></script>
+    <script src="~/Content/js/jquery.mask.min.js"></script>
+    <script src="~/Content/js/bootstrap-datepicker.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            setTimeout(function () { CargaInformacionSolicitud(); }, 500);
+        });
+
+    </script>
+}

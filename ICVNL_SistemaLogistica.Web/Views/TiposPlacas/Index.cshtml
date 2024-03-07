@@ -1,0 +1,290 @@
+﻿@model ICVNL_SistemaLogistica.Web.ViewModels.Listado_TiposPlacasVM
+
+@{
+    ViewBag.Title = "Administración de Tipos de Placas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/css/datatables.min.css" rel="stylesheet" />
+<link href="~/Content/css/datatables.bootstrap.css" rel="stylesheet" />
+<style>
+    .FiltroMasterClass {
+        display: inline-table !important;
+        border-bottom: 1px solid #7678B8 !important
+    }
+</style>
+@using (@Html.BeginForm("Index", "TiposPlacas", FormMethod.Post, new { id = "myForm" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="row">
+                <div class="col-md-10">
+                    <h1 class="page-title">
+                        Administración de Tipos de Placas
+                        <small>Sistema de Logística de Control de Placas&nbsp;</small>
+                    </h1>
+                </div>
+            </div>
+            <div class="row widget-row">
+                <div class="col-md-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Listado
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="table-toolbar">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @if (HttpContext.Current.Session["UserSC"] != null &&
+                                        ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_TiposPlacas.Registrar)
+                                        {
+                                            <button type="button" class="btn green margin-right-10" onclick="location.href='@Url.Action("Create")'">
+                                                Agregar
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        }
+                                        
+                                        <button type="button" class="quick-sidebar-toggler btn sbold blue margin-right-10">
+                                            Filtrar
+                                            <i class="fa fa-filter"></i>
+                                        </button>
+                                        <button type="button" class="btn default grey margin-right-10" onclick="location.href='@Url.Action("Index", "Home")'">
+                                            Regresar
+                                            <i class="fa fa-chevron-circle-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-12 table-responsive">
+                                        <table class="table table-bordered mb-0 table-sm " id="tablaRegistros">
+                                            <thead>
+                                                <tr class="bg-light headerCustom">
+                                                    <th>
+                                                        Id del Tipo de Placa
+                                                    </th>
+                                                    <th>
+                                                        Tipo de Placa
+                                                    </th>
+                                                    <th>
+                                                        Código de Artículo en Infofin
+                                                    </th>
+                                                    <th>
+                                                        Cantidad de Láminas en un Juego de Placas
+                                                    </th>
+                                                    <th>
+                                                        Cantidad de Placas en una Caja
+                                                    </th>
+                                                    <th>
+                                                        Mascara de la Placa
+                                                    </th>
+                                                    <th>
+                                                        Orden de la Placa
+                                                    </th>
+                                                    <th style="width: 180px !important;"><div style="text-align: center;">Acciones</div></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.Listado != null && Model.Listado.Count > 0)
+                                                {
+                                                    foreach (var item in Model.Listado)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.Id)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.TipoPlaca)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.CodigoInfofin)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.CantidadPlacas)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.CantidadPlacasCaja)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.MascaraPlaca)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.OrdenPlaca)
+                                                            </td>
+                                                            <td align="center">
+                                                                @if (item.Estatus == 0)
+                                                                {
+                                                                    if (HttpContext.Current.Session["UserSC"] != null &&
+                                                                    ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_TiposPlacas.Registrar)
+                                                                    {
+                                                                        <button class="btn btn-xs green btn-icon-circle tooltips" type="button"
+                                                                                data-container="body" data-toggle="tooltip" data-original-title="Reactivar Tipo de Placa"
+                                                                                onclick="if (!ShowConfirmation('¿Desea Reactivar este registro?',
+                                                                                     '@Url.Action("CambiaEstatus", "TiposPlacas", new { id = item.Id })')) return false;">
+                                                                            <literal class="HiddeLabel">Reactivar</literal>
+                                                                            <i class="fa fa-check mr-0 ml-0 HiddenIClass"></i>
+                                                                        </button>
+                                                                    }
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    <button class="btn btn-xs green-jungle btn-icon-circle tooltips" type="button"
+                                                                            data-container="body" data-toggle="tooltip" data-original-title="Editar Tipo de Placa"
+                                                                            onclick="location.href='@Url.Action("Details", "TiposPlacas", new { id = item.Id })'">
+                                                                        <literal class="HiddeLabel">Editar</literal>
+                                                                        <i class="fa fa-pencil mr-0 ml-0 HiddenIClass"></i>
+                                                                    </button>
+                                                                    if (HttpContext.Current.Session["UserSC"] != null &&
+                                                                    ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_TiposPlacas.Registrar)
+                                                                    {
+                                                                        <button class="btn btn-xs red btn-icon-circle tooltips" type="button"
+                                                                                data-container="body" data-toggle="tooltip" data-original-title="Inactivar Tipo de Placa"
+                                                                                onclick="if (!ShowConfirmation('¿Desea Inactivar este registro?',
+                                                                                '@Url.Action("CambiaEstatus", "TiposPlacas", new { id = item.Id })')) return false;">
+                                                                            <literal class="HiddeLabel">Inactivar</literal>
+                                                                            <i class="fa fa-times mr-0 ml-0 HiddenIClass"></i>
+                                                                        </button>
+                                                                    }
+
+                                                                }
+
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td colspan="8">
+                                                            @Html.Label("Sin Información")
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <a href="javascript:;" class="page-quick-sidebar-toggler">
+                                    <i class="icon-login"></i>
+                                </a>
+
+                                <div class="page-quick-sidebar-wrapper" style="border-width: thick; border-style: solid; background-color: #E9EDEF; display: block;" data-close-on-body-click="false">
+                                    <div class="page-quick-sidebar" style="background-color: #E9EDEF;">
+
+                                        <div class="tab-content" style="background-color: #E9EDEF;">
+
+                                            <div class="row" style="background-color: #E9EDEF;">
+
+                                                <div class="col-md-12  " style="background-color: #E9EDEF;">
+                                                    <!-- BEGIN SAMPLE FORM PORTLET-->
+                                                    <div class="portlet light noborder" style="background-color: #E9EDEF;">
+                                                        <div class="portlet-title noborder">
+                                                            <div class="caption font-green">
+                                                                <i class="icon-pin font-green"></i>
+                                                                <span class="caption-subject bold uppercase">Filtros Búsqueda</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="noborder" id="scroll">
+                                                            <div class="col">
+                                                                <div class="form-group form-md-line-input has-success">
+                                                                    <div class="form-group form-md-line-input has-success">
+                                                                        @Html.DropDownListFor(x => Model.FiltroEstatus, new SelectList(Model.ListadoEstatusDDL, "Valor", "Texto", Model.FiltroEstatus),
+                                                                                           htmlAttributes: new { @class = "form-control", @id = "ddlListadoEstatusDDL" })
+                                                                        <label for="ddlListadoEstatusDDL">Estatus</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-actions noborder">
+                                                            <button type="submit" value="Buscar" class="btn green" id="btnAplicarFiltro">
+                                                                Aplicar Filtro
+                                                            </button>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <!-- END SAMPLE FORM PORTLET-->
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<link href="~/Content/css/GridView.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/css/Paginado.css" rel="stylesheet" type="text/css" />
+
+@section scripts
+{
+    <script src="~/Content/js/datatables.js"></script>
+    <script src="~/Content/js/datatables.min.js"></script>
+    <script src="~/Content/js/datatables.bootstrap.js"></script>
+
+    <script type="text/javascript">
+
+        const isMobile = {
+            Android: function () {
+                return navigator.userAgent.match(/Android/i);
+            },
+            BlackBerry: function () {
+                return navigator.userAgent.match(/BlackBerry/i);
+            },
+            iOS: function () {
+                return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+            },
+            Opera: function () {
+                return navigator.userAgent.match(/Opera Mini/i);
+            },
+            Windows: function () {
+                return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+            },
+            any: function () {
+                return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+            }
+        };
+
+        $(document).ready(function () {
+            $('#tablaRegistros').DataTable({
+                lengthChange: false,
+                paging: true,
+                searching: false,
+                ordering: true,
+                responsive: isMobile.any() ? true : false,
+                bInfo: false,
+                language: {
+                    emptyTable: "Sin información.",
+                    info: "Registros del <b>_START_</b> al <b>_END_</b> de <b>_TOTAL_</b> por página",
+                    infoEmpty: "Sin información",
+                    infoFiltered: "(filtered1 de _MAX_ total registros)",
+                    lengthMenu: "_MENU_ registros por p&#225;gina",
+                    search: "Buscar:",
+                    zeroRecords: "Sin coincidencias encontradas."
+                },
+            });
+
+            $('#tablaRegistros').find('[data-toggle="tooltip"]').tooltip();
+
+        });
+    </script>
+}

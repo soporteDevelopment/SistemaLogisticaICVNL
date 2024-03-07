@@ -1,0 +1,14 @@
+create or replace PACKAGE spcpl_archivos
+IS
+	FUNCTION version
+	RETURN NUMBER;
+
+   PROCEDURE consulta_archivo(p_ARN_IDORIGEN IN NUMERIC,
+							  p_ARC_TABLAORIGEN IN VARCHAR2, 
+							  p_ARN_ENTIDAD IN NUMERIC,
+						      p_cursor_out OUT SYS_REFCURSOR);
+                              
+   PROCEDURE consulta_archivo_i(p_ARN_ID IN NUMERIC, 
+							  p_ARN_ENTIDAD IN NUMERIC,
+						      p_cursor_out OUT SYS_REFCURSOR);
+END spcpl_archivos;

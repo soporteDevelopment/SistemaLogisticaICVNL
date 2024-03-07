@@ -1,0 +1,11 @@
+﻿.resalta {
+    background: rgba(255,0,0,.15);
+    outline: none;
+    box-shadow: #f00 0px 0px 4px 2px;
+}
+
+    .resalta:focus {
+        background: rgba(255, 0, 0, 0.15);
+        outline: none;
+        box-shadow: #f00 0px 0px 4px 1px;
+    }

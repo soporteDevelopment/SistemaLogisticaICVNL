@@ -1,0 +1,31 @@
+create or replace PACKAGE spcpl_notasentrada_pl
+IS
+	FUNCTION version
+	RETURN NUMBER;
+
+    PROCEDURE consulta_listado(p_NEN_NUMERO IN VARCHAR2,
+							  p_NEF_FECHA_INI IN DATE,
+							  p_NEF_FECHA_FIN IN DATE,
+							  p_OCN_NUMERO IN VARCHAR2,
+							  p_OCF_FECHA_INI IN DATE,
+							  p_OCF_FECHA_FIN IN DATE,
+							  p_ENEN_ID IN NUMBER,
+							  p_NEN_ENTIDAD IN NUMBER,
+						      p_cursor_out OUT SYS_REFCURSOR);
+
+	PROCEDURE consulta_notasentrada_enc(p_NEN_ID IN NUMBER,
+									   p_NEN_ENTIDAD IN NUMBER,
+								       p_cursor_out OUT SYS_REFCURSOR);
+
+    PROCEDURE consulta_notasentrada_det(p_NEN_ID IN NUMBER,
+									   p_NEN_ENTIDAD IN NUMBER,
+								       p_cursor_out OUT SYS_REFCURSOR); 	
+
+    PROCEDURE consulta_notasentrada_fol_enc(p_NEN_NUMERO IN NUMBER,
+									   p_NEN_ENTIDAD IN NUMBER,
+								       p_cursor_out OUT SYS_REFCURSOR);
+
+    PROCEDURE consulta_notasentrada_fol_det(p_NEN_NUMERO IN VARCHAR2,
+									   p_NEN_ENTIDAD IN NUMBER,
+								       p_cursor_out OUT SYS_REFCURSOR);
+END spcpl_notasentrada_pl;

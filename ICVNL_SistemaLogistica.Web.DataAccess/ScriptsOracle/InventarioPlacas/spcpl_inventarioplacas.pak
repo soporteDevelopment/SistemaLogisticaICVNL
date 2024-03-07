@@ -1,0 +1,35 @@
+create or replace PACKAGE spcpl_inventarioplacas
+IS
+	FUNCTION version
+	RETURN NUMBER;
+
+   PROCEDURE consulta_inventario(p_DBN_ID in NUMBER,
+								 p_TPN_ID in NUMBER,
+								 p_INVN_ENTIDAD in NUMBER,
+								 p_cursor_out OUT SYS_REFCURSOR);
+
+    PROCEDURE consulta_inventario_enc(p_DBN_ID in NUMBER, 
+								   p_INVN_ENTIDAD in NUMBER,
+								   p_cursor_out OUT SYS_REFCURSOR);
+
+   PROCEDURE consulta_inventario_det(p_DBN_ID in NUMBER, 
+								   p_INVN_ENTIDAD in NUMBER,
+								   p_cursor_out OUT SYS_REFCURSOR);        
+
+    PROCEDURE consulta_inventario_det_tr(p_DBN_ID in NUMBER, 
+                                       p_INVN_ENTIDAD in NUMBER,
+                                       p_cursor_out OUT SYS_REFCURSOR);
+
+    PROCEDURE consulta_inventario_info_pl(p_INVDC_NUMEROPLACA in VARCHAR2, 
+									   p_DBN_ID in NUMBER,
+                                       p_INVN_ENTIDAD in NUMBER,
+                                       p_cursor_out OUT SYS_REFCURSOR);
+
+	PROCEDURE consulta_inventario_infoh_pl(p_INVDC_NUMEROPLACA in VARCHAR2, 
+									   p_DBN_ID in NUMBER,
+                                       p_INVN_ENTIDAD in NUMBER,
+                                       p_cursor_out OUT SYS_REFCURSOR);
+                                       
+    PROCEDURE consulta_placas_noinv_notif(p_PVNIN_ENTIDAD in NUMBER, p_cursor_out OUT SYS_REFCURSOR);     
+    
+END spcpl_inventarioplacas;

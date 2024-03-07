@@ -1,0 +1,14 @@
+CREATE OR REPLACE PACKAGE spcpl_parametrizacion
+IS
+   FUNCTION version
+   RETURN NUMBER;
+
+   PROCEDURE consulta_parametrizacion(p_cursor_out OUT SYS_REFCURSOR);
+
+                              
+
+END spcpl_parametrizacion;
+
+
+
+  

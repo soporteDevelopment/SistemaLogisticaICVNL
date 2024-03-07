@@ -1,0 +1,201 @@
+﻿@model ICVNL_SistemaLogistica.Web.ViewModels.Detalle_NotasEntradasPlacasVM
+
+@{
+    ViewBag.Title = "Administración de Notas de Entrada de Placas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/css/estilosAlerta.css" rel="stylesheet" />
+@using (Html.BeginForm("Create", "NotasEntradasPlacas", FormMethod.Post, new { id = "myForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.IdNotaEntrada)
+
+
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="row">
+                <div class="col-md-10">
+                    <h1 class="page-title">
+                        Administración de Notas de Entrada de Placas
+                        <small>Sistema de Logística de Control de Placas&nbsp;</small>
+                    </h1>
+                </div>
+            </div>
+            <div class="row widget-row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Encabezado
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-actions ">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <button type="button" class="btn default grey" onclick="location.href='@Url.Action("Index", "NotasEntradasPlacas")';">
+                                            Regresar
+                                            <i class="fa fa-chevron-circle-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-2" id="divId" style="display:none">
+                                            @Html.LabelFor(model => model.IdNotaEntrada, htmlAttributes: new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <p class="form-control-static">
+                                                    @Html.EditorFor(model => model.IdNotaEntrada, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            @Html.LabelFor(model => model.NumeroNotaEntrada, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.NumeroNotaEntrada, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "@disabled" } })
+                                        </div>
+                                        <div class="col-md-3">
+                                            @Html.LabelFor(model => model.FechaNotaEntrada, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.FechaNotaEntrada, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "@disabled" } })
+                                        </div>
+                                        <div class="col-md-3">
+                                            @Html.LabelFor(model => model.IdOrdenCompra, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.NumeroOrdenCompra, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "@disabled" } })
+                                        </div>
+                                        <div class="col-md-3">
+                                            @Html.LabelFor(model => model.FechaOrdenCompra, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.FechaOrdenCompra, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "@disabled" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            @Html.LabelFor(model => model.CantidadPlacasNotaEntrada, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.CantidadPlacasNotaEntrada, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "@disabled" } })
+                                        </div>
+                                        <div class="col-md-3">
+                                            @Html.LabelFor(model => model.CantidadNumerosPlacaIdentificada, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.CantidadNumerosPlacaIdentificada, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "@disabled" } })
+                                        </div>
+                                        <div class="col-md-3">
+                                            @Html.LabelFor(model => model.CantidadNumerosPlacaPorIdentificarse, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.CantidadNumerosPlacaPorIdentificarse, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "@disabled" } })
+                                        </div>
+                                        <div class="col-md-3">
+                                            @Html.LabelFor(model => model.IdEstatusNotaEntrada, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.TiposEstatusNotaEntrada.EstatusNotaEntrada, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "@disabled" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Detalle
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.FiltroIdEstatus, htmlAttributes: new { @class = "control-label" })
+                                            @Html.DropDownListFor(x => Model.FiltroIdEstatus, new SelectList(Model.ListadoEstatusNotasEntradasDDL, "Valor", "Texto", Model.FiltroIdEstatus),
+                                                           htmlAttributes: new { @class = "form-control", @id = "ddlFiltroIdEstatus", @onchange = "CargaInfoFiltrado();" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12"><div class="row"><br /></div></div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <table class="table table-bordered mb-0 table-sm dataTable" id="tablaRegistros">
+                                            <thead>
+                                                <tr class="bg-light headerCustom">
+                                                    <th>
+                                                        Tipo de Placa
+                                                    </th>
+                                                    <th>
+                                                        Cantidad de Placas
+                                                    </th>
+                                                    <th>
+                                                        Costo por Placa
+                                                    </th>
+                                                    <th>
+                                                        Costo Total
+                                                    </th>
+                                                    <th>
+                                                        Cantidad de Números de Placa Identificados del Tipo de Placa
+                                                    </th>
+                                                    <th>
+                                                        Cantidad de Números de Placa por Identificarse del Tipo de Placa
+                                                    </th>
+                                                    <th>Estatus 1</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="listadoPartialDetalleNotasEntradasPlaca">
+                                                @Html.Partial("PartialDetalleNotasEntradasPlaca", Model.NotasEntradasPlacas_Detalle)
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}
+
+@section scripts
+{
+    <script src="~/Content/js/datatables.js"></script>
+    <script src="~/Content/js/datatables.min.js"></script>
+    <script src="~/Content/js/datatables.bootstrap.js"></script>
+    <script src="~/Content/js/funciones-alertas.js"></script>
+
+    <script>
+        function CargaInfoFiltrado() {
+            var IdNotaEntrada_ = $("#IdNotaEntrada").val();
+            var IdEstatus_ = $("#ddlFiltroIdEstatus").val();
+
+            console.log(IdNotaEntrada_)
+            console.log(IdEstatus_)
+            var urlDet = '@Url.Action("FiltraDetalleNotaEntrada", "NotasEntradasPlacas")';
+            $.ajax({
+                data: { "IdNotaEntrada": parseInt(IdNotaEntrada_), "IdEstatus": parseInt(IdEstatus_) },
+                type: "POST",
+                url: urlDet,
+                success: function (partialView) {
+                    $("#listadoPartialDetalleNotasEntradasPlaca").html(partialView);
+                },
+                error: function (reponse) {
+                    console.log(reponse);
+                }
+            });
+        }
+
+    </script>
+}

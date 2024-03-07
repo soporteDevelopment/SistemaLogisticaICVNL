@@ -1,0 +1,165 @@
+﻿@model ICVNL_SistemaLogistica.Web.ViewModels.Detalle_SolicitudesPlacasRecepcionVM
+
+@{
+    ViewBag.Title = "Administración de Recepción de las Solicitudes de Placas de Proveedores";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/css/estilosAlerta.css" rel="stylesheet" />
+@using (Html.BeginForm("Create", "SolicitudesPlacasRecepcion", FormMethod.Post, new { id = "myForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.NumeroFila)
+
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="row">
+                <div class="col-md-10">
+                    <h1 class="page-title">
+                        Administración de Recepción de las Solicitudes de Placas de Proveedores
+                        <small>Sistema de Logística de Control de Placas&nbsp;</small>
+                    </h1>
+                </div>
+            </div>
+            <div class="row widget-row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Encabezado
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-actions ">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        @if (HttpContext.Current.Session["UserSC"] != null &&
+((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_RecepcionSolicitudesPlacasProveedor.Registrar)
+                                        {
+                                            <button type="button" id="btnUpsertRecepcionSolicitud" onclick="CreateRecepcionSolicitud();" class="btn dark margin-right-10">
+                                                Guardar
+                                                <i class="fa fa-save"></i>
+                                            </button>
+                                        }
+                                        
+                                        <button type="button" class="btn default grey" onclick="location.href='@Url.Action("Index", "SolicitudesPlacasRecepcion")';">
+                                            Regresar
+                                            <i class="fa fa-chevron-circle-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-body">
+                                <div class="col-md-12" style="display:none">
+                                    <div class="row">
+                                        <div class="col-md-2" id="divId">
+                                            @Html.LabelFor(model => model.IdRecepcion, htmlAttributes: new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <p class="form-control-static">
+                                                    @Html.EditorFor(model => model.IdRecepcion, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.FolioRecepcion, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.FolioRecepcion, new { htmlAttributes = new { @class = "form-control validaCamposRecepcionSolicitudPlacas", @autocomplete = "off", @disabled = "disabled", @id= "txtFolioRecepcion" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.IdDelegacionBanco, htmlAttributes: new { @class = "control-label" })
+                                            @Html.DropDownListFor(x => Model.IdDelegacionBanco, new SelectList(Model.ListadoDelegacionesDDL, "Valor", "Texto", Model.IdDelegacionBanco),
+                                                           htmlAttributes: new { @class = "form-control validaCamposRecepcionSolicitudPlacas", @id = "ddlListadoDelegacionesDDL", @onchange= "GetSolicitudesPlacas();" })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.IdSolicitud, htmlAttributes: new { @class = "control-label" })
+                                            @Html.DropDownListFor(x => Model.IdSolicitud, new SelectList(Model.ListadoSolicitudesPlacasDDL, "Valor", "Texto", Model.IdSolicitud),
+                                                           htmlAttributes: new { @class = "form-control validaCamposRecepcionSolicitudPlacas", @id = "ddlListadoSolicitudesPlacasDDL", @onchange= "GetCargaDatosSolicitudesPlacas();" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.SolicitudesPlacas.Proveedores.NombreProveedor, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.SolicitudesPlacas.Proveedores.NombreProveedor, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled", @id = "txtNombreProveedor" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.SolicitudesPlacas.Contratos.NumeroContrato, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.SolicitudesPlacas.Contratos.NumeroContrato, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled", @id = "txtNumeroContrato" } })
+
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.SolicitudesPlacas.IdOrdenCompra, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.SolicitudesPlacas.OrdenCompra, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled", @id = "txtOrdenCompra" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.NotaEntradaAutorizada, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.NotaEntradaAutorizada, new { htmlAttributes = new { @class = "form-control validaCamposRecepcionSolicitudPlacasText", @autocomplete = "off", @id= "txtNotaEntradaAutorizada", @onchange= "ValidaNumeroEntradaAutorizada();" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Detalle
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal"> 
+                            <div class="form-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <table class="table table-bordered mb-0 table-sm dataTable" id="tablaRegistros">
+                                            <thead>
+                                                <tr class="bg-light headerCustom">
+                                                    <th>Tipo de Placa</th>
+                                                    <th>Cantidad Solicitada O.C.</th>
+                                                    <th>Cantidad de la Nota de E.A.</th>
+                                                    <th>Cantidad Recibida</th> 
+                                                </tr>
+                                            </thead>
+                                            <tbody id="listadoPartialDetalleSolicitud">
+                                                @Html.Partial("PartialDetalleRecepcionSolicitud", Model.RecepcionSolicitudesPlacas_Detalle)
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+}
+
+@section scripts
+{
+    <script src="~/Content/js/datatables.js"></script>
+    <script src="~/Content/js/datatables.min.js"></script>
+    <script src="~/Content/js/datatables.bootstrap.js"></script>
+    <script src="~/Content/js/funciones-alertas.js"></script>
+    <script src="~/Scripts/Solicitudes/SolicitudesRecepcion.js"></script>
+
+}

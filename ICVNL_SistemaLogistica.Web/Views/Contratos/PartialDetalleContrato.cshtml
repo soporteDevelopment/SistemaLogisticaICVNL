@@ -1,0 +1,51 @@
+﻿@model IEnumerable<ICVNL_SistemaLogistica.Web.Models.Listado_ContratosDetailsModel>
+
+@if (Model != null && Model.Count() > 0)
+{
+    int index = 0;
+    foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.Proveedores.NombreProveedor
+                <input type="text" class="form-control" name="Detalle_ContratosDetailsVM[@index.ToString()].IdContratoDetalle" value="@item.IdContratoDetalle" style="display:none" />
+                <input type="text" class="form-control" name="Detalle_ContratosDetailsVM[@index.ToString()].Consecutivo" value="@item.Consecutivo" style="display:none" />
+            </td>
+            <td>@item.TipoPlacas.TipoPlaca</td> 
+            <td>@item.TipoPlacas.CantidadPlacas</td>
+            <td>@item.TipoPlacas.CantidadPlacasCaja</td>
+            <td>@item.TipoPlacas.MascaraPlaca</td>
+            <td>@item.TipoPlacas.OrdenPlaca</td>
+            <td>@item.RangoInicial</td>
+            <td>@item.RangoFinal</td>
+            <td>@item.OficioSICT</td>
+            <td align="center" style="width:200px">
+                <button class="btn btn-xs blue btn-icon-circle tooltips" type="button" name="control" value="Editar Partida" data-toggle="tooltip" data-original-title="Editar Partida" id="btnEditarDetalle" onclick="EditarDetalle('@item.Consecutivo.ToString()');">
+                    <i class="fa fa-pencil mr-0 ml-0"></i>
+                </button>
+                @if (HttpContext.Current.Session["UserSC"] != null &&
+                ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_Contratos.RangoTipoPlaca)
+                {
+                    <button class="btn btn-xs green btn-icon-circle tooltips" type="button" name="control" value="Agregar Rangos" data-toggle="tooltip" data-original-title="Agregar Rangos" id="btnAgregarRangos" onclick="AgregarRangos('@item.Consecutivo.ToString()');">
+                        <i class="fa fa-edit mr-0 ml-0"></i>
+                    </button>
+                }
+                @if (HttpContext.Current.Session["UserSC"] != null &&
+                ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_Contratos.RangoTipoPlacaValidarPlacas)
+                {
+                    <button class="btn btn-xs blue btn-icon-circle tooltips" type="button" name="control" value="Validar Rangos" data-toggle="tooltip" data-original-title="Validar Rangos" id="btValidarRangosDetalle" onclick="ValidaRangosPlacas('@item.Consecutivo.ToString()')">
+                        <i class="fa fa-check mr-0 ml-0"></i>
+                    </button>
+                }
+                @if (HttpContext.Current.Session["UserSC"] != null &&
+                ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_Contratos.Eliminar)
+                {
+                    <button class="btn btn-xs red btn-icon-circle tooltips" type="button" name="control" value="Eliminar Partida" data-toggle="tooltip" data-original-title="Eliminar Partida" id="btnEliminarRango" onclick="EliminarConsecutivoDetalle('@item.Consecutivo.ToString()');">
+                        <i class="fa fa-times mr-0 ml-0"></i>
+                    </button>
+                }
+            </td>
+        </tr>
+        index++;
+    }
+}

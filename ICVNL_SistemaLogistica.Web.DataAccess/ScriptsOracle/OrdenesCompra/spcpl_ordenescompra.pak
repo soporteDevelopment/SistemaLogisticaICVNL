@@ -1,0 +1,40 @@
+create or replace PACKAGE spcpl_ordenescompra
+IS
+	FUNCTION version
+	RETURN NUMBER;
+    
+    
+    PROCEDURE consulta_ordencompra_enc(p_OCN_ID IN NUMBER,
+									p_OCN_ENTIDAD IN NUMBER,
+								    p_cursor_out OUT SYS_REFCURSOR);
+                                    
+    PROCEDURE consulta_ordencompra_det(p_OCN_ID IN NUMBER,
+								   p_OCDN_ENTIDAD IN NUMBER,
+								   p_cursor_out OUT SYS_REFCURSOR);   
+                                   
+   PROCEDURE consulta_ordencompra_enc_folio(p_OCN_NUMERO IN VARCHAR2,
+									p_OCN_ENTIDAD IN NUMBER,
+								    p_cursor_out OUT SYS_REFCURSOR);      
+                                    
+    PROCEDURE consulta_oc_tipoplaca(p_OCN_ID IN NUMBER,
+                                    p_TPN_ID IN NUMBER,
+									p_OCDN_ENTIDAD IN NUMBER,
+									p_cursor_out OUT SYS_REFCURSOR);
+                                    
+    PROCEDURE consulta_oc_cant_det(p_OCDN_ID IN NUMBER,
+									p_OCDN_ENTIDAD IN NUMBER,
+									p_cursor_out OUT SYS_REFCURSOR);
+                                    
+    PROCEDURE consulta_ordencompra_combo(p_OCN_ENTIDAD IN NUMBER,
+                                         p_cursor_out OUT SYS_REFCURSOR);
+                                         
+    PROCEDURE consulta_oc_prov_combo(p_PROVN_ID IN NUMBER,
+									p_OCN_ENTIDAD IN NUMBER,
+									p_cursor_out OUT SYS_REFCURSOR); 		
+                                    
+    PROCEDURE consulta_oc_tipoplaca_combo(p_OCN_ID IN NUMBER,
+                                        p_CONN_ID IN NUMBER,
+                                        p_OCDN_ENTIDAD IN NUMBER,
+                                        p_cursor_out OUT SYS_REFCURSOR);
+
+END spcpl_ordenescompra;

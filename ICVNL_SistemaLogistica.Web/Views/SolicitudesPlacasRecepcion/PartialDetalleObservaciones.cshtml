@@ -1,0 +1,86 @@
+﻿@model ICVNL_SistemaLogistica.Web.ViewModels.Detalle_RecepcionSolicitudesPlacas_Recibir_ValidacionesVM
+
+@using (Html.BeginForm("Details", "SolicitudesPlacasRecepcion", FormMethod.Post, new { id = "myForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <input type="hidden" id="txtIdValidacionEventoObservaciones" value="" />
+    <div class="modal-header">
+        <h4 class="modal-title" id="tituloModalAgregar">Observaciones</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body portlet-body form form-horizontal">
+        <div class="form-body" style="overflow-y: auto;">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="form-body">
+                    <div class="col-md-12" style="display:none">
+                        <div class="row">
+                            <div class="col-md-2" id="divId">
+                                @Html.LabelFor(model => model.IdEventoRecepcion, htmlAttributes: new { @class = "control-label" })
+                                <div class="input-group">
+                                    <p class="form-control-static">
+                                        @Html.EditorFor(model => model.IdEventoRecepcion, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                @Html.LabelFor(model => model.Observaciones, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.Observaciones, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @id= "txtObservaciones" } })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <table class="table table-bordered mb-0 table-sm dataTable" id="tablaRegistros">
+                                <thead>
+                                    <tr class="bg-light headerCustom">
+                                        <th>Observación</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="listadoPartialDetalleSolicitud">
+                                    @if (Model.ListadoObservaciones != null && Model.ListadoObservaciones.Count > 0)
+                                    {
+                                        foreach (var item in Model.ListadoObservaciones)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Observacion)
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="11">
+                                                @Html.Label("Sin Información")
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row"><br /></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn dark margin-right-10" onclick="GuardarObservacion();">
+            Agregar Observación
+            <i class="fa fa-save"></i>
+        </button>
+        <button type="button" class="btn dark btn-outline" data-dismiss="modal">Cerrar</button>
+    </div>
+     
+}

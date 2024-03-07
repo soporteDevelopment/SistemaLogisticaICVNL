@@ -1,0 +1,73 @@
+create or replace PACKAGE spcpl_inventarioplacas_op
+IS
+   FUNCTION version
+   RETURN NUMBER;
+
+	PROCEDURE agregar_inventario_enc(p_INVN_ENTIDAD in NUMBER
+									,p_INVF_FECHA in DATE
+									,p_DBN_ID in NUMBER
+									,p_INVN_ID out NUMBER
+									,p_INVN_BORRADO in NUMBER);
+
+	PROCEDURE modifica_dateinv_enc(p_INVF_FECHA in DATE
+                                   ,p_INVN_ID in NUMBER);
+
+PROCEDURE agregar_inventario_det(p_INVDN_ID OUT NUMBER
+									,p_INVDN_ENTIDAD in NUMBER
+									,p_NEN_ID in NUMBER
+									,p_INVDN_PLACA_CONT in NUMBER
+									,p_INVDN_EXISTENCIA in NUMBER
+									,p_TPN_ID in NUMBER
+									,p_INVDN_BORRADO in NUMBER
+									,p_INVDC_NUMEROPLACA in VARCHAR2
+									,p_INVDC_NUM_POL_INFOFIN in VARCHAR2
+									,p_INVDC_SERIE in VARCHAR2
+									,p_INVDN_COSTOPLACA in NUMBER
+									,p_INVN_ID in NUMBER
+									,p_EPN_ID in NUMBER);
+									
+	PROCEDURE agregar_inventario_rel_ne_oc(p_RNO_ID out NUMBER
+											,p_RNO_RENGLON_NE in NUMBER
+											,p_OCN_ID in NUMBER
+											,p_RNO_RENGLON_OC in NUMBER
+											,p_RNO_ENTIDAD in NUMBER
+											,p_NEN_ID in NUMBER
+											,p_INVDN_ID in NUMBER);
+											
+    PROCEDURE cambia_estatus_placa(p_INVDN_ID in NUMBER
+                                    ,p_IDHN_ID out NUMBER
+                                    ,p_EPN_IDNUEVO in NUMBER
+                                    ,p_IDHN_ENTIDAD in NUMBER 
+                                    ,p_EPN_IDANTERIOR in NUMBER
+                                    ,p_INVDC_NUMEROPLACA in varchar2); 
+
+	PROCEDURE cambia_delegacion_placa(p_INVN_ENTIDAD in NUMBER
+									 ,p_INVDC_NUMEROPLACA in VARCHAR2
+								     ,p_INVN_ID in NUMBER); 
+                                     
+    PROCEDURE agrega_inv_placa_ent_ven( p_IPEVN_ID out NUMBER
+                                        ,p_DBN_ID in NUMBER
+                                        ,p_INVDN_ID in NUMBER
+                                        ,p_IPEVC_USUARIO in VARCHAR2
+                                        ,p_IPEVN_ENTIDAD in NUMBER
+                                        ,p_IPEVF_VENDIDO in DATE
+                                        ,p_IPEVC_REF_INFOFIN in VARCHAR2
+                                        ,p_IPEVN_PRECIOVENTA in NUMBER
+                                        ,p_IPEVC_TIPO in VARCHAR2
+                                        ,p_IPEVF_ENTREGADO in DATE);
+                                        
+	PROCEDURE agregar_placa_noinventario(p_PVNIN_ID OUT NUMBER
+                                        ,p_PVNIN_ENTIDAD in NUMBER
+                                        ,p_PVNIN_NOTIFICACION_ENV in NUMBER
+                                        ,p_PVNIC_DELEGACIONVENTA in VARCHAR2
+                                        ,p_DBN_ID in NUMBER 
+                                        ,p_PVNIC_NUMEROPLACA in VARCHAR2
+                                        ,p_PVNIF_FECHAPAGO in DATE);
+                                        
+    PROCEDURE actualiza_pl_noinv_notifenvio(p_PVNIN_ID IN NUMBER
+                                          ,p_PVNIC_NUMEROPLACA in VARCHAR2
+                                          ,p_PVNIN_ENTIDAD in NUMBER);
+										  
+	PROCEDURE actualiza_placa_a_contab(p_INVN_ENTIDAD in NUMBER
+									  ,p_INVDC_NUMEROPLACA in VARCHAR2);                                   
+END spcpl_inventarioplacas_op;

@@ -1,0 +1,20 @@
+create or replace PACKAGE spcpl_archivos_op
+IS
+   FUNCTION version
+   RETURN NUMBER;
+
+	PROCEDURE agregar_archivo(p_ARN_IDORIGEN in NUMERIC
+							 ,p_ARC_TABLAORIGEN in VARCHAR2
+							 ,p_ARN_BORRADO in NUMERIC
+							 ,p_ARC_ARCHIVO in VARCHAR2
+							 ,p_ARN_ENTIDAD in NUMERIC
+							 ,p_ARN_ID in NUMERIC
+							 ,p_ARB_ARCHIVO in BLOB);
+
+
+	PROCEDURE eliminar_archivos(p_ARN_IDORIGEN in NUMBER, p_ARC_TABLAORIGEN varchar2); 
+
+    PROCEDURE eliminar_archivos_i(p_ARN_ID in NUMBER);
+
+
+END spcpl_archivos_op;

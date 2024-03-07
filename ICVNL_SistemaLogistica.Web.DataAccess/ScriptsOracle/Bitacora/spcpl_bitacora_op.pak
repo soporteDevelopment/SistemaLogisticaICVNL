@@ -1,0 +1,20 @@
+CREATE OR REPLACE PACKAGE spcpl_bitacora_op
+IS
+   FUNCTION version
+   RETURN NUMBER;
+
+      PROCEDURE agrega_bit(p_BITC_USR in varchar2
+					,p_BITF_EVENTO in DATE
+					,p_BITC_IP_USR in varchar2
+					,p_BITN_ID in NUMBER
+					,p_BITC_LUGAREVENTO in varchar2
+					,p_BITN_ENTIDAD in NUMBER
+					,p_BITC_JSONOBJECT in varchar2
+					,p_BITC_INSTR_REAL in varchar2
+					,p_BITC_EVENTO in varchar2);                             
+
+END spcpl_bitacora_op;
+
+
+
+  

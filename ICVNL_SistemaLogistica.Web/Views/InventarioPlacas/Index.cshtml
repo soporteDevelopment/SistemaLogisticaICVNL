@@ -1,0 +1,416 @@
+﻿@model ICVNL_SistemaLogistica.Web.ViewModels.Listado_InventarioVM
+
+@{
+    ViewBag.Title = "Inventario Placas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/css/datatables.min.css" rel="stylesheet" />
+<link href="~/Content/css/datatables.bootstrap.css" rel="stylesheet" />
+<style>
+    .FiltroMasterClass {
+        display: inline-table !important;
+        border-bottom: 1px solid #7678B8 !important
+    }
+
+    .ScrollFiltros {
+        overflow-y: auto;
+    }
+
+    #tablaRegistros span {
+        display: none;
+    }
+
+    /* Style the tab */
+    .tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+            /* Change background color of buttons on hover */
+            .tab button:hover {
+                background-color: #ddd;
+            }
+
+            /* Create an active/current tablink class */
+            .tab button.active {
+                background-color: #ccc;
+            }
+
+    /* Style the tab content */
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+</style>
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-10">
+                <h1 class="page-title">
+                    Inventario Placas
+                    <small>Sistema de Logística de Control de Placas&nbsp;</small>
+                </h1>
+            </div>
+        </div>
+        <div class="row widget-row">
+            <div class="col-md-12">
+                <div class="portlet box blue-hoki">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-edit"></i>Listado
+                        </div>
+                        <div class="actions">
+                            <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="table-toolbar">
+
+                            @using (@Html.BeginForm("Index", "InventarioPlacas", FormMethod.Post, new { id = "myForm" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn green margin-right-10" onclick="DownloadExcel();">
+                                            Descargar Excel
+                                            <i class="fa fa-file-excel-o"></i>
+                                        </button>
+                                        <button type="button" class="quick-sidebar-toggler btn sbold blue margin-right-10">
+                                            Filtrar
+                                            <i class="fa fa-filter"></i>
+                                        </button>
+                                        <button type="button" class="btn default grey margin-right-10" onclick="location.href='@Url.Action("Index", "Home")'">
+                                            Regresar
+                                            <i class="fa fa-chevron-circle-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-12 table-responsive">
+                                        <div class="tab">
+                                            @if (Model.Listado != null && Model.Listado.Count > 0)
+                                            {
+                                                var iBotton = 0;
+                                                foreach (var item in Model.Listado)
+                                                {
+                                                    <button type="button" id="tab_@iBotton" class="tablinks" onclick="openTabView(event, '@item.DelegacionesBancos.NombreDelegacionBanco.Replace(" ","")')">@item.DelegacionesBancos.NombreDelegacionBanco</button>
+                                                    iBotton++;
+                                                }
+                                            }
+                                            else
+                                            {
+
+                                            }
+                                        </div>
+                                        @if (Model.Listado != null && Model.Listado.Count > 0)
+                                        {
+                                            foreach (var item in Model.Listado)
+                                            {
+                                            <div id="@item.DelegacionesBancos.NombreDelegacionBanco.Replace(" ","")" class="tabcontent">
+                                                <div>
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="row">
+                                                                <div class="col-md-4">
+                                                                    <label class="control-label">Almacen General/Delegación/Bancos</label>
+                                                                    <input type="text" class="form-control" value="@item.DelegacionesBancos.NombreDelegacionBanco" disabled />
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <label class="control-label">Fecha Inventario</label>
+                                                                    <input type="text" class="form-control" value="@item.FechaInventario" disabled />
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <label class="control-label">Total Placas</label>
+                                                                    <input type="text" class="form-control" value="@item.InventarioPlacas_TotalesExistencia.Sum(x=>x.Existencia)" disabled />
+                                                                </div>
+                                                            </div>
+                                                            <br />
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <table class="table table-bordered mb-0 table-sm " id="tablaRegistros_@item.DelegacionesBancos.NombreDelegacionBanco.Replace(" ","")">
+                                                                <thead>
+                                                                    <tr class="bg-light headerCustom">
+                                                                        <th>
+                                                                            Tipo Placa
+                                                                        </th>
+                                                                        <th>
+                                                                            Existencias
+                                                                        </th> 
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @if (item.InventarioPlacas_TotalesExistencia != null && item.InventarioPlacas_TotalesExistencia.Count > 0)
+                                                                    {
+                                                                        foreach (var itemExistencia in item.InventarioPlacas_TotalesExistencia)
+                                                                        {
+                                                                            <tr>
+                                                                                <td>
+                                                                                    @Html.DisplayFor(modItem => itemExistencia.TiposPlacas.TipoPlaca)
+                                                                                </td>
+                                                                                <td>
+                                                                                    @Html.DisplayFor(modItem => itemExistencia.Existencia)
+                                                                                </td>
+                                                                            </tr>
+                                                                            }
+                                                                        }
+                                                                        else {
+
+                                                                        }
+                                                                    </tbody>
+                                                            </table>
+                                                            
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <table class="table table-bordered mb-0 table-sm " id="tablaRegistros_@item.DelegacionesBancos.NombreDelegacionBanco.Replace(" ","")">
+                                                                <thead>
+                                                                    <tr class="bg-light headerCustom">
+                                                                        <th>
+                                                                            Tipo Placa
+                                                                        </th>
+                                                                        <th>
+                                                                            Estatus
+                                                                        </th>
+                                                                        <th>
+                                                                            Serie
+                                                                        </th>
+                                                                        <th>
+                                                                            Existencia desde
+                                                                        </th>
+                                                                        <th>
+                                                                            Existencia hasta
+                                                                        </th>
+                                                                        <th>
+                                                                            Total
+                                                                        </th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @if (item.InventarioPlacas_Detalle != null && item.InventarioPlacas_Detalle.Count > 0)
+                                                                    {
+                                                                        foreach (var itemDetalle in item.InventarioPlacas_Detalle)
+                                                                        {
+                                                                            <tr>
+                                                                                <td>
+                                                                                    @Html.DisplayFor(modItem => itemDetalle.TiposPlacas.TipoPlaca)
+                                                                                </td>
+                                                                                <td>
+                                                                                    @Html.DisplayFor(modItem => itemDetalle.EstatusPlacas.TipoEstatusPlacas)
+                                                                                </td>
+                                                                                 <td>
+                                                                                    @Html.DisplayFor(modItem => itemDetalle.Serie)
+                                                                                </td>
+                                                                                 <td>
+                                                                                    @Html.DisplayFor(modItem => itemDetalle.ExistenciaDesde)
+                                                                                </td>
+                                                                                 <td>
+                                                                                    @Html.DisplayFor(modItem => itemDetalle.ExistenciaHasta)
+                                                                                </td>
+                                                                                 <td>
+                                                                                    @Html.DisplayFor(modItem => itemDetalle.ExistenciaTotalRango)
+                                                                                </td>
+                                                                            </tr>
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> 
+                                            }
+                                        }
+                                        else
+                                        {
+
+                                        }
+                                    </div>
+                                </div>
+                                <a href="javascript:;" class="page-quick-sidebar-toggler">
+                                    <i class="icon-login"></i>
+                                </a>
+
+                                <div class="page-quick-sidebar-wrapper" style="border-width: thick; border-style: solid; background-color: #E9EDEF; display: block;" data-close-on-body-click="false">
+                                    <div class="page-quick-sidebar" style="background-color: #E9EDEF;">
+
+                                        <div class="tab-content" style="background-color: #E9EDEF;">
+
+                                            <div class="row" style="background-color: #E9EDEF;">
+
+                                                <div class="col-md-12  " style="background-color: #E9EDEF;">
+                                                    <!-- BEGIN SAMPLE FORM PORTLET-->
+                                                    <div class="portlet light noborder" style="background-color: #E9EDEF;">
+                                                        <div class="portlet-title noborder">
+                                                            <div class="caption font-green">
+                                                                <i class="icon-pin font-green"></i>
+                                                                <span class="caption-subject bold uppercase">Filtros Búsqueda</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="noborder" id="scroll">                                    
+                                                            <div class="col">
+                                                                <div class="form-group form-md-line-input has-success">
+                                                                    @Html.DropDownListFor(x => Model.FiltroIdDelegacion, new SelectList(Model.ListadoDelegaciones, "Valor", "Texto", Model.FiltroIdDelegacion),
+                                                                                       htmlAttributes: new { @class = "form-control", @id = "ddlFiltroIdDelegacion" })
+                                                                    <label for="ddlFiltroIdDelegacion">Delegación:</label>
+                                                                </div>
+                                                                <div class="form-group form-md-line-input has-success">
+                                                                    @Html.DropDownListFor(x => Model.FiltroIdTipoPlaca, new SelectList(Model.ListadoTipoPlaca, "Valor", "Texto", Model.FiltroIdTipoPlaca),
+                                                                                       htmlAttributes: new { @class = "form-control", @id = "ddlFiltroIdTipoPlaca" })
+                                                                    <label for="ddlFiltroIdTipoPlaca">Tipo Placa:</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-actions noborder">
+                                                            <button type="submit" value="Buscar" class="btn green" id="btnAplicarFiltro">
+                                                                Aplicar Filtro
+                                                            </button>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <!-- END SAMPLE FORM PORTLET-->
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<link href="~/Content/css/GridView.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/css/Paginado.css" rel="stylesheet" type="text/css" />
+
+@section scripts
+{
+    <script src="~/Content/js/datatables.js"></script>
+    <script src="~/Content/js/datatables.min.js"></script>
+    <script src="~/Content/js/datatables.bootstrap.js"></script>
+
+    <script type="text/javascript">
+
+        function DownloadExcel() {
+            var fileName = "InventarioPlacas.xlsx"
+            var url = '@Url.Action("ExportarExcelInventario", "InventarioPlacas")';
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: $("#myForm").serialize(),
+
+                success: function (r) {
+                    //Convert Base64 string to Byte Array.
+                    var bytes = Base64ToBytes(r);
+                    setTimeout(function () {
+                        location.reload(true);
+                    }, 300)
+                    //Convert Byte Array to BLOB.
+                    var blob = new Blob([bytes], { type: "text/csv" });
+
+                    //Check the Browser type and download the File.
+                    var isIE = false || !!document.documentMode;
+                    if (isIE) {
+                        window.navigator.msSaveBlob(blob, fileName);
+                    } else {
+                        var url = window.URL || window.webkitURL;
+                        link = url.createObjectURL(blob);
+                        var a = $("<a />");
+                        a.attr("download", fileName);
+                        a.attr("href", link);
+                        $("body").append(a);
+                        a[0].click();
+                        $("body").remove(a);
+                    }
+                }
+            });
+        };
+
+        function Base64ToBytes(base64) {
+            var s = window.atob(base64);
+            var bytes = new Uint8Array(s.length);
+            for (var i = 0; i < s.length; i++) {
+                bytes[i] = s.charCodeAt(i);
+            }
+            return bytes;
+        };
+
+        function openTabView(evt, nameTab) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(nameTab).style.display = "block";
+            if (evt.currentTarget != undefined) {
+                evt.currentTarget.className += " active";
+            }
+        }
+
+        $(document).ready(function () {
+            setTimeout(function () {
+                $("#tab_0").click();
+                $("#tab_0").addClass("active");
+            }, 150);
+
+            $('input[id*="tablaRegistros"]').DataTable({
+                lengthChange: false,
+                paging: true,
+                searching: false,
+                ordering: true,
+                responsive: true,
+                bInfo: false,
+                language: {
+                    emptyTable: "Sin información.",
+                    info: "Registros del <b>_START_</b> al <b>_END_</b> de <b>_TOTAL_</b> por página",
+                    infoEmpty: "Sin información",
+                    infoFiltered: "(filtered1 de _MAX_ total registros)",
+                    lengthMenu: "_MENU_ registros por p&#225;gina",
+                    search: "Buscar:",
+                    zeroRecords: "Sin coincidencias encontradas."
+                },
+            });
+
+            $('#tablaRegistros').find('[data-toggle="tooltip"]').tooltip();
+
+        });
+    </script>
+}

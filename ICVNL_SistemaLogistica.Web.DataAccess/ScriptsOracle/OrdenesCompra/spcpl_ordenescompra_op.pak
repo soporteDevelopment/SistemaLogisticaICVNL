@@ -1,0 +1,39 @@
+create or replace PACKAGE spcpl_ordenescompra_op
+IS
+   FUNCTION version
+   RETURN NUMBER;
+
+	PROCEDURE agrega_ordencompra(p_OCN_ID OUT NUMBER
+								,p_OCN_BORRADO in NUMBER
+								,p_DBN_IDRECIBE in NUMBER default NULL
+								,p_OCF_FECHA in DATE
+								,p_PROVN_ID in NUMBER
+								,p_OCN_NUMERO in NUMBER
+								,p_OCN_ENTIDAD in NUMBER
+								,p_OCF_FECHA_AUT in DATE
+								,p_OCC_ENTIDADINFOFIN in VARCHAR2);
+
+	PROCEDURE agrega_ordencompra_det(p_OCDN_ID OUT NUMBER
+									,p_OCN_ID in NUMBER
+									,p_OCDC_CUENTACONTABLE in VARCHAR2 default null 
+									,p_OCDN_COSTOTOTAL in NUMBER
+									,p_OCDN_COSTOPLACA in NUMBER
+									,p_OCDN_ENTIDAD in NUMBER
+									,p_TPN_ID in NUMBER
+									,p_OCDN_RENGLON_NE in NUMBER default null 
+									,p_OCDN_BORRADO in NUMBER
+									,p_OCDC_COD_ART_TP in VARCHAR2
+									,p_OCDC_CEN_COSTOS_ALM in VARCHAR2 default null 
+									,p_OCDN_CANTIDADPIEZAS in NUMBER
+									,p_OCDF_FECHA_REC_TP in DATE default null 
+									,p_OCDN_RENGLON in NUMBER);
+									
+	PROCEDURE actualiza_ordencompra(p_OCN_ID in NUMBER 
+								,p_DBN_IDRECIBE in NUMBER default NULL);									
+
+	PROCEDURE actualiza_ordencompra_det(p_OCDN_ID in NUMBER
+									,p_OCDC_CUENTACONTABLE in VARCHAR2 default null 
+									,p_OCDN_RENGLON_NE in NUMBER default null 
+									,p_OCDC_CEN_COSTOS_ALM in VARCHAR2 default null 
+									,p_OCDF_FECHA_REC_TP in DATE default null);
+END spcpl_ordenescompra_op;

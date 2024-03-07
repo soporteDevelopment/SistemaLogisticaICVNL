@@ -1,0 +1,55 @@
+create or replace PACKAGE spcpl_transf_placas_pl
+IS
+	FUNCTION version
+	RETURN NUMBER;
+
+	PROCEDURE consulta_listado(p_TRNN_FOLIO IN VARCHAR2,
+							  p_TRNF_FECHA_INI IN DATE,
+							  p_TRNF_FECHA_FIN IN DATE,
+							  p_TDPC_NOMBRE IN VARCHAR2,
+							  p_TDPC_APELLIDO IN VARCHAR2, 		
+							  p_TDPN_NUMEROID IN NUMBER, 
+							  p_TIN_ID IN NUMBER, 
+							  p_DBN_ID_ORIGEN IN NUMBER,
+							  p_DBN_ID_DESTINO IN NUMBER,
+							  p_ETN_ID IN NUMBER,
+							  p_TENP_ID IN NUMBER, 
+							  p_TRNN_ENTIDAD IN NUMBER,
+						      p_cursor_out OUT SYS_REFCURSOR);
+                              
+    PROCEDURE consulta_listado_recepcion(p_TRNN_FOLIO IN VARCHAR2,
+							  p_TRNF_FECHA_INI IN DATE,
+							  p_TRNF_FECHA_FIN IN DATE,
+							  p_TDPC_NOMBRE IN VARCHAR2,
+							  p_TDPC_APELLIDO IN VARCHAR2, 		
+							  p_TDPN_NUMEROID IN NUMBER, 
+							  p_TIN_ID IN NUMBER, 
+							  p_DBN_ID_ORIGEN IN NUMBER,
+							  p_DBN_ID_DESTINO IN NUMBER,
+							  p_ETN_ID IN NUMBER,
+							  p_TENP_ID IN NUMBER, 
+							  p_TRNN_ENTIDAD IN NUMBER,
+						      p_cursor_out OUT SYS_REFCURSOR);
+                              
+    PROCEDURE consulta_transf_placas_enc(p_TRNN_ID IN NUMBER,
+									   p_TRNN_ENTIDAD IN NUMBER,
+								       p_cursor_out OUT SYS_REFCURSOR);
+                                       
+   PROCEDURE consulta_r_transf_placas_enc(p_TRNN_ID IN NUMBER,
+									   p_TRNN_ENTIDAD IN NUMBER,
+								       p_cursor_out OUT SYS_REFCURSOR);
+
+	PROCEDURE consulta_transf_placas_det(p_TRNN_ID IN NUMBER,
+									     p_NEN_ENTIDAD IN NUMBER,
+								         p_cursor_out OUT SYS_REFCURSOR); 	 
+
+	PROCEDURE consulta_tipo_transfer_combo(p_ETN_ENTIDAD number,
+									  p_cursor_out OUT SYS_REFCURSOR);
+
+	PROCEDURE consulta_tipo_est_pl_combo(p_TEPN_ENTIDAD number,
+									  p_cursor_out OUT SYS_REFCURSOR);									  
+
+	PROCEDURE consulta_tran_placas_sigfolio(p_cursor_out OUT SYS_REFCURSOR);
+
+
+END spcpl_transf_placas_pl;

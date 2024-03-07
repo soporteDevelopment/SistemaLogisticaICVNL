@@ -1,0 +1,21 @@
+create or replace PACKAGE spcpl_tipos_ids
+IS
+	FUNCTION version
+	RETURN NUMBER;
+
+	PROCEDURE consulta_listado(p_tin_entidad NUMBER,
+							  p_TIN_ACTIVO NUMBER,
+						      p_cursor_out OUT SYS_REFCURSOR);
+
+	PROCEDURE consulta_tipoid(p_tin_id NUMBER,
+								  p_tin_entidad NUMBER,
+								  p_cursor_out OUT SYS_REFCURSOR);
+
+	PROCEDURE consulta_tiposids_combo(p_tin_entidad NUMBER,
+										  p_cursor_out OUT SYS_REFCURSOR);
+
+	PROCEDURE existe_tipoid(p_TIC_TIPOID VARCHAR2,
+									p_tin_entidad NUMBER,
+									p_cursor_out OUT SYS_REFCURSOR);                   
+
+END spcpl_tipos_ids;

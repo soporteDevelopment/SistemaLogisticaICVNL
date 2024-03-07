@@ -1,0 +1,82 @@
+create or replace PACKAGE BODY spcpl_polizas
+IS
+
+   c_version CONSTANT   NUMBER := 24.0901;
+   c_modulo  CONSTANT   NUMBER := 0;
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.2612 DEVTI   Elaboración del paquete.
+   -- 24.0901 DEVTI   se agregan SP consulta_inventario_get_pl, consulta_inventario_det_tr
+   --------------------------------------------------------------------------
+   ----
+   -- Tipos globales
+   ----
+   ----
+   -- Variables Globales
+   ----
+   -- Variables para manejo de errores.
+   g_mensaje_error      VARCHAR2(4000);
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+      RETURN c_version;
+   END version;
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+
+   PROCEDURE con_placas_ven_no_cont(p_RNO_ENTIDAD in NUMBER,
+									 p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+        OPEN p_cursor_out FOR
+		SELECT CPL_NOTAS_ENT_PL_DET.NEDN_CTA_CON_CARGO,
+			   CPL_ORDENES_COMPRA_DET.OCDC_CEN_COSTOS_ALM,
+			   CPL_INV_PL_DET.INVDC_NUMEROPLACA,
+			   CPL_INV_PL_DET.INVDN_COSTOPLACA 
+		FROM CPL_INV_REL_NE_OC
+		INNER JOIN CPL_INV_PL_DET ON CPL_INV_PL_DET.INVDN_ID = CPL_INV_REL_NE_OC.INVDN_ID
+		INNER JOIN CPL_TIPO_EST_PL ON CPL_TIPO_EST_PL.TEPN_ID = CPL_INV_PL_DET.EPN_ID 
+		INNER JOIN CPL_NOTAS_ENT_PL_DET ON CPL_NOTAS_ENT_PL_DET.NEN_ID = CPL_INV_REL_NE_OC.NEN_ID AND CPL_NOTAS_ENT_PL_DET.NEDN_NUM_RENGLON = CPL_INV_REL_NE_OC.RNO_RENGLON_NE
+		INNER JOIN CPL_ORDENES_COMPRA_DET ON CPL_ORDENES_COMPRA_DET.OCN_ID = CPL_INV_REL_NE_OC.OCN_ID AND CPL_ORDENES_COMPRA_DET.OCDN_RENGLON = CPL_INV_REL_NE_OC.RNO_RENGLON_OC
+		WHERE CPL_TIPO_EST_PL.TEPN_ID = 5
+		AND CPL_INV_PL_DET.INVDN_PLACA_CONT = 0
+		AND CPL_INV_REL_NE_OC.RNO_ENTIDAD = p_RNO_ENTIDAD;
+
+   END con_placas_ven_no_cont;   
+   
+   PROCEDURE consulta_placas_no_cont(p_RNO_ENTIDAD in NUMBER,
+									 p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+        OPEN p_cursor_out FOR
+		SELECT CPL_NOTAS_ENT_PL_DET.NEDN_CTA_CON_CARGO,
+			   CPL_ORDENES_COMPRA_DET.OCDC_CEN_COSTOS_ALM,
+			   CPL_INV_PL_DET.INVDC_NUMEROPLACA,
+               CPL_INV_PL_DET.INVDN_COSTOPLACA 
+		FROM CPL_INV_REL_NE_OC
+		INNER JOIN CPL_INV_PL_DET ON CPL_INV_PL_DET.INVDN_ID = CPL_INV_REL_NE_OC.INVDN_ID
+		INNER JOIN CPL_TIPO_EST_PL ON CPL_TIPO_EST_PL.TEPN_ID = CPL_INV_PL_DET.EPN_ID 
+		INNER JOIN CPL_NOTAS_ENT_PL_DET ON CPL_NOTAS_ENT_PL_DET.NEN_ID = CPL_INV_REL_NE_OC.NEN_ID AND CPL_NOTAS_ENT_PL_DET.NEDN_NUM_RENGLON = CPL_INV_REL_NE_OC.RNO_RENGLON_NE
+		INNER JOIN CPL_ORDENES_COMPRA_DET ON CPL_ORDENES_COMPRA_DET.OCN_ID = CPL_INV_REL_NE_OC.OCN_ID AND CPL_ORDENES_COMPRA_DET.OCDN_RENGLON = CPL_INV_REL_NE_OC.RNO_RENGLON_OC
+		WHERE CPL_TIPO_EST_PL.TEPN_ID in (4,2)
+		AND CPL_INV_PL_DET.INVDN_PLACA_CONT = 0
+		AND CPL_INV_REL_NE_OC.RNO_ENTIDAD = p_RNO_ENTIDAD;
+
+   END consulta_placas_no_cont; 
+   
+END spcpl_polizas;

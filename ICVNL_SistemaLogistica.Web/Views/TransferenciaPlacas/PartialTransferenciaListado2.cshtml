@@ -1,0 +1,33 @@
+﻿@model IEnumerable<ICVNL_SistemaLogistica.Web.Models.Listado_TransferenciaPlacas_Listado2_Model>
+
+@if (Model != null && Model.Count() > 0)
+{
+    int index = 0;
+
+    foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TiposPlacas.TipoPlaca)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumeroPlaca)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TiposEstatusPlacas.TipoEstatusPlacas)
+            </td>
+            <td style="text-align:center">
+                <input type="checkbox" class="form-check-input" id="chbxTransferirPlaca_@item.NumeroPlaca" data-value="@item.NumeroPlaca" data-value-tp="@item.IdTipoPlaca" name="TransferenciaPlacas_Listado2[@index.ToString()].TransferirPlaca" disabled="@item.Automatico" checked="@item.TransferirPlaca" />
+            </td>
+        </tr>
+        index++;
+    }
+}
+else
+{
+    <tr>
+        <td colspan="4">
+            @Html.Label("Sin Información")
+        </td>
+    </tr>
+}

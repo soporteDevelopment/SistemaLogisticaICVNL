@@ -1,0 +1,196 @@
+create or replace PACKAGE BODY spcpl_contratos_op
+IS
+   c_version CONSTANT   NUMBER := 23.0612;
+   c_modulo  CONSTANT   NUMBER := 0;
+
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.0612 DEVTI   Elaboración del paquete.
+   -- 
+   --------------------------------------------------------------------------
+
+   ----
+   -- Variables Globales 
+   ----
+   -- Variables para manejo de errores. 
+   ----
+   -- Excepciones globales
+   ----
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+   RETURN c_version;
+   END VERSION;
+
+
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+	PROCEDURE agregar_contrato(p_CONN_BORRADO in NUMERIC
+								,p_CONN_ENTIDAD in NUMERIC
+								,p_CONC_NUMERO in VARCHAR2
+								,p_CONC_USR_REG in VARCHAR2
+								,p_CONF_REGISTRO in DATE
+								,p_CONN_ESTATUS in VARCHAR2
+								,p_CONN_ID OUT NUMERIC
+                                ,p_CONN_ACTIVO in NUMERIC)
+	IS
+	BEGIN   
+
+		select  nvl(max(CONN_ID),0) + 1  into p_CONN_ID from CPL_CONTRATOS;
+
+		insert into CPL_CONTRATOS(CONN_BORRADO
+								,CONN_ENTIDAD
+								,CONC_NUMERO
+								,CONC_USR_REG
+								,CONF_REGISTRO
+								,CONN_ESTATUS
+								,CONN_ID
+                                ,CONN_ACTIVO) 
+		values (p_CONN_BORRADO
+				,p_CONN_ENTIDAD
+				,p_CONC_NUMERO
+				,p_CONC_USR_REG
+				,p_CONF_REGISTRO
+				,p_CONN_ESTATUS
+				,p_CONN_ID
+                ,p_CONN_ACTIVO);               
+        
+
+	END agregar_contrato;
+
+	PROCEDURE agregar_contrato_det(p_CONDC_RANGOFINAL in VARCHAR2
+									,p_CONDN_BORRADO in NUMERIC
+									,p_CONDN_CANTIDADPLACAS in NUMERIC
+									,p_TPN_ID NUMERIC
+									,p_CONDC_MASCARAPLACA in VARCHAR2
+									,p_CONN_ID in NUMERIC
+									,p_CONDC_ORDENPLACA in VARCHAR2
+									,p_CONDN_CANTIDADPLACASCAJA in NUMERIC
+									,p_CONDN_ENTIDAD in NUMERIC
+									,p_CONDC_OFICIOSICT in VARCHAR2
+									,p_CONDN_ID OUT NUMERIC
+									,p_CONDC_RANGOINICIAL in VARCHAR2
+									,p_PROVN_ID in NUMERIC)
+	IS
+	BEGIN   
+
+		select  nvl(max(CONDN_ID),0) + 1  into p_CONDN_ID from CPL_CONTRATOS_DET;
+
+		insert into CPL_CONTRATOS_DET(CONDC_RANGOFINAL
+							,CONDN_BORRADO
+							,CONDN_CANTIDADPLACAS
+							,TPN_ID
+							,CONDC_MASCARAPLACA
+							,CONN_ID
+							,CONDC_ORDENPLACA
+							,CONDN_CANTIDADPLACASCAJA
+							,CONDN_ENTIDAD
+							,CONDC_OFICIOSICT
+							,CONDN_ID
+							,CONDC_RANGOINICIAL
+							,PROVN_ID) 
+		values (p_CONDC_RANGOFINAL
+				,p_CONDN_BORRADO
+				,p_CONDN_CANTIDADPLACAS
+				,p_TPN_ID
+				,p_CONDC_MASCARAPLACA
+				,p_CONN_ID
+				,p_CONDC_ORDENPLACA
+				,p_CONDN_CANTIDADPLACASCAJA
+				,p_CONDN_ENTIDAD
+				,p_CONDC_OFICIOSICT
+				,p_CONDN_ID
+				,p_CONDC_RANGOINICIAL
+				,p_PROVN_ID);
+
+	END agregar_contrato_det;	
+
+	PROCEDURE agregar_contrato_det_rng(p_CDRN_ENTIDAD in NUMERIC
+										,p_CONDN_ID in NUMERIC
+										,p_CDRC_RANGOINICIAL in VARCHAR2
+										,p_CDRN_CANTIDADSERIE in NUMERIC
+										,p_CDRN_BORRADO in NUMERIC
+										,p_CDRN_ID out NUMERIC
+										,p_CDRC_RANGOFINAL in VARCHAR2)
+	IS
+	BEGIN   
+
+		select  nvl(max(CDRN_ID),0) + 1  into p_CDRN_ID from CPL_CONTRATOS_DET_RNG;
+
+		insert into CPL_CONTRATOS_DET_RNG(CDRN_ENTIDAD
+										,CONDN_ID
+										,CDRC_RANGOINICIAL
+										,CDRN_CANTIDADSERIE
+										,CDRN_BORRADO
+										,CDRN_ID
+										,CDRC_RANGOFINAL) 
+								values (p_CDRN_ENTIDAD
+										,p_CONDN_ID
+										,p_CDRC_RANGOINICIAL
+										,p_CDRN_CANTIDADSERIE
+										,p_CDRN_BORRADO
+										,p_CDRN_ID
+										,p_CDRC_RANGOFINAL);
+
+	END agregar_contrato_det_rng;
+
+	PROCEDURE modificar_contrato(p_CONN_BORRADO in NUMERIC
+								,p_CONN_ENTIDAD in NUMERIC
+								,p_CONC_NUMERO in VARCHAR2
+								,p_CONC_USR_REG in VARCHAR2
+								,p_CONF_REGISTRO in DATE
+								,p_CONN_ESTATUS in VARCHAR2
+								,p_CONN_ID OUT NUMERIC
+                                ,p_CONN_ACTIVO in NUMERIC)
+	IS
+	BEGIN
+
+		update CPL_CONTRATOS 
+		set CONN_BORRADO = p_CONN_BORRADO
+		,CONN_ENTIDAD = p_CONN_ENTIDAD
+		,CONC_NUMERO = p_CONC_NUMERO
+		,CONC_USR_REG = p_CONC_USR_REG
+		,CONF_REGISTRO = p_CONF_REGISTRO
+		,CONN_ESTATUS = p_CONN_ESTATUS
+        ,CONN_ACTIVO = p_CONN_ACTIVO
+		where CONN_ID = p_CONN_ID;
+
+	END modificar_contrato;
+
+	PROCEDURE eliminar_contrato_det(p_CONN_ID in NUMBER)
+	IS
+	BEGIN
+
+		DELETE FROM CPL_CONTRATOS_DET WHERE CONN_ID = p_CONN_ID;
+
+	END eliminar_contrato_det;
+
+	PROCEDURE eliminar_contrato_det_rng(p_CONDN_ID in NUMBER)
+	IS
+	BEGIN
+
+		DELETE FROM CPL_CONTRATOS_DET_RNG WHERE CONDN_ID = p_CONDN_ID;
+
+	END eliminar_contrato_det_rng;
+
+	PROCEDURE inactiva_contrato(p_CONN_ID in number)
+	IS
+	BEGIN
+		update CPL_CONTRATOS set CONN_BORRADO = 1 WHERE CONN_ID = p_CONN_ID;
+	END inactiva_contrato;
+
+
+END spcpl_contratos_op;

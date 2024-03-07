@@ -1,0 +1,371 @@
+﻿@model ICVNL_SistemaLogistica.Web.ViewModels.Listado_ConsultaInformacionPlacasVM
+
+@{
+    ViewBag.Title = "Consulta de Información de Placas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/css/datatables.min.css" rel="stylesheet" />
+<link href="~/Content/css/datatables.bootstrap.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<style>
+    .FiltroMasterClass {
+        display: inline-table !important;
+        border-bottom: 1px solid #7678B8 !important
+    }
+
+    .ScrollFiltros {
+        overflow-y: auto;
+    } 
+</style>
+
+<div class="page-content-wrapper">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-10">
+                <h1 class="page-title">
+                    Consulta de Información de Placas
+                    <small>Sistema de Logística de Control de Placas&nbsp;</small>
+                </h1>
+            </div>
+        </div>
+        <div class="row widget-row">
+            <div class="col-md-12">
+                <div class="portlet box blue-hoki">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-edit"></i>Listado
+                        </div>
+                        <div class="actions">
+                            <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="table-toolbar">
+
+                            @using (@Html.BeginForm("Index", "ConsultaPlacas", FormMethod.Post, new { id = "myForm" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button type="button" class="quick-sidebar-toggler btn sbold blue margin-right-10">
+                                            Filtrar
+                                            <i class="fa fa-filter"></i>
+                                        </button>
+                                        <button type="button" class="btn default grey margin-right-10" onclick="location.href='@Url.Action("Index", "Home")'">
+                                            Regresar
+                                            <i class="fa fa-chevron-circle-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-12 table-responsive">
+                                        <table class="table table-bordered mb-0 table-sm wrap" id="tablaRegistros">
+                                            <thead>
+                                                <tr class="bg-light headerCustom">
+                                                    <th>
+                                                        Número de Placa
+                                                    </th>
+                                                    <th>
+                                                        Fecha de la Nota de Entrada
+                                                    </th>
+                                                    <th>
+                                                        Número de la Nota de Entrada
+                                                    </th>
+                                                    <th>
+                                                        Número Orden Compra
+                                                    </th>
+                                                    <th>
+                                                        Fecha Orden Compra
+                                                    </th>
+                                                    <th>
+                                                        Delegación Placa
+                                                    </th>
+                                                    <th style="width: 250px">
+                                                        <div style="text-align: center;">Colocar Placa</div>
+                                                    </th>
+                                                    <th><div style="text-align: center;">Acciones</div></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.Listado != null && Model.Listado.Count > 0)
+                                                {
+                                                    foreach (var item in Model.Listado)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.NumeroPlaca)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.FechaNotaEntrada)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.NumeroNotaEntrada)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.NumeroOrdenCompra)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.FechaOrdenCompra)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.DelegacionPlaca)
+                                                            </td>
+                                                            <td align="center">
+
+                                                                @if (HttpContext.Current.Session["UserSC"] != null &&
+                                                                ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_ConsultaInformacionPlacas.ColocarPlacasDisponibles)
+                                                                {
+                                                                    if (item.IdTipoEstatusPlaca != 1)
+                                                                    {
+                                                                        if (item.PlacaContabilizada == 0)
+                                                                        {
+                                                                            <button class="btn btn-xs green btn-icon-circle tooltips" type="button"
+                                                                                    data-container="body" data-toggle="tooltip" data-original-title="Disponible"
+                                                                                    onclick="if (!ShowConfirmation('¿Desea colocar esta placa como disponible?',
+                                                                        '@Url.Action("ColocaDisponible", "ConsultaPlacas", new { id = item.NumeroPlaca })')) return false;">
+                                                                                <literal class="HiddeLabel">Disponible</literal>
+                                                                                <i class="fa fa-check mr-0 ml-0 HiddenIClass"></i>
+                                                                            </button>
+                                                                        }
+
+                                                                    }
+                                                                }
+
+                                                                @if (HttpContext.Current.Session["UserSC"] != null &&
+                                                                    ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_ConsultaInformacionPlacas.ColocarPlacasObsoleta)
+                                                                {
+                                                                    if (item.IdTipoEstatusPlaca != 2)
+                                                                    { 
+                                                                        if (item.PlacaContabilizada == 0)
+                                                                        {
+                                                                            <button class="btn btn-xs red btn-icon-circle tooltips" type="button"
+                                                                                    data-container="body" data-toggle="tooltip" data-original-title="Obsoleta"
+                                                                                    onclick="if (!ShowConfirmation('¿Desea colocar esta placa como obsoleta?',
+                                                                                                                                                    '@Url.Action("ColocaObsoleta", "ConsultaPlacas", new { id = item.NumeroPlaca })')) return false;">
+                                                                                <literal class="HiddeLabel">Obsoleta</literal>
+                                                                                <i class="fa fa-trash mr-0 ml-0 HiddenIClass"></i>
+                                                                            </button>
+                                                                        }
+                                                                        
+                                                                    }
+                                                                }
+
+                                                                @if (HttpContext.Current.Session["UserSC"] != null &&
+                                                                    ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_ConsultaInformacionPlacas.ColocarPlacaRechazada)
+                                                                {
+                                                                    if (item.IdTipoEstatusPlaca != 3)
+                                                                    {
+                                                                        if (item.PlacaContabilizada == 0)
+                                                                        {
+                                                                            <button class="btn btn-xs red-pink btn-icon-circle tooltips" type="button"
+                                                                                    data-container="body" data-toggle="tooltip" data-original-title="Rechazada"
+                                                                                    onclick="if (!ShowConfirmation('¿Desea colocar esta placa como rechazada?',
+                                                                                                                                                    '@Url.Action("ColocaRechazada", "ConsultaPlacas", new { id = item.NumeroPlaca })')) return false;">
+                                                                                <literal class="HiddeLabel">Rechazada</literal>
+                                                                                <i class="fa fa-times mr-0 ml-0 HiddenIClass"></i>
+                                                                            </button>
+                                                                        }
+                                                                        
+                                                                    }
+                                                                }
+
+                                                                @if (HttpContext.Current.Session["UserSC"] != null &&
+                                                                    ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_ConsultaInformacionPlacas.ColocarPlacasPerdida)
+                                                                {
+                                                                    if (item.IdTipoEstatusPlaca != 4)
+                                                                    {
+                                                                        if (item.PlacaContabilizada == 0)
+                                                                        {
+                                                                            <button class="btn btn-xs red btn-icon-circle tooltips" type="button"
+                                                                                    data-container="body" data-toggle="tooltip" data-original-title="Perdida"
+                                                                                    onclick="if (!ShowConfirmation('¿Desea colocar esta placa como perdida?',
+                                                                                                                                                    '@Url.Action("ColocaPerdida", "ConsultaPlacas", new { id = item.NumeroPlaca })')) return false;">
+                                                                                <literal class="HiddeLabel">Perdida</literal>
+                                                                                <i class="fa fa-fast-backward mr-0 ml-0 HiddenIClass"></i>
+                                                                            </button>
+                                                                        }
+                                                                        
+                                                                    }
+                                                                }
+
+                                                            </td>
+                                                            <td align="center">
+                                                                @if (HttpContext.Current.Session["UserSC"] != null &&
+                                                                ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_ConsultaInformacionPlacas.Acceso)
+                                                                {
+                                                                    if (item.PlacaContabilizada == 0)
+                                                                    {
+                                                                        <button class="btn btn-xs blue btn-icon-circle tooltips" type="button"
+                                                                                data-container="body" data-toggle="tooltip" data-original-title="Ver Detalle"
+                                                                                onclick="location.href='@Url.Action("Details", "ConsultaPlacas", new { id = item.NumeroPlaca })'">
+                                                                            <literal class="HiddeLabel">Ver Detalle</literal>
+                                                                            <i class="fa fa-search mr-0 ml-0 HiddenIClass"></i>
+                                                                        </button>
+                                                                    }
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td colspan="8">
+                                                            @Html.Label("Sin Información")
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <a href="javascript:;" class="page-quick-sidebar-toggler">
+                                    <i class="icon-login"></i>
+                                </a>
+
+                                <div class="page-quick-sidebar-wrapper" style="border-width: thick; border-style: solid; background-color: #E9EDEF; display: block;" data-close-on-body-click="false">
+                                    <div class="page-quick-sidebar" style="background-color: #E9EDEF;">
+
+                                        <div class="tab-content" style="background-color: #E9EDEF;">
+
+                                            <div class="row" style="background-color: #E9EDEF;">
+
+                                                <div class="col-md-12  " style="background-color: #E9EDEF;">
+                                                    <!-- BEGIN SAMPLE FORM PORTLET-->
+                                                    <div class="portlet light noborder" style="background-color: #E9EDEF;">
+                                                        <div class="portlet-title noborder">
+                                                            <div class="caption font-green">
+                                                                <i class="icon-pin font-green"></i>
+                                                                <span class="caption-subject bold uppercase">Filtros Búsqueda</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="noborder" id="scroll">
+                                                            <div class="col">
+                                                                <div class="form-group form-md-line-input has-success">
+                                                                    @Html.TextBoxFor(x => Model.FiltroNumeroNotaEntrada, htmlAttributes: new { @class = "form-control FiltroMasterClass", @id = "txtFiltroNumeroNotaEntrada", @autocomplete = "off" })
+                                                                    <label for="txtFiltroNumeroNotaEntrada">Número de la Nota de Entrada</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col">
+                                                                <div class="form-group form-md-line-input has-success">
+                                                                    @Html.TextBoxFor(x => Model.FiltroFechaNotaEntrada, htmlAttributes: new { @class = "form-control FiltroMasterClass styleFechasFiltro", @id = "txtFiltroFechaNotaEntrada", @autocomplete = "off" })
+                                                                    <label for="txtFiltroFechaNotaEntrada">Fecha de la Nota de Entrada</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col">
+                                                                <div class="form-group form-md-line-input has-success">
+                                                                    @Html.TextBoxFor(x => Model.FiltroNumeroOrdenCompra, htmlAttributes: new { @class = "form-control FiltroMasterClass", @id = "txtFiltroNumeroOrdenCompra", @autocomplete = "off" })
+                                                                    <label for="txtFiltroNumeroOrdenCompra">Número de Orden de Compra</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col">
+                                                                <div class="form-group form-md-line-input has-success">
+                                                                    @Html.TextBoxFor(x => Model.FiltroFechaOrdenCompra, htmlAttributes: new { @class = "form-control FiltroMasterClass", @id = "txtFiltroFechaOrdenCompra", @autocomplete = "off" })
+                                                                    <label for="txtFiltroFechaOrdenCompra">Fecha de la Orden de Compra</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col">
+                                                                <div class="form-group form-md-line-input has-success">
+                                                                    @Html.DropDownListFor(x => Model.FiltroIdDelegacion, new SelectList(Model.ListadoDelegacionesDDL, "Valor", "Texto", Model.FiltroIdDelegacion),
+                                                                                       htmlAttributes: new { @class = "form-control", @id = "ddlFiltroIdDelegacion" })
+                                                                    <label for="ddlFiltroIdDelegacion">Delegación donde encuentra la Placa:</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col">
+                                                                <div class="form-group form-md-line-input has-success">
+                                                                    @Html.TextBoxFor(x => Model.FiltroNumeroPlaca, htmlAttributes: new { @class = "form-control FiltroMasterClass", @id = "FiltroNumeroPlaca", @autocomplete = "off" })
+                                                                    <label for="FiltroNumeroPlaca">Número de la Placa</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-actions noborder">
+                                                            <button type="submit" value="Buscar" class="btn green" id="btnAplicarFiltro">
+                                                                Aplicar Filtro
+                                                            </button>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <!-- END SAMPLE FORM PORTLET-->
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<link href="~/Content/css/GridView.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/css/Paginado.css" rel="stylesheet" type="text/css" />
+
+@section scripts
+{
+    <script src="~/Content/js/datatables.js"></script>
+    <script src="~/Content/js/datatables.min.js"></script>
+    <script src="~/Content/js/datatables.bootstrap.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="~/Content/js/Daterangepicker2.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            const isMobile = {
+                Android: function () {
+                    return navigator.userAgent.match(/Android/i);
+                },
+                BlackBerry: function () {
+                    return navigator.userAgent.match(/BlackBerry/i);
+                },
+                iOS: function () {
+                    return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+                },
+                Opera: function () {
+                    return navigator.userAgent.match(/Opera Mini/i);
+                },
+                Windows: function () {
+                    return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+                },
+                any: function () {
+                    return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+                }
+            };
+
+            $('#tablaRegistros').DataTable({
+                lengthChange: false,
+                paging: true,
+                searching: false,
+                ordering: true,
+                responsive: isMobile.any() ? true : false,
+                bInfo: false,
+                language: {
+                    emptyTable: "Sin información.",
+                    info: "Registros del <b>_START_</b> al <b>_END_</b> de <b>_TOTAL_</b> por página",
+                    infoEmpty: "Sin información",
+                    infoFiltered: "(filtered1 de _MAX_ total registros)",
+                    lengthMenu: "_MENU_ registros por p&#225;gina",
+                    search: "Buscar:",
+                    zeroRecords: "Sin coincidencias encontradas."
+                },
+            });
+
+            $('#tablaRegistros').find('[data-toggle="tooltip"]').tooltip();
+
+        });
+    </script>
+}

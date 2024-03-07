@@ -1,0 +1,109 @@
+create or replace PACKAGE BODY spcpl_delegaciones_bancos_op
+IS
+   c_version CONSTANT   NUMBER := 24.0501;
+   c_modulo  CONSTANT   NUMBER := 0;
+
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.2911 DEVTI   Elaboración del paquete.
+   -- 24.0501 DEVTI   se modifica el nombre del SP inactiva por cambia_estatus para que soporte el mismo sp la inactivación y reactivación de registros
+   --------------------------------------------------------------------------
+
+   ----
+   -- Variables Globales
+   next_val 	number;
+   next_val2 	number;
+   p_Fecha      date;
+   ----
+   -- Variables para manejo de errores. 
+   ----
+   -- Excepciones globales
+   ----
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+   RETURN c_version;
+   END VERSION;
+
+
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+	PROCEDURE agregar(p_DBC_ALMACEN_CC in VARCHAR2
+					,p_DBC_CC_INFOFIN in VARCHAR2 
+					,p_DBC_NOMBRE_DEL in VARCHAR2
+					,p_DBN_ENTIDAD in NUMBER
+					,p_DBN_ID in NUMBER
+					,p_DBN_ACTIVO in NUMBER
+					,p_DBN_BORRADO in NUMBER)
+	IS
+	BEGIN   
+        select sysdate into p_Fecha from dual;
+		select  nvl(max(DBN_ID),0) + 1  into next_val from CPL_DELEGACIONES_BANCOS;
+
+		insert into CPL_DELEGACIONES_BANCOS(DBC_ALMACEN_CC
+											,DBC_CC_INFOFIN 
+											,DBC_NOMBRE_DEL
+											,DBN_ENTIDAD
+											,DBN_ID
+											,DBN_ACTIVO
+											,DBN_BORRADO) 
+									values (p_DBC_ALMACEN_CC
+										  ,p_DBC_CC_INFOFIN 
+										  ,p_DBC_NOMBRE_DEL
+										  ,p_DBN_ENTIDAD
+										  ,next_val
+										  ,p_DBN_ACTIVO
+										  ,p_DBN_BORRADO);
+                                          
+         select  nvl(max(INVN_ID),0) + 1  into next_val2 from CPL_INV_PL;  
+         
+        insert into CPL_INV_PL(INVN_ENTIDAD,INVF_FECHA,DBN_ID,INVN_ID,INVN_BORRADO) 
+        values (1,p_Fecha,next_val,next_val2,0);                                      
+
+	END agregar;         
+
+
+	PROCEDURE modificar(p_DBC_ALMACEN_CC in VARCHAR2
+					,p_DBC_CC_INFOFIN in VARCHAR2 
+					,p_DBC_NOMBRE_DEL in VARCHAR2
+					,p_DBN_ENTIDAD in NUMBER
+					,p_DBN_ID in NUMBER
+					,p_DBN_ACTIVO in NUMBER
+					,p_DBN_BORRADO in NUMBER)
+	IS
+	BEGIN
+		update CPL_DELEGACIONES_BANCOS set DBC_ALMACEN_CC = p_DBC_ALMACEN_CC
+											,DBC_CC_INFOFIN = p_DBC_CC_INFOFIN 
+											,DBC_NOMBRE_DEL = p_DBC_NOMBRE_DEL
+											,DBN_ENTIDAD = p_DBN_ENTIDAD
+											,DBN_ACTIVO = p_DBN_ACTIVO
+											,DBN_BORRADO = p_DBN_BORRADO
+		where DBN_ID = p_DBN_ID;
+
+	END modificar;
+
+	PROCEDURE cambia_estatus(p_DBN_ID in number)
+	IS
+	BEGIN
+    
+	update CPL_DELEGACIONES_BANCOS  
+    set DBN_ACTIVO = case DBN_ACTIVO when 1 then 0 else 1 end 
+    WHERE DBN_ID = p_DBN_ID;
+    
+	END cambia_estatus;
+
+
+END spcpl_delegaciones_bancos_op;

@@ -1,0 +1,30 @@
+create or replace PACKAGE spcpl_consultaplacas
+IS
+	FUNCTION version
+	RETURN NUMBER;
+
+   PROCEDURE consulta_placas_listado(p_NEN_NUMERO in VARCHAR2,
+									 p_NEF_FECHA_INI IN DATE,
+									 p_NEF_FECHA_FIN IN DATE,
+									 p_OCN_NUMERO IN NUMBER,
+									 p_OCF_FECHA_INI IN DATE,
+									 p_OCF_FECHA_FIN IN DATE,
+									 p_DBN_ID IN NUMBER,
+									 p_RNO_ENTIDAD in NUMBER, 
+									 p_INVDC_NUMEROPLACA IN VARCHAR2,
+								     p_cursor_out OUT SYS_REFCURSOR);
+                                 
+   PROCEDURE consulta_placa_infogral (p_RNO_ENTIDAD in NUMBER, 
+									 p_INVDC_NUMEROPLACA IN VARCHAR2,
+								     p_cursor_out OUT SYS_REFCURSOR);
+                                   
+   PROCEDURE consulta_placa_cambioestatus (p_INVDN_ENTIDAD in NUMBER, 
+									 p_INVDC_NUMEROPLACA IN VARCHAR2,
+								     p_cursor_out OUT SYS_REFCURSOR);        
+
+   PROCEDURE consulta_placa_transferencias (p_INVDN_ENTIDAD in NUMBER, 
+									 p_INVDC_NUMEROPLACA IN VARCHAR2,
+								     p_cursor_out OUT SYS_REFCURSOR); 
+									 
+									 
+END spcpl_consultaplacas;

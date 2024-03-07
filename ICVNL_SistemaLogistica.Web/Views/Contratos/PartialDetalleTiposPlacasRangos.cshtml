@@ -1,0 +1,36 @@
+﻿@model IEnumerable<ICVNL_SistemaLogistica.Web.Models.Listado_ContratosDetailsRangosModel>
+
+@if (Model != null && Model.Count() > 0)
+{
+    int index = 0;
+    foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.RangoInicial
+                <input type="text" class="form-control" name="Detalle_ContratosDetailsRangosVM[@index.ToString()].IdContratoDetalleRangos" value="@item.IdContratoDetalleRangos" style="display:none" />
+                <input type="text" class="form-control" name="Detalle_ContratosDetailsRangosVM[@index.ToString()].Consecutivo" value="@item.Consecutivo" style="display:none" />
+            </td>
+            <td>@item.RangoFinal</td>
+            <td>@item.CantidadSerie</td>
+            <td align="center" style="width:120px">
+                
+                @if (HttpContext.Current.Session["UserSC"] != null &&
+                ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_Contratos.RangoTipoPlacaActualizar)
+                {
+                    <button class="btn btn-xs blue btn-icon-circle" type="button" name="control" id="btnEditarPartida" onclick="EditarDetalleRango('@item.Consecutivo.ToString()');">
+                        <i class="fa fa-pencil mr-0 ml-0"></i>
+                    </button>
+                }
+                @if (HttpContext.Current.Session["UserSC"] != null &&
+                ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_Contratos.RangoTipoPlacaEliminar)
+                {
+                    <button class="btn btn-xs red btn-icon-circle" type="button" name="control" id="btnEliminarPartida" onclick="EliminarRango('@item.Consecutivo.ToString()');">
+                        <i class="fa fa-times mr-0 ml-0"></i>
+                    </button>
+                }                
+            </td>
+        </tr>
+        index++;
+    }
+}

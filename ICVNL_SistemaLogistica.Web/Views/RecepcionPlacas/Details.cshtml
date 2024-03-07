@@ -1,0 +1,339 @@
+﻿@model ICVNL_SistemaLogistica.Web.ViewModels.Detalle_RecepcionPlacasVM
+
+@{
+    ViewBag.Title = "Administración de Recepcion de Placas entre Delegaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/css/estilosAlerta.css" rel="stylesheet" />
+@using (Html.BeginForm("Details", "RecepcionPlacas", FormMethod.Post, new { id = "myForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="row">
+                <div class="col-md-10">
+                    <h1 class="page-title">
+                        Administración de Recepcion de Placas entre Delegaciones
+                        <small>Sistema de Logística de Control de Placas&nbsp;</small>
+                    </h1>
+                </div>
+            </div>
+            <div class="row widget-row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Encabezado
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-actions ">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        @if (HttpContext.Current.Session["UserSC"] != null &&
+                                            ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_RecepcionPlacasEntreDelegacionesBancos.RecibirTransferencia)
+                                        {
+                                            if (Model.IdEstatusTransferencia == 3)
+                                            {
+                                                <button type="button" name="btnRecibirTransferencia" onclick="RecibirTransferencia();" class="btn dark margin-right-10">
+                                                    Recibir Transferencia
+                                                    <i class="fa fa-save"></i>
+                                                </button>
+                                            }
+                                        }
+
+                                        @if (HttpContext.Current.Session["UserSC"] != null &&
+                                        ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_RecepcionPlacasEntreDelegacionesBancos.RechazarTransferencia)
+                                        {
+                                            if (Model.IdEstatusTransferencia == 3)
+                                            {
+                                                <button type="button" name="btnRechazarTransferencia" onclick="RechazarTransferencia();" class="btn red margin-right-10">
+                                                    Rechazar Transferencia
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            }
+                                        }
+
+                                        @if (HttpContext.Current.Session["UserSC"] != null &&
+                                        ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_RecepcionPlacasEntreDelegacionesBancos.CerrarTransferencia)
+                                        {
+                                            if (Model.IdEstatusTransferencia == 4)
+                                            {
+                                                <button type="button" name="btnCerrarTransferencia" onclick="CerrarTransferencia();" class="btn primary margin-right-10">
+                                                    Cerrar Transferencia
+                                                    <i class="fa fa-dashcube"></i>
+                                                </button>
+                                            }
+                                            else if (Model.IdEstatusTransferencia == 5)
+                                            {
+                                                <button type="button" name="btnCerrarTransferencia" onclick="CerrarTransferencia();" class="btn primary margin-right-10">
+                                                    Cerrar Transferencia
+                                                    <i class="fa fa-dashcube"></i>
+                                                </button>
+                                            }
+                                        }
+
+                                        <button type="button" class="btn default grey" onclick="location.href='@Url.Action("Index", "RecepcionPlacas")';">
+                                            Regresar
+                                            <i class="fa fa-chevron-circle-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-2" id="divId">
+                                            @Html.LabelFor(model => model.IdTransferencia, htmlAttributes: new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <p class="form-control-static">
+                                                    @Html.EditorFor(model => model.IdTransferencia, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.FolioTransferencia, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.FolioTransferencia, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.FechaHoraRegistro, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.FechaHoraRegistro, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.IdTransferenciaDatosPersonaRecibe, htmlAttributes: new { @class = "control-label" })
+                                            <button type="button" class="btn dark margin-right-10" onclick="AgregarDatosPersona();">
+                                                Datos Persona
+                                                <i class="fa fa-save"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.IdTransferenciaTransporteRecibe, htmlAttributes: new { @class = "control-label" })
+                                            <button type="button" class="btn dark margin-right-10" onclick="AgregarDatosTransporte();">
+                                                Datos Transporte
+                                                <i class="fa fa-save"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.IdDelegacionBancoOrigen, htmlAttributes: new { @class = "control-label" })
+                                            @Html.DropDownListFor(x => Model.IdDelegacionBancoOrigen, new SelectList(Model.ListadoDelegacionesDDL, "Valor", "Texto", Model.IdDelegacionBancoOrigen),
+                                                           htmlAttributes: new { @class = "form-control", @id = "ddlListadoDelegacionesOrigenDDL", @disabled = "disabled" })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.IdDelegacionBancoDestino, htmlAttributes: new { @class = "control-label" })
+                                            @Html.DropDownListFor(x => Model.IdDelegacionBancoDestino, new SelectList(Model.ListadoDelegacionesDDL, "Valor", "Texto", Model.IdDelegacionBancoDestino),
+                                                           htmlAttributes: new { @class = "form-control", @id = "ddlListadoDelegacionesDestinoDDL", @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Detalle 1. Listado Columnas
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <table class="table table-bordered mb-0 table-sm dataTable" id="tablaRegistrosListado1">
+                                            <thead>
+                                                <tr class="bg-light headerCustom">
+                                                    <th>Tipo Placa</th>
+                                                    <th>Cant. de Placas Transferidas</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="listadoPartialDetalleSolicitud">
+                                                @if (Model.RecepcionPlacas_Listado1 != null && Model.RecepcionPlacas_Listado1.Count > 0)
+                                                {
+                                                    foreach (var item in Model.RecepcionPlacas_Listado1)
+                                                    {
+                                                        int index = 0;
+                                                        <tr>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.TiposPlacas.TipoPlaca)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.CantidadDisponiblesSerTransferidas)
+                                                            </td>
+                                                            <td align="center">
+
+                                                                @if (Model.IdEstatusTransferencia == 4)
+                                                                {
+                                                                    <button class="btn btn-xs green-jungle btn-icon-circle tooltips" type="button"
+                                                                            data-container="body" data-toggle="tooltip" data-original-title="Agregar"
+                                                                            onclick="location.href='RecibirPlacasIndividuales?IdTransferencia=@Model.IdTransferencia&IdTipoPlaca=@item.IdTipoPlaca';">
+                                                                        <literal class="HiddeLabel">Agregar</literal>
+                                                                        <i class="fa fa-archive mr-0 ml-0 HiddenIClass"></i>
+                                                                    </button>
+                                                                }
+                                                                else if (Model.IdEstatusTransferencia == 5)
+                                                                {
+                                                                    <button class="btn btn-xs green-jungle btn-icon-circle tooltips" type="button"
+                                                                            data-container="body" data-toggle="tooltip" data-original-title="Agregar"
+                                                                            onclick="location.href='RecibirPlacasIndividuales?IdTransferencia=@Model.IdTransferencia&IdTipoPlaca=@item.IdTipoPlaca';">
+                                                                        <literal class="HiddeLabel">Agregar</literal>
+                                                                        <i class="fa fa-archive mr-0 ml-0 HiddenIClass"></i>
+                                                                    </button>
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                        index++;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td colspan="3">
+                                                            @Html.Label("Sin Información")
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modalAgregarDatosPersona" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="tituloModalAgregar">Datos de la persona que va a recibir las placas </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body portlet-body form form-horizontal">
+                    <div class="form-body" style="overflow-y: auto;">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.RecepcionPlacas_DatosPersonaRecibe.Nombre, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.RecepcionPlacas_DatosPersonaRecibe.Nombre, new { htmlAttributes = new { @class = "form-control validaCamposPersona", @id = "txtRecepcionPlacas_DatosPersonaRecibe_Nombre", @autocomplete = "off" } })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.RecepcionPlacas_DatosPersonaRecibe.Apellido, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.RecepcionPlacas_DatosPersonaRecibe.Apellido, new { htmlAttributes = new { @class = "form-control validaCamposPersona", @id = "txtRecepcionPlacas_DatosPersonaRecibe_Apellido", @autocomplete = "off" } })
+                                </div>
+                                <div class="col-md-4">
+
+                                    @Html.LabelFor(model => model.RecepcionPlacas_DatosPersonaRecibe.IdTipoIDs, htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(model1 => model1.RecepcionPlacas_DatosPersonaRecibe.IdTipoIDs, new SelectList(Model.ListadoTiposIDsDDL, "Valor", "Texto", Model.RecepcionPlacas_DatosPersonaRecibe.IdTipoIDs),
+                                                   htmlAttributes: new { @class = "form-control validaCamposPersona", @id = "ddlRecepcionPlacas_DatosPersonaRecibe_TipoID" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.RecepcionPlacas_DatosPersonaRecibe.NumeroID, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.RecepcionPlacas_DatosPersonaRecibe.NumeroID, new { htmlAttributes = new { @class = "form-control validaCamposPersona", @id = "txtRecepcionPlacas_DatosPersonaRecibe_NumeroID", @autocomplete = "off" } })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn green margin-right-10" onclick="ValidaGuardarDatosPersona();">
+                        Agregar
+                        <i class="fa fa-save"></i>
+                    </button>
+                    <button type="button" class="btn dark btn-outline" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modalAgregarDatosTransporte" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="tituloModalAgregar">Datos del Transporte en el que llegaron las Placas</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body portlet-body form form-horizontal">
+                    <div class="form-body" style="overflow-y: auto;">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.RecepcionPlacas_TransporteRecibe.MarcaVehiculo, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.RecepcionPlacas_TransporteRecibe.MarcaVehiculo, new { htmlAttributes = new { @class = "form-control", @id = "txtRecepcionPlacas_TransporteRecibe_MarcaVehiculo", @autocomplete = "off" } })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.RecepcionPlacas_TransporteRecibe.ModeloVehiculo, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.RecepcionPlacas_TransporteRecibe.ModeloVehiculo, new { htmlAttributes = new { @class = "form-control", @id = "txtRecepcionPlacas_TransporteRecibe_ModeloVehiculo", @autocomplete = "off" } })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.RecepcionPlacas_TransporteRecibe.PlacasVehiculo, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.RecepcionPlacas_TransporteRecibe.PlacasVehiculo, new { htmlAttributes = new { @class = "form-control", @id = "txtRecepcionPlacas_TransporteRecibe_PlacasVehiculo", @autocomplete = "off" } })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.RecepcionPlacas_TransporteRecibe.NumeroEconomico, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.RecepcionPlacas_TransporteRecibe.NumeroEconomico, new { htmlAttributes = new { @class = "form-control", @id = "txtRecepcionPlacas_TransporteRecibe_NumeroEconomico", @autocomplete = "off" } })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn green margin-right-10" onclick="ValidaGuardarDatosTransporte();">
+                            Agregar
+                            <i class="fa fa-save"></i>
+                        </button>
+                        <button type="button" class="btn dark btn-outline" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts
+{
+    <script src="~/Content/js/datatables.js"></script>
+    <script src="~/Content/js/datatables.min.js"></script>
+    <script src="~/Content/js/datatables.bootstrap.js"></script>
+    <script src="~/Content/js/funciones-alertas.js"></script>
+    <script src="~/Scripts/Recepcion/Recepcion.js"></script>
+    <script>
+        setTimeout(function () {
+            GetRecibirPlacasIndividuales();
+        }, 200)
+    </script>
+}

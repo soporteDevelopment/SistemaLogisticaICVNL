@@ -1,0 +1,22 @@
+create or replace PACKAGE spcpl_estados_op
+IS
+   FUNCTION version
+   RETURN NUMBER;
+
+	PROCEDURE agregar(p_ESN_BORRADO in NUMBER
+					,p_ESC_NOMBRE in varchar2
+					,p_ESN_ACTIVO in NUMBER
+					,p_ESN_ENTIDAD in NUMBER
+					,p_ESN_ID in NUMBER);
+
+
+	PROCEDURE modificar(p_ESN_BORRADO in NUMBER
+					,p_ESC_NOMBRE in varchar2
+					,p_ESN_ACTIVO in NUMBER
+					,p_ESN_ENTIDAD in NUMBER
+					,p_ESN_ID in NUMBER);
+
+	PROCEDURE cambia_estatus(p_ESN_ID in number);				
+
+
+END spcpl_estados_op;

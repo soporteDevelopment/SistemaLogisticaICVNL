@@ -1,0 +1,373 @@
+﻿@model ICVNL_SistemaLogistica.Web.ViewModels.Detalle_ContratosVM
+
+@{
+    ViewBag.Title = "Administración de Contratos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/css/estilosAlerta.css" rel="stylesheet" />
+@using (Html.BeginForm("Details", "Contratos", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.NumeroFila)
+
+    <div class="page-content-wrapper"  >
+        <div class="page-content">
+            <div class="row">
+                <div class="col-md-10">
+                    <h1 class="page-title">
+                        Administración de Contratos
+                        <small>Sistema de Logística de Control de Placas&nbsp;</small>
+                    </h1>
+                </div>
+            </div>
+            <div class="row widget-row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Encabezado
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-actions ">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        @if (HttpContext.Current.Session["UserSC"] != null &&
+                                        ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_Contratos.Actualizar)
+                                        {
+                                            <button type="button" id="btnUpsertContrato" onclick="ModifyContrato();" class="btn dark margin-right-10">
+                                                Guardar
+                                                <i class="fa fa-save"></i>
+                                            </button>
+                                        }
+                                        <button type="button" class="btn default grey" onclick="location.href='@Url.Action("Index", "Contratos")';">
+                                            Regresar
+                                            <i class="fa fa-chevron-circle-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-2" id="divId">
+                                            @Html.LabelFor(model => model.IdContrato, htmlAttributes: new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <p class="form-control-static">
+                                                    @Html.EditorFor(model => model.IdContrato, new { htmlAttributes = new { @class = "form-control", @id="txtIdContrato", @disabled = "disabled" } })
+
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.NumeroContrato, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.NumeroContrato, new { htmlAttributes = new { @class = "form-control validaCampoContrato", @id = "txtNumeroContrato", @autocomplete = "off" } })
+                                            @Html.ValidationMessageFor(model => model.NumeroContrato, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <br />
+                                        <div class="col-md-12">
+                                            <div class="col-md-2">
+                                                <label class="btn dark" for="filArchivo">
+                                                    <input type="file" id="filArchivo" multiple name="filArchivo" style="display:none;" onchange="ColocaNombre();" />
+                                                    Buscar Archivo:
+                                                </label>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn green margin-right-10" id="AdjuntarArchivos">
+                                                    Cargar Archivos
+                                                </button>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" name="control" id="AdjuntarArchivos" onclick="VerArchivosCargados();" class="btn green margin-right-10">
+                                                    Ver Archivos
+                                                    <i class="fa fa-upload"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="col-md-12" id="fileList">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Detalle
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-actions ">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <button type="button" class="btn dark margin-right-10" onclick="AgregarDetalleContrato();">
+                                            Agregar Detalle
+                                            <i class="fa fa-save"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="txtNumeroFila" value="" />
+
+                            <div class="form-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <table class="table table-bordered mb-0 table-sm dataTable" id="tablaRegistros">
+                                            <thead>
+                                                <tr class="bg-light headerCustom">
+                                                    <th>Proveedor</th>
+                                                    <th>Tipo de Placa</th>
+                                                    <th>Cant. de Placas</th>
+                                                    <th>Cant. de Placas Caja</th>
+                                                    <th>Estructura de la Placa</th>
+                                                    <th>Orden Placa</th>
+                                                    <th>Rango Ini. Placas</th>
+                                                    <th>Rango Fin. Placas</th>
+                                                    <th>Oficio SICT</th>
+                                                    <th style="width:180px"><div style="text-align: center">Acciones</div></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="listadoPartialDetalleContrato">
+                                                @Html.Partial("PartialDetalleContrato", Model.Detalle_ContratosDetailsVM)
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modalAgregarDetalle" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="tituloModalAgregar"></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body portlet-body form form-horizontal">
+                    <div class="form-body" style="overflow-y: auto;">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.DetalleContrato.IdProveedor, htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(x => Model.DetalleContrato.IdProveedor, new SelectList(Model.DetalleContrato.ListadoProveedoresDDL, "Valor", "Texto", Model.DetalleContrato.IdProveedor),
+                                                   htmlAttributes: new { @class = "form-control", @id = "DetalleContrato_IdProveedor" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.DetalleContrato.IdTipoPlaca, htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(x => Model.DetalleContrato.IdTipoPlaca, new SelectList(Model.DetalleContrato.ListadoTiposPlacasDDL, "Valor", "Texto", Model.DetalleContrato.IdTipoPlaca),
+                                                   htmlAttributes: new { @class = "form-control", @id = "DetalleContrato_IdTipoPlaca", @onchange = "GetDataTiposPlacas();" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.DetalleContrato.CantidadPlacas, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.DetalleContrato.CantidadPlacas, new { htmlAttributes = new { @class = "form-control validaCampos", @id = "DetalleContrato_CantidadPlacas", @autocomplete = "off" } })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row">
+
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.DetalleContrato.CantidadPlacasCaja, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.DetalleContrato.CantidadPlacasCaja, new { htmlAttributes = new { @class = "form-control validaCampos", @id = "DetalleContrato_CantidadPlacasCaja", @autocomplete = "off" } })
+
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.DetalleContrato.EstructuraPlaca, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.DetalleContrato.EstructuraPlaca, new { htmlAttributes = new { @class = "form-control validaCampos", @id = "DetalleContrato_EstructuraPlaca", @autocomplete = "off" } })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.DetalleContrato.OrdenPlaca, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.DetalleContrato.OrdenPlaca, new { htmlAttributes = new { @class = "form-control validaCampos", @id = "DetalleContrato_OrdenPlaca", @autocomplete = "off" } })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.DetalleContrato.RangoInicial, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.DetalleContrato.RangoInicial, new { htmlAttributes = new { @class = "form-control validaCampos", @id = "DetalleContrato_RangoInicial", @autocomplete = "off" } })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.DetalleContrato.RangoFinal, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.DetalleContrato.RangoFinal, new { htmlAttributes = new { @class = "form-control validaCampos", @id = "DetalleContrato_RangoFinal", @autocomplete = "off" } })
+
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.DetalleContrato.OficioSICT, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.DetalleContrato.OficioSICT, new { htmlAttributes = new { @class = "form-control validaCampos", @id = "DetalleContrato_OficioSICT", @autocomplete = "off" } })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @if (HttpContext.Current.Session["UserSC"] != null &&
+                    ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_Contratos.Registrar)
+                    {
+                        <button type="button" class="btn green margin-right-10" onclick="ValidaGuardarDetalle();">
+                            Agregar
+                            <i class="fa fa-save"></i>
+                        </button>
+                    } 
+                    <button type="button" class="btn dark btn-outline" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modalAgregarDetalleRangos" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="tituloModalAgregar">Rangos de Placas por Serie del Tipo de Placa Seleccionado</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                @Html.HiddenFor(model => model.DetalleContrato.DetalleRangos.Consecutivo, new { htmlAttributes = new { @class = "form-control", @id = "DetalleContrato_DetalleRangos_Consecutivo", @autocomplete = "off" } })
+
+                <div class="modal-body portlet-body form form-horizontal">
+                    <div class="form-body" style="overflow-y: auto;">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.DetalleContrato.DetalleRangos.RangoInicial, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.DetalleContrato.DetalleRangos.RangoInicial, new { htmlAttributes = new { @class = "form-control validaCamposRangos", @id = "DetalleContrato_DetalleRangos_RangoInicial", @autocomplete = "off", @onchange= "ConteoRangoPlacas();" } })
+                                    @Html.ValidationMessageFor(model => model.DetalleContrato.DetalleRangos.RangoInicial, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.DetalleContrato.DetalleRangos.RangoFinal, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.DetalleContrato.DetalleRangos.RangoFinal, new { htmlAttributes = new { @class = "form-control validaCamposRangos", @id = "DetalleContrato_DetalleRangos_RangoFinal", @autocomplete = "off", @onchange = "ConteoRangoPlacas();" } })
+                                    @Html.ValidationMessageFor(model => model.DetalleContrato.DetalleRangos.RangoFinal, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.DetalleContrato.DetalleRangos.CantidadSerie, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.DetalleContrato.DetalleRangos.CantidadSerie, new { htmlAttributes = new { @class = "form-control validaCamposRangos", @id = "DetalleContrato_DetalleRangos_CantidadSerie", @autocomplete = "off", @disabled="disabled" } })
+                                    @Html.ValidationMessageFor(model => model.DetalleContrato.DetalleRangos.CantidadSerie, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-md-12 table-responsive">
+                                        <table class="table table-bordered mb-0 table-sm dataTable" id="tablaRegistrosRangos">
+                                            <thead>
+                                                <tr class="bg-light headerCustom">
+                                                    <th>
+                                                        Rango Inicial
+                                                    </th>
+                                                    <th>
+                                                        Rango Final
+                                                    </th>
+                                                    <th>
+                                                        Cantidad por Serie
+                                                    </th>
+                                                    <th><div style="text-align: center">Acciones</div></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="listadoRangosDetalle">
+                                                @Html.Partial("PartialDetalleTiposPlacasRangos", Model.Detalle_ContratosDetailsRangosVM)
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn green margin-right-10" onclick="ValidaAgregarDetalleRangos();">
+                        Agregar
+                        <i class="fa fa-save"></i>
+                    </button>
+                    <button type="button" class="btn dark btn-outline" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modalArchivos" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="tituloModalAgregar">Archivos Cargados</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body portlet-body form form-horizontal">
+                    <div class="form-body" style="overflow-y: auto;">
+                        <div class="col-md-12 table-responsive">
+                            <table class="table table-bordered mb-0 table-sm dataTable" id="tablaRegistrosArchivos">
+                                <thead>
+                                    <tr class="bg-light headerCustom">
+                                        <th>
+                                            Archivo
+                                        </th>
+                                        <th><div style="text-align: center">Acciones</div></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="listadoArchivosAdjuntos">
+                                    @Html.Partial("PartialArchivosAdjuntos", Model.Detalle_ContratosArchivosVM)
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn dark btn-outline" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+@section scripts
+{
+    <script src="~/Content/js/datatables.js"></script>
+    <script src="~/Content/js/datatables.min.js"></script>
+    <script src="~/Content/js/datatables.bootstrap.js"></script>
+    <script src="~/Content/js/funciones-alertas.js"></script>
+    <script src="~/Scripts/Contratos/Contratos.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            setTimeout(function () { CargaInformacionContrato(); }, 300); 
+        });
+        
+    </script>
+}

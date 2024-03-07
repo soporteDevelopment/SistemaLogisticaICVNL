@@ -1,0 +1,182 @@
+create or replace PACKAGE BODY spcpl_consultaplacas
+IS
+
+   c_version CONSTANT   NUMBER := 24.1601;
+   c_modulo  CONSTANT   NUMBER := 0;
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 24.1601 DEVTI   Elaboración del paquete.
+   --  
+   --------------------------------------------------------------------------
+   ----
+   -- Tipos globales
+   ----
+   ----
+   -- Variables Globales
+   ----
+   -- Variables para manejo de errores.
+   g_mensaje_error      VARCHAR2(4000);
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+      RETURN c_version;
+   END version;
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+
+   PROCEDURE consulta_placas_listado(p_NEN_NUMERO in VARCHAR2,
+									 p_NEF_FECHA_INI IN DATE,
+									 p_NEF_FECHA_FIN IN DATE,
+									 p_OCN_NUMERO IN NUMBER,
+									 p_OCF_FECHA_INI IN DATE,
+									 p_OCF_FECHA_FIN IN DATE,
+									 p_DBN_ID IN NUMBER,
+									 p_RNO_ENTIDAD in NUMBER, 
+									 p_INVDC_NUMEROPLACA IN VARCHAR2,
+								     p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+		OPEN p_cursor_out FOR
+		SELECT cpl_inv_pl_det.invdc_numeroplaca as NumeroPlaca,
+			   cpl_notas_ent_pl.nef_fecha as FechaEntrada,
+			   cpl_notas_ent_pl.nen_numero AS NotaEntrada,
+			   cpl_ordenes_compra.ocn_numero as NumeroOrdenCompra,
+			   cpl_ordenes_compra.ocf_fecha as FechaOrdenCompra,
+			   CPL_DELEGACIONES_BANCOS.DBC_NOMBRE_DEL AS DelegacionPlaca,
+               cpl_tipo_est_pl.tepn_id as IdTipoEstatusPlaca,
+               cpl_inv_pl_det.invdn_placa_cont as PlacaContabilizada
+		FROM CPL_INV_REL_NE_OC 
+			INNER JOIN CPL_INV_PL_DET ON CPL_INV_PL_DET.INVN_ID = CPL_INV_PL_DET.INVN_ID and CPL_INV_PL_DET.INVDN_ID = CPL_INV_REL_NE_OC.INVDN_ID
+			INNER JOIN CPL_INV_PL ON CPL_INV_PL.INVN_ID = CPL_INV_PL_DET.INVN_ID
+			INNER JOIN CPL_DELEGACIONES_BANCOS ON CPL_DELEGACIONES_BANCOS.DBN_ID = CPL_INV_PL.DBN_ID
+			INNER JOIN CPL_NOTAS_ENT_PL on CPL_NOTAS_ENT_PL.NEN_ID = CPL_INV_REL_NE_OC.NEN_ID
+			INNER JOIN CPL_ORDENES_COMPRA on CPL_ORDENES_COMPRA.OCN_ID = CPL_INV_REL_NE_OC.OCN_ID
+            INNER JOIN CPL_TIPO_EST_PL ON CPL_TIPO_EST_PL.TEPN_ID = CPL_INV_PL_DET.epn_id
+		WHERE CPL_INV_REL_NE_OC.RNO_ENTIDAD = p_RNO_ENTIDAD
+			AND (p_NEN_NUMERO = '' OR UPPER(CPL_NOTAS_ENT_PL.NEN_NUMERO) like '%'|| UPPER(p_NEN_NUMERO)||'%')  
+			AND (CPL_NOTAS_ENT_PL.NEF_FECHA >= p_NEF_FECHA_INI AND CPL_NOTAS_ENT_PL.NEF_FECHA <= p_NEF_FECHA_FIN) 			
+			AND (p_OCN_NUMERO = '' OR UPPER(CPL_ORDENES_COMPRA.OCN_NUMERO) like '%'|| UPPER(p_OCN_NUMERO)||'%')  
+			AND (CPL_ORDENES_COMPRA.OCF_FECHA >= p_OCF_FECHA_INI AND CPL_ORDENES_COMPRA.OCF_FECHA <= p_OCF_FECHA_FIN) 
+			AND (p_DBN_ID = 0 OR CPL_DELEGACIONES_BANCOS.DBN_ID = p_DBN_ID)
+			AND (p_INVDC_NUMEROPLACA = '' OR UPPER(CPL_INV_PL_DET.INVDC_NUMEROPLACA) like '%'|| UPPER(p_INVDC_NUMEROPLACA)||'%')
+		ORDER BY CPL_INV_PL_DET.invdn_id;
+
+   END consulta_placas_listado;   
+
+   PROCEDURE consulta_placa_infogral (p_RNO_ENTIDAD in NUMBER, 
+									 p_INVDC_NUMEROPLACA IN VARCHAR2,
+								     p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+		OPEN p_cursor_out FOR
+				SELECT DISTINCT cpl_inv_pl_det.invdc_numeroplaca as NumeroPlaca,
+               cpl_tipos_placas.tpc_tipoplaca AS TipoPlaca,
+               cpl_inv_pl_det.invdn_costoplaca as CostoPlaca,
+			   cpl_notas_ent_pl.nef_fecha as FechaEntrada,
+			   cpl_notas_ent_pl.nen_numero AS NotaEntrada,
+			   cpl_ordenes_compra.ocn_numero as NumeroOrdenCompra,
+			   cpl_ordenes_compra.ocf_fecha as FechaOrdenCompra,
+               cpl_proveedores.provc_nombre as NombreProveedor,
+               cpl_inv_rel_ne_oc.rno_renglon_ne AS RenglonNE,
+               cpl_inv_rel_ne_oc.rno_renglon_oc AS RenglonOC,
+               cpl_inv_rel_ne_oc.rno_entidad as Entidad,
+               cpl_delegaciones_bancos.dbn_id as IdDelegacionBanco,
+               cpl_delegaciones_bancos.dbc_nombre_del as NombreDelegacion,
+               CPL_NOTAS_ENT_PL_DET.NEDN_CTA_CON_CARGO AS CuentaContableRecPlacas,
+               CPL_NOTAS_ENT_PL_DET.NEND_CENTROCOSTOS_OC as CentroCostosAlmOC,               
+               cpl_tipo_est_pl.tepn_id as IdTipoEstatusPlaca,
+               CPL_TIPO_EST_PL.TEPC_ESTATUS AS EstatusPlaca,
+               CPL_INV_PL_DET.INVDN_PLACA_CONT as PlacaContabilizada,
+               ' ' as NumeroPolizaInfofin 
+		FROM CPL_INV_REL_NE_OC 
+			INNER JOIN CPL_INV_PL_DET ON CPL_INV_PL_DET.INVN_ID = CPL_INV_PL_DET.INVN_ID and CPL_INV_PL_DET.INVDN_ID = CPL_INV_REL_NE_OC.INVDN_ID
+			INNER JOIN CPL_INV_PL ON CPL_INV_PL.INVN_ID = CPL_INV_PL_DET.INVN_ID
+			INNER JOIN CPL_DELEGACIONES_BANCOS ON CPL_DELEGACIONES_BANCOS.DBN_ID = CPL_INV_PL.DBN_ID
+			INNER JOIN CPL_NOTAS_ENT_PL on CPL_NOTAS_ENT_PL.NEN_ID = CPL_INV_REL_NE_OC.NEN_ID
+            INNER JOIN CPL_NOTAS_ENT_PL_DET on CPL_NOTAS_ENT_PL_DET.NEN_ID = CPL_INV_REL_NE_OC.NEN_ID AND CPL_NOTAS_ENT_PL_DET.NEDN_NUM_RENGLON = cpl_inv_rel_ne_oc.rno_renglon_ne
+			INNER JOIN CPL_ORDENES_COMPRA on CPL_ORDENES_COMPRA.OCN_ID = CPL_INV_REL_NE_OC.OCN_ID
+            INNER JOIN CPL_TIPOS_PLACAS on CPL_TIPOS_PLACAS.TPN_ID = CPL_INV_PL_DET.TPN_ID
+            INNER JOIN CPL_PROVEEDORES on CPL_PROVEEDORES.PROVN_ID = CPL_ORDENES_COMPRA.PROVN_ID
+            INNER JOIN CPL_TIPO_EST_PL ON CPL_TIPO_EST_PL.TEPN_ID = CPL_INV_PL_DET.epn_id
+		WHERE CPL_INV_REL_NE_OC.RNO_ENTIDAD = p_RNO_ENTIDAD
+		AND cpl_inv_pl_det.INVDC_NUMEROPLACA = p_INVDC_NUMEROPLACA
+        order by cpl_inv_pl_det.invdc_numeroplaca;
+
+   END consulta_placa_infogral;   
+
+
+   PROCEDURE consulta_placa_cambioestatus (p_INVDN_ENTIDAD in NUMBER, 
+									 p_INVDC_NUMEROPLACA IN VARCHAR2,
+								     p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+		OPEN p_cursor_out FOR
+		SELECT  cpl_inv_pl_det.invdc_numeroplaca as NumeroPlaca,
+                cpl_inv_pl_det_hist_c.idhf_fecha_op as FechaOperacion,
+                'Cambio Estatus' as OperacionRealizada,
+                 ea.tepc_estatus as EstatusAnterior,
+                 en.tepc_estatus as EstatusNuevo
+		FROM CPL_INV_PL_DET  
+        INNER JOIN CPL_INV_PL_DET_HIST_C ON cpl_inv_pl_det_hist_c.invdn_id = CPL_INV_PL_DET.invdn_id
+        INNER JOIN CPL_TIPO_EST_PL EA ON ea.TEPN_ID = cpl_inv_pl_det_hist_c.epn_idanterior
+        INNER JOIN CPL_TIPO_EST_PL EN ON EN.TEPN_ID = cpl_inv_pl_det_hist_c.epn_idnuevo
+		WHERE CPL_INV_PL_DET.INVDN_ENTIDAD = p_INVDN_ENTIDAD
+		AND cpl_inv_pl_det.INVDC_NUMEROPLACA = p_INVDC_NUMEROPLACA
+        order by cpl_inv_pl_det_hist_c.idhf_fecha_op;
+
+   END consulta_placa_cambioestatus;
+
+   PROCEDURE consulta_placa_transferencias (p_INVDN_ENTIDAD in NUMBER, 
+									 p_INVDC_NUMEROPLACA IN VARCHAR2,
+								     p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+		OPEN p_cursor_out FOR
+		SELECT cpl_trans_pl.trnn_folio as FolioTransferencia,
+               cpl_trans_pl.trnf_fecha as FechaTransferencia,
+               cpl_trans_pl_dp.tdpc_nombre as Nombre,
+               cpl_trans_pl_dp.tdpc_apellido as Apellido,
+               cpl_tipos_ids.tic_tipoid as TipoID,
+               cpl_trans_pl_dp.tdpn_numeroid as NumeroID, 
+               cpl_trans_pl_transporte.ttc_marcavehiculo as MarcaVehiculo,
+               cpl_trans_pl_transporte.ttc_modelovehiculo as ModeloVehiculo,
+               cpl_trans_pl_transporte.ttc_numeroeconomico as NumeroEconomico,
+               cpl_trans_pl_transporte.ttc_placasvehiculo as PlacaVehiculo,
+               do.dbc_nombre_del AS DelegacionOrigen,
+               dd.dbc_nombre_del as DelegacionDestino,
+               cpl_test_transf.etc_estatus_trans AS EstatusTransferencia
+		FROM CPL_INV_PL_DET          
+        INNER JOIN CPL_TRANS_PL_DET_PLACAS on CPL_TRANS_PL_DET_PLACAS.DPC_NUMEROPLACA = CPL_INV_PL_DET.INVDC_NUMEROPLACA
+        INNER JOIN CPL_TRANS_PL ON CPL_TRANS_PL.trnn_id = CPL_TRANS_PL_DET_PLACAS.trnn_id
+        INNER JOIN CPL_TEST_TRANSF ON CPL_TEST_TRANSF.ETN_ID = CPL_TRANS_PL.ETN_ID
+        INNER JOIN CPL_DELEGACIONES_BANCOS DO ON DO.DBN_ID = CPL_TRANS_PL.DBN_ID_ORIGEN
+        INNER JOIN CPL_DELEGACIONES_BANCOS DD ON DD.DBN_ID = CPL_TRANS_PL.DBN_ID_DESTINO
+        LEFT JOIN CPL_TRANS_PL_DP ON CPL_TRANS_PL_DP.trnn_id = CPL_TRANS_PL_DET_PLACAS.trnn_id AND cpl_trans_pl_dp.tdpc_tipo = 'Recibe'
+        LEFT JOIN CPL_TIPOS_IDS ON CPL_TIPOS_IDS.TIN_ID = CPL_TRANS_PL_DP.TIN_ID
+        LEFT JOIN CPL_TRANS_PL_TRANSPORTE ON CPL_TRANS_PL_TRANSPORTE.trnn_id = CPL_TRANS_PL_DET_PLACAS.trnn_id  AND cpl_trans_pl_transporte.ttc_tipo = 'Recibe'
+		WHERE CPL_INV_PL_DET.INVDN_ENTIDAD = p_INVDN_ENTIDAD
+		AND cpl_inv_pl_det.INVDC_NUMEROPLACA = p_INVDC_NUMEROPLACA
+        order by cpl_trans_pl.trnf_fecha;
+
+   END consulta_placa_transferencias;
+
+
+
+END spcpl_consultaplacas;

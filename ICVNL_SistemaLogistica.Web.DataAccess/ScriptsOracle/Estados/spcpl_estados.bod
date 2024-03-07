@@ -1,0 +1,107 @@
+create or replace PACKAGE BODY spcpl_estados
+IS
+
+   c_version CONSTANT   NUMBER := 24.0501;
+   c_modulo  CONSTANT   NUMBER := 0;
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.2911 DEVTI   Elaboración del paquete.
+   -- 24.0501 DEVTI   Se agrega filtro de estatus en el consulta_listado 
+   --------------------------------------------------------------------------
+   ----
+   -- Tipos globales
+   ----
+   ----
+   -- Variables Globales
+   ----
+   -- Variables para manejo de errores.
+   g_mensaje_error      VARCHAR2(4000);
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+      RETURN c_version;
+   END version;
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+
+   PROCEDURE consulta_listado(p_esn_entidad NUMBER,
+						      p_ESN_ACTIVO NUMBER,
+						      p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT ESN_BORRADO
+			,ESC_NOMBRE
+			,ESN_ACTIVO
+			,ESN_ENTIDAD
+			,ESN_ID
+      FROM CPL_ESTADOS
+	  where ESN_ENTIDAD = p_esn_entidad
+	  and (p_ESN_ACTIVO is null or ESN_ACTIVO = p_ESN_ACTIVO);
+
+   END consulta_listado;      
+
+   PROCEDURE consulta_estado(p_ESN_ID NUMBER,
+							 p_esn_entidad NUMBER,
+							 p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT ESN_BORRADO
+			,ESC_NOMBRE
+			,ESN_ACTIVO
+			,ESN_ENTIDAD
+			,ESN_ID
+      FROM CPL_ESTADOS
+	  where ESN_ENTIDAD = p_esn_entidad
+	  and ESN_ID = p_ESN_ID;
+
+   END consulta_estado;   
+
+
+ PROCEDURE consulta_estados_combo(p_esn_entidad VARCHAR2,
+								 p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT ESN_ID as Valor
+			 ,ESC_NOMBRE as Texto			  
+      FROM CPL_ESTADOS
+	  where ESN_ENTIDAD = p_esn_entidad 
+	  and ESN_ACTIVO = 1
+	  and ESN_BORRADO = 0;
+
+   END consulta_estados_combo;    
+
+   PROCEDURE existe_estado(p_ESC_NOMBRE VARCHAR2,
+                                    p_esn_entidad numeric,
+                                    p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT ESN_ID 
+			,ESC_NOMBRE		  
+      FROM CPL_ESTADOS
+	  where ESN_ENTIDAD = p_esn_entidad  
+	  and ESC_NOMBRE = p_ESC_NOMBRE;
+
+   END existe_estado; 
+
+END spcpl_estados;

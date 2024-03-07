@@ -1,0 +1,238 @@
+﻿@model ICVNL_SistemaLogistica.Web.ViewModels.Listado_SolicitudesPlacasRecepcion_RecibirPlacasVM
+
+@{
+    ViewBag.Title = "Recibir Placas | Administración de Recepción de las Solicitudes de Placas de Proveedores";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/css/datatables.min.css" rel="stylesheet" />
+<link href="~/Content/css/datatables.bootstrap.css" rel="stylesheet" />
+<style>
+    .FiltroMasterClass {
+        display: inline-table !important;
+        border-bottom: 1px solid #7678B8 !important
+    }
+</style>
+
+
+@using (@Html.BeginForm("RecibirPlacas", "SolicitudesPlacasRecepcion", FormMethod.Post, new { id = "myForm" }))
+{
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="row">
+                <div class="col-md-10">
+                    <h1 class="page-title">
+                        Recibir Placas | Administración de Recepción de las Solicitudes de Placas de Proveedores
+                        <small>Sistema de Logística de Control de Placas&nbsp;</small>
+                    </h1>
+                </div>
+            </div>
+            <div class="row widget-row">
+                <div class="col-md-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Listado Cajas Leídas
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="table-toolbar">
+
+                                @Html.AntiForgeryToken()
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn green margin-right-10" onclick="RealizarRecepcionCajas();">
+                                            Registrar Recepción de Cajas
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                        <button type="button" class="btn primary margin-right-10" onclick="AbrirModalAgregarCaja();">
+                                            Agregar Nueva Caja
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                        <button type="button" class="btn default grey margin-right-10" onclick="location.href='Details?IdRecepcion=@Model.IdRecepcion'">
+                                            Regresar
+                                            <i class="fa fa-chevron-circle-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-12 table-responsive">
+                                        <table class="table table-bordered mb-0 table-sm " id="tablaRegistros">
+                                            <thead>
+                                                <tr class="bg-light headerCustom">
+                                                    <th>
+                                                        Fecha y Hora Registro
+                                                    </th>
+                                                    <th>
+                                                        Nombre del Proveedor
+                                                    </th>
+                                                    <th>
+                                                        Número de Caja
+                                                    </th>
+                                                    <th>
+                                                        Destino (Delegación o Almacén)
+                                                    </th>
+                                                    <th>
+                                                        Tipo Estructura
+                                                    </th>
+                                                    <th>
+                                                        Rangos
+                                                    </th>
+                                                    <th>
+                                                        Cantidad Láminas
+                                                    </th>
+                                                    <th style="width: 150px"><div style="text-align: center;">Acciones</div></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="listadoDetalleCajasRecibidas">
+                                                @Html.Partial("PartialDetalleCajasRecibidas", Model.ListadoCajasRecibidas)
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="modalAgregarCaja" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="tituloModalAgregar">Agregar Caja</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body portlet-body form form-horizontal">
+                    <div class="form-body" style="overflow-y: auto;">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.Detalle_SolicitudesPlacasRecepcion_RecibirPlacasVM.FechaHoraRegistro, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Detalle_SolicitudesPlacasRecepcion_RecibirPlacasVM.FechaHoraRegistro, new { htmlAttributes = new { @class = "form-control", @id = "txtRecibirPlacas_FechaHoraRegistro", @autocomplete = "off", @disabled = "disabled" } })
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.LabelFor(model => model.Detalle_SolicitudesPlacasRecepcion_RecibirPlacasVM.IdProveedor, htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(x => Model.Detalle_SolicitudesPlacasRecepcion_RecibirPlacasVM.IdProveedor, new SelectList(Model.ListadoProveedoresDDL, "Valor", "Texto", Model.Detalle_SolicitudesPlacasRecepcion_RecibirPlacasVM.IdProveedor),
+                                                   htmlAttributes: new { @class = "form-control validaCampos", @id = "txtRecibirPlacas_IdProveedor", @disabled = "disabled" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.Detalle_SolicitudesPlacasRecepcion_RecibirPlacasVM.IdDelegacionBanco, htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(x => Model.Detalle_SolicitudesPlacasRecepcion_RecibirPlacasVM.IdDelegacionBanco, new SelectList(Model.ListadoDelegacionesDDL, "Valor", "Texto", Model.Detalle_SolicitudesPlacasRecepcion_RecibirPlacasVM.IdDelegacionBanco),
+                                                   htmlAttributes: new { @class = "form-control validaCampos", @id = "txtRecibirPlacas_IdDelegacionBanco", @disabled = "disabled" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.Detalle_SolicitudesPlacasRecepcion_RecibirPlacasVM.NumeroCaja, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Detalle_SolicitudesPlacasRecepcion_RecibirPlacasVM.NumeroCaja, new { htmlAttributes = new { @class = "form-control validaCamposText", @id = "txtRecibirPlacas_NumeroCaja", @autocomplete = "off" } })
+                                </div>
+
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.Detalle_SolicitudesPlacasRecepcion_RecibirPlacasVM.IdTipoPlaca, htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(x => Model.Detalle_SolicitudesPlacasRecepcion_RecibirPlacasVM.IdTipoPlaca, new SelectList(Model.ListadoTiposPlacasDDL, "Valor", "Texto", Model.Detalle_SolicitudesPlacasRecepcion_RecibirPlacasVM.IdTipoPlaca),
+                                                   htmlAttributes: new { @class = "form-control validaCampos", @id = "txtRecibirPlacas_IdTipoPlaca" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.Detalle_SolicitudesPlacasRecepcion_RecibirPlacasVM.RangoInicial, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Detalle_SolicitudesPlacasRecepcion_RecibirPlacasVM.RangoInicial, new { htmlAttributes = new { @class = "form-control validaCamposText", @id = "txtRecibirPlacas_RangoInicial", @autocomplete = "off" } })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.Detalle_SolicitudesPlacasRecepcion_RecibirPlacasVM.RangoFinal, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Detalle_SolicitudesPlacasRecepcion_RecibirPlacasVM.RangoFinal, new { htmlAttributes = new { @class = "form-control validaCamposText", @id = "txtRecibirPlacas_RangoFinal", @autocomplete = "off" } })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.Detalle_SolicitudesPlacasRecepcion_RecibirPlacasVM.CantidadLaminas, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Detalle_SolicitudesPlacasRecepcion_RecibirPlacasVM.CantidadLaminas, new { htmlAttributes = new { @class = "form-control validaCamposText", @id = "txtRecibirPlacas_CantidadLaminas", @autocomplete = "off" } })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row">
+                                <br />
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12 table-responsive">
+                                    <table class="table table-bordered mb-0 table-sm " id="tablaRegistros1">
+                                        <thead>
+                                            <tr class="bg-light headerCustom">
+                                                <th>
+                                                    Fecha y Hora Registro
+                                                </th>
+                                                <th>
+                                                    Nombre del Proveedor
+                                                </th>
+                                                <th>
+                                                    Número de Caja
+                                                </th>
+                                                <th>
+                                                    Destino (Delegación o Almacén)
+                                                </th>
+                                                <th>
+                                                    Tipo Estructura
+                                                </th>
+                                                <th>
+                                                    Rango Inicial
+                                                </th>
+                                                <th>
+                                                    Rango Final
+                                                </th>
+                                                <th>
+                                                    Cantidad Láminas
+                                                </th>
+                                                <th style="width: 150px"><div style="text-align: center;">Acciones</div></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="listadoPartialDetalleRecibirCaja">
+                                            @Html.Partial("PartialDetalleRecibirCaja", Model.Listado)
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn green margin-right-10" onclick="ValidaGuardarCaja();">
+                        Agregar Caja
+                        <i class="fa fa-save"></i>
+                    </button>
+                    <button type="button" class="btn dark btn-outline" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+<link href="~/Content/css/GridView.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/css/Paginado.css" rel="stylesheet" type="text/css" />
+
+@section scripts
+{
+    <script src="~/Content/js/datatables.js"></script>
+    <script src="~/Content/js/datatables.min.js"></script>
+    <script src="~/Content/js/datatables.bootstrap.js"></script>
+    <script src="~/Content/js/funciones-alertas.js"></script>
+    <script src="~/Scripts/Solicitudes/RecibirCajas.js"></script>
+    <script>
+        $(document).ready(function () {
+            setTimeout(function () { CargaInformacion(); }, 300);
+        });
+    </script>
+}

@@ -1,0 +1,443 @@
+﻿@model ICVNL_SistemaLogistica.Web.ViewModels.Detalle_ConsultaInformacionPlacasVM
+
+@{
+    ViewBag.Title = "Consulta de Información de una placa";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/css/estilosAlerta.css" rel="stylesheet" />
+@using (Html.BeginForm("Details", "ConsultaPlacas", FormMethod.Post, new { id = "myForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="row">
+                <div class="col-md-10">
+                    <h1 class="page-title">
+                        Consulta de Información de una placa
+                        <small>Sistema de Logística de Control de Placas&nbsp;</small>
+                    </h1>
+                </div>
+            </div>
+            <div class="row widget-row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Encabezado
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-actions ">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12"> 
+                                        <button type="button" class="btn default grey" onclick="location.href='@Url.Action("Index", "ConsultaPlacas")';">
+                                            Regresar
+                                            <i class="fa fa-chevron-circle-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.NumeroPlaca, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.NumeroPlaca, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.TipoPlaca, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.TipoPlaca, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.CostoPlaca, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.CostoPlaca, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.FechaIngresaNotaEntradaSistema, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.FechaIngresaNotaEntradaSistema, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.NumeroNotaEntrada, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.NumeroNotaEntrada, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.FechaNotaEntrada, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.FechaNotaEntrada, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.RenglonNotaEntrada, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.RenglonNotaEntrada, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.FechaOrdenCompra, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.FechaOrdenCompra, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.NumeroOrdenCompra, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.NumeroOrdenCompra, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.RenglonOrdenCompra, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.RenglonOrdenCompra, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.ProveedorOrdenCompra, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.ProveedorOrdenCompra, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.Entidad, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.Entidad, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.AlmacenRecibioPlaca, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.AlmacenRecibioPlaca, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.CuentaContableRecepcionPlaca, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.CuentaContableRecepcionPlaca, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.CentroCostosAlmacenOrdenCompra, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.CentroCostosAlmacenOrdenCompra, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.EstatusActualPlaca, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.EstatusActualPlaca, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.PlacaContabilizada, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.PlacaContabilizada, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.LabelFor(model => model.NumeroPolizaGRP_Infofin, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.NumeroPolizaGRP_Infofin, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @disabled = "disabled" } })
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <br />
+                                            <button type="button" class="btn dark margin-right-10" onclick="AbrirModalCambiosEstatus();">
+                                                Listado Cambio de Estatus Placas
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Listado 1
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <table class="table table-bordered mb-0 table-sm dataTable" id="tablaRegistrosListado">
+                                            <thead>
+                                                <tr class="bg-light headerCustom">
+                                                    <th>
+                                                        Folio de la Transferencia
+                                                    </th>
+                                                    <th>
+                                                        Fecha Hora Transferencia
+                                                    </th>
+                                                    <th>
+                                                        Nombre
+                                                    </th>
+                                                    <th>
+                                                        Apellido
+                                                    </th>
+                                                    <th>
+                                                        Tipo de Id
+                                                    </th>
+                                                    <th>
+                                                        Numero de Id
+                                                    </th>
+                                                    <th>
+                                                        Marca del Vehículo
+                                                    </th>
+                                                    <th>
+                                                        Modelo del Vehículo
+                                                    </th>
+                                                    <th>
+                                                        Placas del Vehículo
+                                                    </th>
+                                                    <th>
+                                                        Número Económico
+                                                    </th>
+                                                    <th>
+                                                        Delegación Origen
+                                                    </th>
+                                                    <th>
+                                                        Delegación Destino
+                                                    </th>
+                                                    <th>
+                                                        Estatus de la Transferencia
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="listadoPartialDetalleSolicitud">
+                                                @if (Model.TransferenciasPlacas != null && Model.TransferenciasPlacas.Count > 0)
+                                                {
+                                                    foreach (var item in Model.TransferenciasPlacas)
+                                                    {
+                                                        int index = 0;
+                                                        <tr>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.FolioTransferencia)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.FechaHoraRegistro)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.Nombre)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.Apellido)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.TipoIDs)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.NumeroID)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.MarcaVehiculo)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.ModeloVehiculo)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.PlacasVehiculo)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.NumeroEconomico)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.DelegacionOrigen)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.DelegacionDestino)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.EstatusTransferencia)
+                                                            </td>
+                                                        </tr>
+                                                        index++;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td colspan="3">
+                                                            @Html.Label("Sin Información")
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modalCambiosEstatus" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="tituloModalAgregar">Cambios de Estatus de las Placas </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body portlet-body form form-horizontal">
+                    <div class="form-body" style="overflow-y: auto;">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <table class="table table-bordered mb-0 table-sm dataTable" id="tablaRegistrosListadoEstatusPlacas">
+                                    <thead>
+                                        <tr class="bg-light headerCustom">
+                                            <th>
+                                                Placa
+                                            </th>
+                                            <th>
+                                                Fecha y hora del cambio de estatus
+                                            </th>
+                                            <th>
+                                                Operación realizada
+                                            </th>
+                                            <th>
+                                                Estatus Anterior
+                                            </th>
+                                            <th>
+                                                Nuevo Estatus
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="listadoPartialDetalleSolicitud">
+                                        @if (Model.CambiosEstatusPlacas != null && Model.CambiosEstatusPlacas.Count > 0)
+                                        {
+                                            foreach (var item in Model.CambiosEstatusPlacas)
+                                            {
+                                                int index = 0;
+                                                <tr>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.NumeroPlaca)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.FechaHoraCambioEstatus)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.OperacionRealizada)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.EstatusAnterior)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.EstatusNuevo)
+                                                    </td> 
+                                                </tr>
+                                                index++;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="5">
+                                                    @Html.Label("Sin Información")
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>                                 
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="modal-footer"> 
+                        <button type="button" class="btn dark btn-outline" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts
+{
+    <script src="~/Content/js/datatables.js"></script>
+    <script src="~/Content/js/datatables.min.js"></script>
+    <script src="~/Content/js/datatables.bootstrap.js"></script>
+    <script src="~/Content/js/funciones-alertas.js"></script> 
+
+    <script>
+
+
+        function AbrirModalCambiosEstatus() {
+            $('#modalCambiosEstatus').modal('show');
+        }
+
+        $(document).ready(function () {
+            const isMobile = {
+                Android: function () {
+                    return navigator.userAgent.match(/Android/i);
+                },
+                BlackBerry: function () {
+                    return navigator.userAgent.match(/BlackBerry/i);
+                },
+                iOS: function () {
+                    return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+                },
+                Opera: function () {
+                    return navigator.userAgent.match(/Opera Mini/i);
+                },
+                Windows: function () {
+                    return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+                },
+                any: function () {
+                    return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+                }
+            };
+            $('#tablaRegistrosListadoEstatusPlacas').DataTable({
+                lengthChange: false,
+                paging: true,
+                searching: false,
+                ordering: false,
+                responsive: isMobile.any() ? true : false,
+                bInfo: false,
+                language: {
+                    emptyTable: "Sin información.",
+                    info: "Registros del <b>_START_</b> al <b>_END_</b> de <b>_TOTAL_</b> por página",
+                    infoEmpty: "Sin información",
+                    infoFiltered: "(filtered1 de _MAX_ total registros)",
+                    lengthMenu: "_MENU_ registros por p&#225;gina",
+                    search: "Buscar:",
+                    zeroRecords: "Sin coincidencias encontradas."
+                },
+            });
+
+            $('#tablaRegistrosListado').DataTable({
+                lengthChange: false,
+                paging: true,
+                searching: false,
+                ordering: false,
+                responsive: isMobile.any() ? true : false,
+                bInfo: false,
+                language: {
+                    emptyTable: "Sin información.",
+                    info: "Registros del <b>_START_</b> al <b>_END_</b> de <b>_TOTAL_</b> por página",
+                    infoEmpty: "Sin información",
+                    infoFiltered: "(filtered1 de _MAX_ total registros)",
+                    lengthMenu: "_MENU_ registros por p&#225;gina",
+                    search: "Buscar:",
+                    zeroRecords: "Sin coincidencias encontradas."
+                },
+            });
+        });
+
+    </script>
+
+}

@@ -1,0 +1,278 @@
+create or replace PACKAGE BODY spcpl_inventarioplacas_op
+IS
+   c_version CONSTANT   NUMBER := 24.2201;
+   c_modulo  CONSTANT   NUMBER := 0;
+
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 24.1001 DEVTI   Elaboración de Paquete
+   -- 24.2201 DEVTI   SE AGREGA SP PARA LA INSERCION DE DATOS DE LAS PLACAS ENTREGADAS/VENDIDAS
+   --------------------------------------------------------------------------
+
+   ----
+   -- Variables Globales  
+   ----
+   -- Variables para manejo de errores. 
+   ----
+   -- Excepciones globales
+   ----
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+   RETURN c_version;
+   END VERSION;
+
+
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+	PROCEDURE agregar_inventario_enc(p_INVN_ENTIDAD in NUMBER
+									,p_INVF_FECHA in DATE
+									,p_DBN_ID in NUMBER
+									,p_INVN_ID out NUMBER
+									,p_INVN_BORRADO in NUMBER)
+	IS
+	BEGIN   
+
+		select  nvl(max(INVN_ID),0) + 1  into p_INVN_ID from CPL_INV_PL;
+
+		insert into CPL_INV_PL(INVN_ENTIDAD
+								,INVF_FECHA
+								,DBN_ID
+								,INVN_ID
+								,INVN_BORRADO) 
+						values (p_INVN_ENTIDAD
+								,p_INVF_FECHA
+								,p_DBN_ID
+								,p_INVN_ID
+								,p_INVN_BORRADO);
+
+	END agregar_inventario_enc;
+
+
+	PROCEDURE modifica_dateinv_enc(p_INVF_FECHA in DATE
+                                   ,p_INVN_ID in NUMBER)
+	IS
+	BEGIN   
+
+		update CPL_INV_PL 
+		set	INVF_FECHA = p_INVF_FECHA
+		where INVN_ID = p_INVN_ID;
+
+	END modifica_dateinv_enc;
+
+	PROCEDURE agregar_inventario_det(p_INVDN_ID OUT NUMBER
+									,p_INVDN_ENTIDAD in NUMBER
+									,p_NEN_ID in NUMBER
+									,p_INVDN_PLACA_CONT in NUMBER
+									,p_INVDN_EXISTENCIA in NUMBER
+									,p_TPN_ID in NUMBER
+									,p_INVDN_BORRADO in NUMBER
+									,p_INVDC_NUMEROPLACA in VARCHAR2
+									,p_INVDC_NUM_POL_INFOFIN in VARCHAR2
+									,p_INVDC_SERIE in VARCHAR2
+									,p_INVDN_COSTOPLACA in NUMBER
+									,p_INVN_ID in NUMBER
+									,p_EPN_ID in NUMBER)
+	IS
+	BEGIN   
+
+		select  nvl(max(INVDN_ID),0) + 1  into p_INVDN_ID from CPL_INV_PL_DET;
+
+		insert into CPL_INV_PL_DET(INVDN_ID
+								,INVDN_ENTIDAD
+								,NEN_ID
+								,INVDN_PLACA_CONT
+								,INVDN_EXISTENCIA
+								,TPN_ID
+								,INVDN_BORRADO
+								,INVDC_NUMEROPLACA
+								,INVDC_NUM_POL_INFOFIN
+								,INVDC_SERIE
+								,INVDN_COSTOPLACA
+								,INVN_ID
+								,EPN_ID ) 
+						values (p_INVDN_ID
+								,p_INVDN_ENTIDAD
+								,p_NEN_ID
+								,p_INVDN_PLACA_CONT
+								,p_INVDN_EXISTENCIA
+								,p_TPN_ID
+								,p_INVDN_BORRADO
+								,p_INVDC_NUMEROPLACA
+								,p_INVDC_NUM_POL_INFOFIN
+								,p_INVDC_SERIE
+								,p_INVDN_COSTOPLACA
+								,p_INVN_ID
+								,p_EPN_ID);
+                                
+        
+	END agregar_inventario_det;
+	
+	PROCEDURE agregar_inventario_rel_ne_oc(p_RNO_ID out NUMBER
+											,p_RNO_RENGLON_NE in NUMBER
+											,p_OCN_ID in NUMBER
+											,p_RNO_RENGLON_OC in NUMBER
+											,p_RNO_ENTIDAD in NUMBER
+											,p_NEN_ID in NUMBER
+											,p_INVDN_ID in NUMBER)
+	IS
+	BEGIN   
+
+		select  nvl(max(RNO_ID),0) + 1  into p_RNO_ID from CPL_INV_REL_NE_OC;
+
+		insert into CPL_INV_REL_NE_OC(INVDN_ID
+									,RNO_RENGLON_NE
+									,OCN_ID
+									,RNO_RENGLON_OC
+									,RNO_ENTIDAD
+									,NEN_ID
+									,RNO_ID) 
+							values (p_INVDN_ID
+									,p_RNO_RENGLON_NE
+									,p_OCN_ID
+									,p_RNO_RENGLON_OC
+									,p_RNO_ENTIDAD
+									,p_NEN_ID
+									,p_RNO_ID);
+                                
+        
+	END agregar_inventario_rel_ne_oc;
+
+	PROCEDURE cambia_estatus_placa(p_INVDN_ID in NUMBER
+                                    ,p_IDHN_ID out NUMBER
+                                    ,p_EPN_IDNUEVO in NUMBER
+                                    ,p_IDHN_ENTIDAD in NUMBER 
+                                    ,p_EPN_IDANTERIOR in NUMBER
+                                    ,p_INVDC_NUMEROPLACA in varchar2)
+	IS
+	BEGIN   
+	    select  nvl(max(IDHN_ID),0) + 1  into p_IDHN_ID from CPL_INV_PL_DET_HIST_C;
+
+		INSERT INTO CPL_INV_PL_DET_HIST_C(INVDN_ID,IDHN_ID,EPN_IDNUEVO,IDHN_ENTIDAD,IDHF_FECHA_OP,EPN_IDANTERIOR,IDHN_BORRADO)
+		values (p_INVDN_ID,p_IDHN_ID,p_EPN_IDNUEVO,p_IDHN_ENTIDAD,sysdate,p_EPN_IDANTERIOR,0);
+
+		UPDATE CPL_INV_PL_DET SET EPN_ID = p_EPN_IDNUEVO
+		WHERE INVDN_ENTIDAD = p_IDHN_ENTIDAD
+		AND INVDC_NUMEROPLACA = p_INVDC_NUMEROPLACA;		
+
+
+	END cambia_estatus_placa;
+
+	PROCEDURE cambia_delegacion_placa(p_INVN_ENTIDAD in NUMBER
+									 ,p_INVDC_NUMEROPLACA in VARCHAR2
+								     ,p_INVN_ID in NUMBER)
+	IS
+	BEGIN   
+
+		UPDATE CPL_INV_PL_DET SET INVN_ID = p_INVN_ID
+		WHERE INVDN_ENTIDAD = p_INVN_ENTIDAD
+		AND INVDC_NUMEROPLACA = p_INVDC_NUMEROPLACA;		
+
+	END cambia_delegacion_placa;
+    
+    
+    PROCEDURE agrega_inv_placa_ent_ven(p_IPEVN_ID out NUMBER
+                                       ,p_DBN_ID in NUMBER
+                                        ,p_INVDN_ID in NUMBER
+                                        ,p_IPEVC_USUARIO in VARCHAR2
+                                        ,p_IPEVN_ENTIDAD in NUMBER
+                                        ,p_IPEVF_VENDIDO in DATE
+                                        ,p_IPEVC_REF_INFOFIN in VARCHAR2
+                                        ,p_IPEVN_PRECIOVENTA in NUMBER
+                                        ,p_IPEVC_TIPO in VARCHAR2
+                                        ,p_IPEVF_ENTREGADO in DATE)
+	IS
+	BEGIN   
+    
+        select  nvl(max(IPEVN_ID),0) + 1  into p_IPEVN_ID from CPL_INV_PL_ENT_VEN;
+        
+        insert into CPL_INV_PL_ENT_VEN(IPEVN_ID
+                                        ,INVDN_ID
+										,DBN_ID
+                                        ,IPEVC_USUARIO
+                                        ,IPEVN_ENTIDAD
+                                        ,IPEVF_VENDIDO
+                                        ,IPEVC_REF_INFOFIN
+                                        ,IPEVN_PRECIOVENTA
+                                        ,IPEVC_TIPO
+                                        ,IPEVF_ENTREGADO) 
+                                values (p_IPEVN_ID
+										,p_INVDN_ID
+										,p_DBN_ID
+                                        ,p_IPEVC_USUARIO
+                                        ,p_IPEVN_ENTIDAD
+                                        ,p_IPEVF_VENDIDO
+                                        ,p_IPEVC_REF_INFOFIN
+                                        ,p_IPEVN_PRECIOVENTA
+                                        ,p_IPEVC_TIPO
+                                        ,p_IPEVF_ENTREGADO);		
+
+	END agrega_inv_placa_ent_ven;
+
+	PROCEDURE agregar_placa_noinventario(p_PVNIN_ID OUT NUMBER
+                                        ,p_PVNIN_ENTIDAD in NUMBER
+                                        ,p_PVNIN_NOTIFICACION_ENV in NUMBER
+                                        ,p_PVNIC_DELEGACIONVENTA in VARCHAR2
+                                        ,p_DBN_ID in NUMBER 
+                                        ,p_PVNIC_NUMEROPLACA in VARCHAR2
+                                        ,p_PVNIF_FECHAPAGO in DATE)
+	IS
+	BEGIN   
+
+		select  nvl(max(PVNIN_ID),0) + 1  into p_PVNIN_ID from CPL_PLACAS_VENDIDAS_NO_INV;
+
+        insert into CPL_PLACAS_VENDIDAS_NO_INV(PVNIN_ID
+                                                ,PVNIN_ENTIDAD
+                                                ,PVNIC_DELEGACIONVENTA
+                                                ,DBN_ID
+                                                ,PVNIN_NOTIFICACION_ENV
+                                                ,PVNIC_NUMEROPLACA
+                                                ,PVNIF_FECHAPAGO) 
+                                        values (p_PVNIN_ID
+                                                ,p_PVNIN_ENTIDAD
+                                                ,p_PVNIC_DELEGACIONVENTA
+                                                ,p_DBN_ID
+                                                ,p_PVNIN_NOTIFICACION_ENV
+                                                ,p_PVNIC_NUMEROPLACA
+                                                ,p_PVNIF_FECHAPAGO);
+
+	END agregar_placa_noinventario;
+    
+    PROCEDURE actualiza_pl_noinv_notifenvio(p_PVNIN_ID IN NUMBER
+                                          ,p_PVNIC_NUMEROPLACA in VARCHAR2
+                                          ,p_PVNIN_ENTIDAD in NUMBER)
+	IS
+	BEGIN               
+            update CPL_PLACAS_VENDIDAS_NO_INV 
+            set PVNIN_NOTIFICACION_ENV = 1
+            where PVNIN_ID = p_PVNIN_ID
+            AND PVNIN_ENTIDAD = p_PVNIN_ENTIDAD;
+            
+	END actualiza_pl_noinv_notifenvio;
+	
+	PROCEDURE actualiza_placa_a_contab(p_INVN_ENTIDAD in NUMBER
+									  ,p_INVDC_NUMEROPLACA in VARCHAR2)
+	IS
+	BEGIN   
+
+		UPDATE CPL_INV_PL_DET SET INVDN_PLACA_CONT = 1
+		WHERE INVDN_ENTIDAD = p_INVN_ENTIDAD
+		AND INVDC_NUMEROPLACA = p_INVDC_NUMEROPLACA;		
+
+	END actualiza_placa_a_contab;
+    
+
+END spcpl_inventarioplacas_op;

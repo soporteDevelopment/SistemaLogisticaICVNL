@@ -1,0 +1,93 @@
+﻿@model ICVNL_SistemaLogistica.Web.ViewModels.Detalle_RecepcionPlacas_IndividualesVM
+
+@{
+    ViewBag.Title = "Administración de Recepcion de Placas entre Delegaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/css/estilosAlerta.css" rel="stylesheet" />
+@using (Html.BeginForm("RecibirPlacasIndividuales", "RecepcionPlacas", FormMethod.Post, new { id = "myForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="row">
+                <div class="col-md-10">
+                    <h1 class="page-title">
+                         Recibir Placas Individuales del Tipo de Placa Seleccionado
+                        <small>Sistema de Logística de Control de Placas&nbsp;</small>
+                    </h1>
+                </div>
+            </div>
+            <div class="row widget-row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="portlet box blue-hoki">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-edit"></i>Placas individuales a recibir del Tipo de Placa seleccionado
+                            </div>
+                            <div class="actions">
+                                <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form form-horizontal">
+                            <div class="form-actions ">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        @if (HttpContext.Current.Session["UserSC"] != null &&
+                                        ((ICVNL_SistemaLogistica.Web.Entities.Usuarios)HttpContext.Current.Session["UserSC"]).UsuariosPermisos.Pantallas_RecepcionPlacasEntreDelegacionesBancos.RecibirPlacasIndividualesRegistrar)
+                                        {
+                                            <button type="button" onclick="RecibirTransferenciaPlacasIndividual()" class="btn dark margin-right-10">
+                                                Guardar
+                                                <i class="fa fa-save"></i>
+                                            </button>
+                                        }
+
+                                        <button type="button" class="btn default grey" onclick="location.href='Details?IdTransferencia=@Model.IdTransferencia';">
+                                            Regresar
+                                            <i class="fa fa-chevron-circle-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <table class="table table-bordered mb-0 table-sm dataTable" id="tablaRegistrosListado1">
+                                            <thead>
+                                                <tr class="bg-light headerCustom">
+                                                    <th>Tipo Placa</th>
+                                                    <th>Número de Placa</th>
+                                                    <th>Estatus de la Placa</th>
+                                                    <th>Disponible</th>
+                                                    <th>Obsoleta</th>
+                                                    <th>Rechazada</th>
+                                                    <th>Perdida</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="listadoPartialDetalleSolicitud">
+                                                @Html.Partial("PartialRecibirPlacasIndividuales", Model.Listado)
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row"><br /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+}
+
+@section scripts
+{
+    <script src="~/Content/js/datatables.js"></script>
+    <script src="~/Content/js/datatables.min.js"></script>
+    <script src="~/Content/js/datatables.bootstrap.js"></script>
+    <script src="~/Content/js/funciones-alertas.js"></script>
+    <script src="~/Scripts/Recepcion/Recepcion.js"></script>
+
+}

@@ -1,0 +1,22 @@
+create or replace PACKAGE spcpl_tipos_ids_op
+IS
+   FUNCTION version
+   RETURN NUMBER;
+
+	PROCEDURE agregar(p_TIN_BORRADO in NUMBER
+					,p_TIN_ID in NUMBER
+					,p_TIC_TIPOID in varchar2
+					,p_TIN_ACTIVO in NUMBER
+					,p_TIN_ENTIDAD in NUMBER);
+
+
+	PROCEDURE modificar(p_TIN_BORRADO in NUMBER
+					,p_TIN_ID in NUMBER
+					,p_TIC_TIPOID in varchar2
+					,p_TIN_ACTIVO in NUMBER
+					,p_TIN_ENTIDAD in NUMBER);
+
+	PROCEDURE cambia_estatus(p_TIN_ID in number);				
+
+
+END spcpl_tipos_ids_op;

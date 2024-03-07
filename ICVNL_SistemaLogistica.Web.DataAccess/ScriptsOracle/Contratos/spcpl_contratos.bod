@@ -1,0 +1,198 @@
+create or replace PACKAGE BODY spcpl_contratos
+IS
+
+   c_version CONSTANT   NUMBER := 23.2712;
+   c_modulo  CONSTANT   NUMBER := 0;
+   --------------------------------------------------------------------------
+   --  Development TI
+   --------------------------------------------------------------------------
+   -- Modificaciones
+   --------------------------------------------------------------------------
+   -- Cuándo   Quién    Qué
+   --------------------------------------------------------------------------
+   -- 23.0612 DEVTI   Elaboración del paquete.
+   -- 23.2712 DEVTI   Se realizo adecuaciones al SP consulta_listado
+   --------------------------------------------------------------------------
+   ----
+   -- Tipos globales
+   ----
+   ----
+   -- Variables Globales
+   ----
+   -- Variables para manejo de errores.
+   g_mensaje_error      VARCHAR2(4000);
+   ----
+   -- Procedimientos y funciones privados
+   ----
+   ----
+   --  Función que le envía al frente la versión actual del paquete.
+   ----
+   FUNCTION version
+   RETURN NUMBER
+   IS
+   BEGIN
+      RETURN c_version;
+   END version;
+   ----
+   -- Procedimientos y funciones públicos
+   ----
+
+   PROCEDURE consulta_listado(p_CONN_ID IN NUMERIC,
+							  p_CONC_NUMERO IN VARCHAR2,
+							  p_PROVN_ID IN NUMERIC,
+							  p_CONN_ENTIDAD IN NUMBER,
+						      p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+		OPEN p_cursor_out FOR
+		SELECT DISTINCT CPL_CONTRATOS.CONN_ID,
+			   CONC_NUMERO
+		FROM CPL_CONTRATOS 
+		inner join CPL_CONTRATOS_DET on CPL_CONTRATOS.CONN_ID = CPL_CONTRATOS_DET.CONN_ID
+		where CPL_CONTRATOS.CONN_ENTIDAD = p_CONN_ENTIDAD
+		AND (p_CONC_NUMERO = '' OR  UPPER(CONC_NUMERO) like '%'|| UPPER(p_CONC_NUMERO)||'%')   
+		AND (p_PROVN_ID = 0 OR PROVN_ID = p_PROVN_ID)
+        AND (p_CONN_ID  = 0 OR CPL_CONTRATOS.CONN_ID = p_CONN_ID)
+		and CONN_ACTIVO = 1
+		and CONN_BORRADO = 0;
+
+   END consulta_listado;      
+   
+    PROCEDURE consulta_contrato_enc(p_CONN_ID IN NUMBER,
+								   p_CONN_ENTIDAD IN NUMBER,
+								   p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT CONN_ID
+			,CONC_NUMERO 
+		FROM CPL_CONTRATOS  
+		where CONN_ENTIDAD = p_CONN_ENTIDAD
+		AND CONN_ID =  p_CONN_ID   
+		and CONN_ACTIVO = 1;
+
+   END consulta_contrato_enc; 
+
+   PROCEDURE consulta_contrato_det(p_CONN_ID IN NUMBER,
+								   p_CONDN_ENTIDAD IN NUMBER,
+								   p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT CONDC_RANGOFINAL
+			,CONDN_BORRADO
+			,CONDN_CANTIDADPLACAS
+			,TPN_ID
+			,CONDC_MASCARAPLACA
+			,CONN_ID
+			,CONDN_CANTIDADPLACASCAJA
+			,CONDC_ORDENPLACA
+			,CONDN_ID
+			,CONDC_OFICIOSICT
+			,CONDN_ENTIDAD
+			,CONDC_RANGOINICIAL
+			,PROVN_ID
+		FROM CPL_CONTRATOS_DET  
+		where CONDN_ENTIDAD = p_CONDN_ENTIDAD
+		AND CONN_ID =  p_CONN_ID   
+		and CONDN_BORRADO = 0;
+
+   END consulta_contrato_det;   
+
+   PROCEDURE consulta_contrato_det_rng(p_CONDN_ID IN NUMBER,
+									   p_CDRN_ENTIDAD IN NUMBER,
+									   p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT CDRN_ENTIDAD
+			,CONDN_ID
+			,CDRC_RANGOINICIAL
+			,CDRN_CANTIDADSERIE
+			,CDRN_BORRADO
+			,CDRN_ID
+			,CDRC_RANGOFINAL
+		FROM CPL_CONTRATOS_DET_RNG  
+		where CDRN_ENTIDAD = p_CDRN_ENTIDAD
+		AND CONDN_ID =  p_CONDN_ID   
+		and CDRN_BORRADO = 0;
+
+   END consulta_contrato_det_rng;   
+   
+
+ PROCEDURE consulta_contratos_combo(p_CONN_ENTIDAD IN NUMBER,
+									p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT CONN_ID as Valor,
+			 CONC_NUMERO as Texto		 	  
+      FROM CPL_CONTRATOS
+	  where CONN_ENTIDAD = p_CONN_ENTIDAD 
+	  and CONN_ACTIVO = 1
+	  and CONN_BORRADO = 0;
+
+   END consulta_contratos_combo;    
+   
+    PROCEDURE consulta_contratos_prov_combo(p_PROVN_ID IN NUMBER,
+                                            p_CONN_ENTIDAD IN NUMBER,
+                                            p_cursor_out OUT SYS_REFCURSOR)
+    IS
+    BEGIN
+    
+      OPEN p_cursor_out FOR
+    SELECT CPL_CONTRATOS.CONN_ID as Valor,
+               CONC_NUMERO as Texto
+        FROM CPL_CONTRATOS 
+        inner join CPL_CONTRATOS_DET on CPL_CONTRATOS.CONN_ID = CPL_CONTRATOS_DET.CONN_ID
+        where CPL_CONTRATOS.CONN_ENTIDAD = p_CONN_ENTIDAD
+        AND PROVN_ID = p_PROVN_ID
+        and CONN_ACTIVO = 1
+        and CONN_BORRADO = 0;
+    
+    END consulta_contratos_prov_combo;
+
+   PROCEDURE existe_contrato(p_CONC_NUMERO IN VARCHAR2,
+                                    p_CONN_ENTIDAD IN NUMBER,
+                                    p_cursor_out OUT SYS_REFCURSOR)
+   IS
+   BEGIN
+
+      OPEN p_cursor_out FOR
+      SELECT CONN_ID,
+			 CONC_NUMERO
+		FROM CPL_CONTRATOS  
+		where CONN_ENTIDAD = p_CONN_ENTIDAD
+		AND CONC_NUMERO =  p_CONC_NUMERO  
+		and CONN_ACTIVO = 1
+		and CONN_BORRADO = 0;
+
+   END existe_contrato; 
+   
+    PROCEDURE consulta_contdet_tipoplaca(p_CONN_ID IN NUMBER,
+                                         p_TPN_ID IN NUMBER,
+                                         p_CONDN_ENTIDAD IN NUMBER,
+                                         p_cursor_out OUT SYS_REFCURSOR)
+    IS
+    BEGIN
+    
+      OPEN p_cursor_out FOR
+      SELECT CONDN_CANTIDADPLACAS,
+               CONDN_CANTIDADPLACASCAJA,
+               CONDC_RANGOINICIAL,
+               CONDC_RANGOFINAL
+		FROM CPL_CONTRATOS_DET  
+		where CONDN_ENTIDAD = p_CONDN_ENTIDAD
+		AND CONN_ID =  p_CONN_ID
+        and TPN_ID = p_TPN_ID
+		and CONDN_BORRADO = 0;
+    
+    END consulta_contdet_tipoplaca;
+   
+
+END spcpl_contratos;
