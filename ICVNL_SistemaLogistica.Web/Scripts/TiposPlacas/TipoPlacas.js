@@ -39,7 +39,6 @@ function ValidaTipoPlacaDetails() {
 
     return resultado;
 }
-
 function ValidaTipoPlacaCreate() {
     var resultado = false;
     if ($("#txtCodigoInfofin").val() == "") {
